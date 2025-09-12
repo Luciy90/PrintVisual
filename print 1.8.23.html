@@ -824,6 +824,151 @@
       transform: translateY(0) scale(0.95);
     }
 
+    /* Video Stream Toggle Switch */
+    .stream-toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      transition: all 0.25s cubic-bezier(.4,0,.2,1);
+    }
+
+    .stream-toggle-container:hover {
+      transform: translateY(-2px) scale(1.08);
+    }
+
+    .stream-toggle-container .switch {
+      pointer-events: auto;
+    }
+
+    .switch {
+     --secondary-container: #3a4b39;
+     --primary: #84da89;
+     font-size: 10px;
+     position: relative;
+     display: inline-block;
+     width: 3.7em;
+     height: 1.8em;
+     cursor: pointer;
+     z-index: 10;
+    }
+
+    .switch input {
+     display: none;
+     opacity: 0;
+     width: 0;
+     height: 0;
+    }
+
+    .slider {
+     position: absolute;
+     cursor: pointer;
+     top: 0;
+     left: 0;
+     right: 0;
+     bottom: 0;
+     background-color: #313033;
+     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+     border-radius: 30px;
+     border: 1px solid transparent;
+    }
+
+    .slider:before {
+     position: absolute;
+     content: "";
+     height: 1.4em;
+     width: 1.4em;
+     border-radius: 20px;
+     left: 0.1em;
+     bottom: 0.15em;
+     background-color: #aeaaae;
+     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    input:checked + .slider::before {
+     background-color: var(--primary);
+    }
+
+    input:checked + .slider {
+     background-color: var(--secondary-container);
+    }
+
+    input:focus + .slider {
+     box-shadow: 0 0 1px var(--secondary-container);
+    }
+
+    input:checked + .slider:before {
+     transform: translateX(1.8em);
+    }
+
+    /* Дополнительные стили для плавности */
+    .switch:hover .slider:before {
+     transform: scale(1.1);
+    }
+
+    .switch input:checked:hover + .slider:before {
+     transform: translateX(1.8em) scale(1.1);
+    }
+
+    /* Улучшенные стили для переключателя */
+    .switch:hover .slider {
+      box-shadow: 0 0 8px rgba(132, 218, 137, 0.3);
+    }
+
+    .switch:active .slider {
+      transform: scale(0.95);
+    }
+
+    /* Отличительные стили для переключателя */
+    .switch {
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+
+    /* Стили для отключенного состояния */
+    .switch input:not(:checked) + .slider {
+      background-color: #4a4a4a;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .switch input:not(:checked) + .slider:before {
+      background-color: #888;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+
+    /* Стили для включенного состояния */
+    .switch input:checked + .slider {
+      background-color: var(--secondary-container);
+      border: 1px solid rgba(132, 218, 137, 0.3);
+      box-shadow: 0 0 8px rgba(132, 218, 137, 0.2);
+    }
+
+    .switch input:checked + .slider:before {
+      background-color: var(--primary);
+      box-shadow: 0 2px 6px rgba(132, 218, 137, 0.4);
+    }
+
+    /* Stream disabled state */
+    .camera-box.stream-disabled .camera-img img {
+      display: none !important;
+    }
+
+    .camera-box.stream-disabled .camera-img::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, 
+        rgb(var(--base-color-rgb)/0.3) 0%, 
+        rgb(var(--base-color-rgb)/0.1) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: rgb(var(--text-rgb)/0.6);
+      border-radius: 0.7rem;
+    }
+
     /* Отключенное состояние */
     .camera-box.camera-disconnected .zone-right {
       display: none !important;
@@ -3924,6 +4069,31 @@ function setupEventListeners() {
   Elements.offFullCheckbox.addEventListener('change', (e) => {
       const isChecked = e.target.checked;
       
+      // Синхронизируем состояние индивидуальных переключателей
+      const allStreamToggles = document.querySelectorAll('.stream-toggle-input');
+      allStreamToggles.forEach(toggle => {
+          const cameraBox = toggle.closest('.camera-box');
+          const img = cameraBox?.querySelector('.camera-img img');
+          
+          if (isChecked) {
+              // Глобальное отключение: отключаем все потоки
+              if (img && img.src && !img.src.startsWith('data:')) {
+                  img.dataset.originalSrc = img.src;
+                  img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+              }
+              cameraBox?.classList.add('stream-disabled');
+          } else {
+              // Глобальное включение: включаем только те потоки, которые были включены индивидуально
+              if (toggle.checked && img && img.dataset.originalSrc) {
+                  img.src = img.dataset.originalSrc;
+                  delete img.dataset.originalSrc;
+              }
+              if (toggle.checked) {
+                  cameraBox?.classList.remove('stream-disabled');
+              }
+          }
+      });
+      
       // Сохраняем в localStorage
       if (State.allowLocalStorage) {
           const settings = JSON.parse(localStorage.getItem('printerCamsV2') || '{}');
@@ -5123,7 +5293,12 @@ function renderCameras() {
     pendingRestores = 0; // На старте — нет активных восстановлений
 
     allImages.forEach(img => {
-        if (img.src && !img.src.startsWith('data:')) {
+        const cameraBox = img.closest('.camera-box');
+        const streamToggle = cameraBox?.querySelector('.stream-toggle-input');
+        
+        // Останавливаем только потоки, которые не отключены индивидуальными переключателями
+        if (img.src && !img.src.startsWith('data:') && 
+            (!streamToggle || streamToggle.checked)) {
             videoStreams.set(img, img.src);
             img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
             pendingRestores++;
@@ -5140,26 +5315,39 @@ function renderCameras() {
     if (!Elements.offFullCheckbox.checked || pendingRestores === 0) return;
 
     videoStreams.forEach((originalSrc, img) => {
-        const separator = originalSrc.includes('?') ? '&' : '?';
-        const newSrc = originalSrc + separator + '_t=' + Date.now();
+        const cameraBox = img.closest('.camera-box');
+        const streamToggle = cameraBox?.querySelector('.stream-toggle-input');
+        
+        // Восстанавливаем только потоки, которые не отключены индивидуальными переключателями
+        if (!streamToggle || streamToggle.checked) {
+            const separator = originalSrc.includes('?') ? '&' : '?';
+            const newSrc = originalSrc + separator + '_t=' + Date.now();
 
-        // Создаём обработчик один раз
-        const onLoad = () => {
-            img.removeEventListener('load', onLoad);
-            img.removeEventListener('error', onLoad);
-            pendingRestores--; // Один из потоков успешно восстановлен
+            // Создаём обработчик один раз
+            const onLoad = () => {
+                img.removeEventListener('load', onLoad);
+                img.removeEventListener('error', onLoad);
+                pendingRestores--; // Один из потоков успешно восстановлен
 
-            // Если все потоки восстановились — снимаем блокировку
+                // Если все потоки восстановились — снимаем блокировку
+                if (pendingRestores <= 0) {
+                    suppressNotifications = false;
+                    pendingRestores = 0;
+                }
+            };
+
+            img.addEventListener('load', onLoad);
+            img.addEventListener('error', onLoad);
+
+            img.src = newSrc;
+        } else {
+            // Если поток отключен индивидуальным переключателем, не восстанавливаем его
+            pendingRestores--;
             if (pendingRestores <= 0) {
                 suppressNotifications = false;
                 pendingRestores = 0;
             }
-        };
-
-        img.addEventListener('load', onLoad);
-        img.addEventListener('error', onLoad);
-
-        img.src = newSrc;
+        }
     });
 
     videoStreams.clear();
@@ -5236,6 +5424,12 @@ function renderCameras() {
           <div class="zone-right">
             <div class="action-icon expand-icon" title="Развернуть" tabindex="0" role="button"><i class="fas fa-expand"></i></div>
             <div class="action-icon manage-icon" title="Управление" tabindex="0" role="button"><i class="fas fa-cog"></i></div>
+            <div class="stream-toggle-container" title="Включить/выключить видеопоток">
+              <label class="switch">
+                <input type="checkbox" class="stream-toggle-input" ${loadStreamToggleState(cam.ip) ? 'checked' : ''}>
+                <span class="slider"></span>
+              </label>
+            </div>
           </div>
           <div class="bottom-glass"></div>
           <div class="status-dot initial" title="Ожидание подключения" data-ip="${cam.ip}"></div>
@@ -5247,6 +5441,7 @@ function renderCameras() {
     const statusDot = camDiv.querySelector('.status-dot');
     const expandIcon = camDiv.querySelector('.expand-icon');
     const manageIcon = camDiv.querySelector('.manage-icon');
+    const streamToggle = camDiv.querySelector('.stream-toggle-input');
 
 
     // === Параллакс и эффекты ===
@@ -5442,6 +5637,57 @@ function renderCameras() {
         }
       });
     }
+    
+    // === Stream Toggle Handler ===
+    if (streamToggle) {
+      // Обработчик изменения состояния
+      streamToggle.addEventListener('change', (e) => {
+        e.stopPropagation();
+        const isEnabled = e.target.checked;
+        const camera = e.target.closest('.camera-box');
+        
+        console.log('Stream toggle changed:', cam.ip, 'enabled:', isEnabled);
+        
+        if (isEnabled) {
+          // Включаем видеопоток
+          camera.classList.remove('stream-disabled');
+          if (img && img.dataset.originalSrc) {
+            img.src = img.dataset.originalSrc;
+            delete img.dataset.originalSrc;
+          }
+        } else {
+          // Отключаем видеопоток
+          camera.classList.add('stream-disabled');
+          if (img && img.src && !img.src.startsWith('data:')) {
+            img.dataset.originalSrc = img.src;
+            img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+          }
+        }
+        
+        // Сохраняем состояние в localStorage
+        saveStreamToggleState(cam.ip, isEnabled);
+      });
+      
+      // Дополнительный обработчик клика для отладки
+      streamToggle.addEventListener('click', (e) => {
+        console.log('Stream toggle clicked:', cam.ip, 'current state:', e.target.checked);
+      });
+    }
+    
+    // === Применяем сохраненное состояние переключателя ===
+    if (streamToggle && !isDammy) {
+      const isEnabled = loadStreamToggleState(cam.ip);
+      console.log('Loading stream toggle state for', cam.ip, 'enabled:', isEnabled);
+      if (!isEnabled) {
+        // Если переключатель отключен, применяем состояние
+        camDiv.classList.add('stream-disabled');
+        if (img && img.src && !img.src.startsWith('data:')) {
+          img.dataset.originalSrc = img.src;
+          img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        }
+      }
+    }
+    
     // === Drag & drop ===
     camDiv.addEventListener('dragstart', e => {
       const isDammy = camDiv.dataset.ip === 'dammy';
@@ -6260,6 +6506,25 @@ function saveToLocalStorage() {
   };
 
   localStorage.setItem('printerCamsV2', JSON.stringify(settings));
+}
+
+// === Функции для управления состоянием переключателей видеопотока ===
+function saveStreamToggleState(ip, isEnabled) {
+  if (!State.allowLocalStorage) return;
+  
+  const settings = JSON.parse(localStorage.getItem('printerCamsV2') || '{}');
+  settings.streamToggles = settings.streamToggles || {};
+  settings.streamToggles[ip] = isEnabled;
+  localStorage.setItem('printerCamsV2', JSON.stringify(settings));
+}
+
+function loadStreamToggleState(ip) {
+  if (!State.allowLocalStorage) return true; // По умолчанию включен
+  
+  const settings = JSON.parse(localStorage.getItem('printerCamsV2') || '{}');
+  return settings.streamToggles && settings.streamToggles[ip] !== undefined 
+    ? settings.streamToggles[ip] 
+    : true; // По умолчанию включен
 }
 
 function loadFromLocalStorage() {
