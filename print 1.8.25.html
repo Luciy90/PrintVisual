@@ -600,7 +600,7 @@
       width: 100%;
       height: 100%;
       min-height: 140px;
-      max-height: 190px;
+      /*max-height: 190px;*/
       display: block;
       cursor: pointer;
       transform-style: preserve-3d;
@@ -2150,20 +2150,6 @@
               </span>
             </div>
             <div class="flex items-center gap-3 col-span-2 relative mb-2">
-              <span class="w-44 text-white-castom">Ширина поля:</span>
-              <input type="range" id="interfaceWidth" min="800" max="1920" value="1400" step="5" class="w-3/5 custom-range" aria-describedby="tip-interfaceWidth">
-              <input id="interfaceWidthInput" type="number" min="800" max="1920" value="1400" class="w-16 rounded-lg border px-1 py-1 bg-[rgb(var(--stickyHeader-rgb)/0.7)] text-white-castom font-medium outline-none transition" aria-describedby="tip-interfaceWidth">
-              <span id="interfaceWidthValue" class="text-white-castom">px</span>
-              <span class="tooltip-settings" id="tip-notificationOpacity">
-                <span style="font-size: 1rem;">
-                  <p>Широта мысли и интерфейса</p>
-                </span>
-                <p>Задайте комфортные рамки: <strong>от 800px</strong> (минимум) до <strong>1920px</strong> (максимум).</p>
-                <p><em>Но предупреждаем: если ваш монитор уже выбранного минимума</em>, <strong>ползунок вправо</strong> просто забастует!</p>
-                <p>📏 <i>Совет: Хотите больше ширины? Придется купить больше монитор. Увы, ползунок не волшебник!</i></p>
-              </span>
-            </div>
-            <div class="flex items-center gap-3 col-span-2 relative mb-2">
               <span class="w-44 text-white-castom">Плохие уведомления:</span>
               <input id="errorNotificationColor" type="color" value="#ff4d4d" class="color-input" aria-describedby="tip-errorNotificationColor" />
               <span class="tooltip-settings" id="tip-errorNotificationColor">
@@ -2244,6 +2230,21 @@
                 <p>Галочка здесь — как красная кнопка в голливудском фильме: <strong>мгновенно отключает</strong> анимацию загрузки.</p>
                 <p>Для тех, кто считает секунды <em>(или просто ненавидит крутящиеся шарики)</em>.</p>
                 <p>💡 <i>Совет: включите, если ваш компьютер думает, что он - сонная улитка</i></p>
+              </span>
+            </div>
+            <div class="flex items-center gap-3 relative mb-2">
+              <label class="container-chekbox">
+                <input id="hideNotificationCheckbox" type="checkbox" />
+                <svg viewBox="0 0 64 64" height="1em" width="1em">
+                  <path d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16" pathLength="575.0541381835938" class="path-chekbox"></path>
+                </svg>
+              </label>
+              <span class="w-36 text-white-castom">скрыть уведомления</span>
+              <span class="tooltip-settings" id="tip-hide-notifications">
+                <p style="font-size: 1rem;"><strong>Режим невидимки</strong> 🕶️</p>
+                <p>Галочка здесь — как шапка-невидимка в мире цифр: <strong>мгновенно скрывает</strong> все всплывающие уведомления.</p>
+                <p>Для тех, кто ценит концентрацию <em>(или просто устал от вечных "Обратите внимание!")</em>.</p>
+                <p>💡 <i>Совет: включите, если хотите работать, а не читать всплывашки</i></p>
               </span>
             </div>
             <div class="flex items-center gap-3 relative mb-2">
@@ -2438,6 +2439,34 @@
                 <p>Настройте <strong>размер текста</strong> в названиях <em>(от "шёпотом на совещании" до "кричит как начальник в пятницу")</em>.</p>
                 <p>Маленький - для минималистов, крупный - когда нужно чтобы названия видели даже с последнего ряда переговорки.</p>
                 <p>👓 <i>Совет: 0,8 - идеальный "громко-шепот", читаемый с любого офисного кресла</i></p>
+              </span>
+            </div>
+            <div class="flex items-center gap-3 col-span-2 relative mb-2">
+              <span class="w-44 text-white-castom">Ширина поля:</span>
+              <input type="range" id="interfaceWidth" min="800" max="1920" value="1400" step="5" class="w-3/5 custom-range" aria-describedby="tip-interfaceWidth">
+              <input id="interfaceWidthInput" type="number" min="800" max="1920" value="1400" class="w-16 rounded-lg border px-1 py-1 bg-[rgb(var(--stickyHeader-rgb)/0.7)] text-white-castom font-medium outline-none transition" aria-describedby="tip-interfaceWidth">
+              <span id="interfaceWidthValue" class="text-white-castom">px</span>
+              <span class="tooltip-settings" id="tip-notificationOpacity">
+                <span style="font-size: 1rem;">
+                  <p>Широта мысли и интерфейса</p>
+                </span>
+                <p>Задайте комфортные рамки: <strong>от 800px</strong> (минимум) до <strong>1920px</strong> (максимум).</p>
+                <p><em>Но предупреждаем: если ваш монитор уже выбранного минимума</em>, <strong>ползунок вправо</strong> просто забастует!</p>
+                <p>📏 <i>Совет: Хотите больше ширины? Придется купить больше монитор. Увы, ползунок не волшебник!</i></p>
+              </span>
+            </div>
+            <div class="flex items-center gap-3 col-span-2 relative mb-2">
+              <span class="w-44 text-white-castom">Высота карточки:</span>
+              <input type="range" id="interfaceHight" min="180" max="1080" value="180" step="5" class="w-3/5 custom-range" aria-describedby="tip-interfaceWidth">
+              <input id="interfaceHightInput" type="number" min="180" max="1080" value="180" class="w-16 rounded-lg border px-1 py-1 bg-[rgb(var(--stickyHeader-rgb)/0.7)] text-white-castom font-medium outline-none transition" aria-describedby="tip-interfaceHight">
+              <span id="interfaceHightValue" class="text-white-castom">px</span>
+              <span class="tooltip-settings" id="tip-notificationOpacity">
+                <span style="font-size: 1rem;">
+                  <p>Вертикальная свобода в ваших руках</p>
+                </span>
+                <p>Настройте идеальный простор: <strong>от 180px</strong> (не меньше) до <strong>1080px</strong> (не больше).</p>
+                <p><em>Осторожно: при попытке выйти за нижние рамки</em> <strong>ползунок</strong> может устроить бойкот!</p>
+                <p>📏 <i>Совет: Мечтаете о небоскребе вместо окна? Ползунок поддержит ваши амбиции, но только если экран — тоже.</i></p>
               </span>
             </div>
           </div>
@@ -3176,6 +3205,8 @@ const Config = {
       opacity: '1',
       offFullCheckbox: false
     },
+    // Уведомления
+    hideNotifications: false,
 
     // Сетка
     grid: {
@@ -3202,7 +3233,8 @@ const Config = {
     namedDriv: 0.9,
 
     // Интерфейс
-    interfaceWidth: 1400
+    interfaceWidth: 1400,
+    interfaceHeight: 180
   },
 
   colors: {
@@ -3261,6 +3293,9 @@ const Elements = {
   interfaceWidth: document.getElementById('interfaceWidth'),
   interfaceWidthInput: document.getElementById('interfaceWidthInput'),
   interfaceWidthValue: document.getElementById('interfaceWidthValue'),
+  interfaceHeight: document.getElementById('interfaceHight'),
+  interfaceHeightInput: document.getElementById('interfaceHightInput'),
+  interfaceHeightValue: document.getElementById('interfaceHightValue'),
   dividerColorInput: document.getElementById('dividerColor'),
   dividerThicknessInput: document.getElementById('dividerThickness'),
   dividerAlignInput: document.getElementById('dividerAlign'),
@@ -3270,6 +3305,7 @@ const Elements = {
   namedDrivValue: document.getElementById('namedDrivValue'),
   enableDividersCheckbox: document.getElementById('enableDividersCheckbox'),
   hideLoaderCheckbox: document.getElementById('hideLoaderCheckbox'),
+  hideNotificationCheckbox: document.getElementById('hideNotificationCheckbox'),
   loaderBgColorInput: document.getElementById('loaderBgColor'),
   loaderOpacityInput: document.getElementById('loaderOpacity'),
   offFullCheckbox: document.getElementById('offFullCheckbox'),
@@ -3326,6 +3362,7 @@ function debounce(func, delay) {
 const debouncedUpdateDividers      = debounce(updateHorizontalDividers, 25);
 const debouncedSave                = debounce(saveToLocalStorage,      100);
 const debouncedUpdateInterfaceWidth = debounce(updateInterfaceWidth,    15);
+const debouncedUpdateInterfaceHeight = debounce(updateInterfaceHeight,  15);
 const debouncedSaveOnDragEnd       = debounce(saveToLocalStorage,      150);
 const debouncedUpdateNotificationOpacity = debounce(updateNotificationOpacity, 100);
 
@@ -3374,6 +3411,7 @@ function init() {
   updateToolbarColors()
   updateGrid();
   updateInterfaceWidth();
+  updateInterfaceHeight();
   updateLoader();
   updateToolbarVisibility();
   updateActionIconColors();
@@ -4211,6 +4249,9 @@ function setupEventListeners() {
     Elements.loaderBgColorInput.value = s.loader.bgColor;
     Elements.loaderOpacityInput.value = s.loader.opacity;
     Elements.offFullCheckbox.checked = s.loader.offFullCheckbox;
+    if (Elements.hideNotificationCheckbox) {
+      Elements.hideNotificationCheckbox.checked = s.hideNotifications;
+    }
     Elements.gridColumnsInput.value = s.grid.columns;
     Elements.headerTextInput.value = s.header.text;
     Elements.hideHeaderCheckbox.checked = s.header.hidden;
@@ -4219,6 +4260,8 @@ function setupEventListeners() {
     Elements.headerTextColorInput.value = s.header.textColor;
     Elements.interfaceWidth.value = s.interfaceWidth;
     Elements.interfaceWidthInput.value = s.interfaceWidth;
+    Elements.interfaceHeight.value = s.interfaceHeight;
+    Elements.interfaceHeightInput.value = s.interfaceHeight;
     Elements.dividerColorInput.value = s.dividerColor;
     Elements.dividerThicknessInput.value = s.dividerThickness;
     Elements.dividerAlignInput.value = s.dividerAlign;
@@ -4236,6 +4279,7 @@ function setupEventListeners() {
     updateToolbarColors();
     updateGrid();
     updateInterfaceWidth();
+    updateInterfaceHeight();
     updateToolbarVisibility();
     updateLoader();
     debouncedUpdateDividers();
@@ -4324,6 +4368,13 @@ function setupEventListeners() {
       saveToLocalStorage();
     });
   });
+
+  // Hide Notifications
+  if (Elements.hideNotificationCheckbox) {
+    Elements.hideNotificationCheckbox.addEventListener('change', () => {
+      saveToLocalStorage();
+    });
+  }
 
   // Toolbar Visibility
   Elements.hideHeaderCheckbox.addEventListener('change', () => {
@@ -4455,6 +4506,38 @@ function updateInterfaceWidth() {
     saveToLocalStorage();
     debouncedUpdateDividers();
 }
+
+function updateInterfaceHeight() {
+    const height = +Elements.interfaceHeightInput.value;
+    const minHeight = 180;
+    const maxHeight = 1080;
+
+    // Ограничиваем высоту в допустимых пределах
+    const finalHeight = Math.min(Math.max(height, minHeight), maxHeight);
+
+    // Синхронизируем ползунок и инпут
+    Elements.interfaceHeightInput.value = finalHeight;
+    Elements.interfaceHeight.value = finalHeight;
+
+    // Применяем высоту ко всем карточкам камер
+    const cameraBoxes = document.querySelectorAll('.camera-box');
+    cameraBoxes.forEach(camBox => {
+        const cameraImg = camBox.querySelector('.camera-img');
+        if (cameraImg) {
+            cameraImg.style.minHeight = `${finalHeight}px`;
+            cameraImg.style.height = `${finalHeight}px`;
+        }
+        // Также применяем к изображению внутри, если оно есть
+        const img = camBox.querySelector('img');
+        if (img) {
+            img.style.minHeight = `${finalHeight}px`;
+        }
+    });
+
+    Elements.interfaceHeightValue.textContent = 'px';
+    saveToLocalStorage();
+}
+
 // Добавим обработчик изменения размера окна
 window.addEventListener('resize', debounce(() => {
     updateInterfaceWidth();
@@ -4475,6 +4558,23 @@ Elements.interfaceWidthInput.addEventListener('input', e => {
         debouncedUpdateInterfaceWidth();
         updateInterfaceWidth();
         saveToLocalStorage();
+    }
+});
+
+// Обработчики событий для высоты карточек
+Elements.interfaceHeight.addEventListener('input', e => {
+    const value = Math.min(Math.max(parseInt(e.target.value), 180), 1080);
+    if (!isNaN(value)) {
+        Elements.interfaceHeightInput.value = value;
+        debouncedUpdateInterfaceHeight();
+    }
+});
+
+Elements.interfaceHeightInput.addEventListener('input', e => {
+    const value = Math.min(Math.max(parseInt(e.target.value), 180), 1080);
+    if (!isNaN(value)) {
+        Elements.interfaceHeight.value = value;
+        debouncedUpdateInterfaceHeight();
     }
 });
 
@@ -5759,6 +5859,7 @@ function renderCameras() {
   // === Финальные обновления сетки и разделителей ===
   updateGrid();
   debouncedUpdateDividers();
+  updateInterfaceHeight();
 }
 
 
@@ -6134,6 +6235,10 @@ function processNotificationQueue() {
 
 // Ретранслятор передачи уведомлений
 function enqueueNotification(message, type = "info") {
+  // Проверяем, включено ли скрытие уведомлений
+  if (Elements.hideNotificationCheckbox && Elements.hideNotificationCheckbox.checked) {
+    return; // Полностью отключаем все уведомления
+  }
   if (suppressNotifications && pendingRestores > 0) {
       return; // Блокируем и system, и error уведомления
   }
@@ -6334,7 +6439,6 @@ function closeNotificationByDataNumber(targetNumber) {
 
   animateAndRemoveNotification(foundDiv);
 }
-// closeNotificationByDataNumber(42); // Закроет уведомление с data-number="42"
 
 // Универсальная функция для запуска анимации удаления уведомления
 function animateAndRemoveNotification(div) {
@@ -6487,6 +6591,7 @@ function saveToLocalStorage() {
       offFullCheckbox: Elements.offFullCheckbox.checked,
     },
     enableDividers: Elements.enableDividersCheckbox.checked,
+    hideNotifications: Elements.hideNotificationCheckbox ? Elements.hideNotificationCheckbox.checked : false,
     dividerColor: Elements.dividerColorInput.value,
     dividerThickness: Elements.dividerThicknessInput.value,
     dividerAlign: Elements.dividerAlignInput.value,
@@ -6503,6 +6608,7 @@ function saveToLocalStorage() {
       textColor: Elements.headerTextColorInput.value
     },
     interfaceWidth: +Elements.interfaceWidthInput.value,
+    interfaceHeight: +Elements.interfaceHeightInput.value,
   };
 
   localStorage.setItem('printerCamsV2', JSON.stringify(settings));
@@ -6583,12 +6689,19 @@ function loadFromLocalStorage() {
     Elements.interfaceWidth.value = savedWidth;
     Elements.interfaceWidthInput.value = savedWidth;
 
+    const savedHeight = settings.interfaceHeight ?? defaults.interfaceHeight;
+    Elements.interfaceHeight.value = savedHeight;
+    Elements.interfaceHeightInput.value = savedHeight;
+
     Elements.dividerColorInput.value = settings.dividerColor ?? defaults.dividerColor;
     Elements.dividerThicknessInput.value = settings.dividerThickness ?? defaults.dividerThickness;
     Elements.dividerAlignInput.value = settings.dividerAlign ?? defaults.dividerAlign;
     Elements.dividerWidthInput.value = settings.dividerWidth ?? defaults.dividerWidth;
     Elements.dividerWidthValue.textContent = (settings.dividerWidth ?? defaults.dividerWidth) + '%';
     Elements.enableDividersCheckbox.checked = settings.enableDividers ?? defaults.enableDividers;
+    if (Elements.hideNotificationCheckbox) {
+      Elements.hideNotificationCheckbox.checked = settings.hideNotifications ?? defaults.hideNotifications;
+    }
     Elements.namedDrivInput.value = settings.namedDriv || Config.defaultSettings.namedDriv;
     Elements.namedDrivValue.textContent = settings.namedDriv + 'rem' || Config.defaultSettings.namedDriv + 'rem';
 
@@ -6596,6 +6709,7 @@ function loadFromLocalStorage() {
     updateHeader();
     updateGrid();
     updateInterfaceWidth();
+    updateInterfaceHeight();
     updateToolbarVisibility();
     updateToolbarColors();
     updateLoader();
