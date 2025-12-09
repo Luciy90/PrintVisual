@@ -268,10 +268,9 @@
     }
 
     /* Interface width transition */
-    #mainInterfaceContainer {
-      transition: max-width 0.22s cubic-bezier(.4,0,.2,1);
-    }
-    #mainInterfaceContainer, #mainInterfaceContainerCameras {
+    #mainInterfaceContainer,
+    #mainInterfaceContainerCameras {
+      transition: width 0.5s ease-in-out, max-width 0.5s ease-in-out;
       box-sizing: border-box;
     }
     /* Горизонтальный разделитель между строками grid */
@@ -2455,6 +2454,21 @@
                 <p>📏 <i>Совет: Хотите больше ширины? Придется купить больше монитор. Увы, ползунок не волшебник!</i></p>
               </span>
             </div>
+            <div class="flex items-center gap-3 relative mb-2">
+              <label class="container-chekbox">
+                <input id="enableWidthInputCheckbox" type="checkbox" />
+                <svg viewBox="0 0 64 64" height="1em" width="1em">
+                  <path d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16" pathLength="575.0541381835938" class="path-chekbox"></path>
+                </svg>
+              </label>
+              <span class="text-white-castom">Ширина поля всегда максимальная</span>
+              <span class="tooltip-settings">
+                <span style="font-size: 1rem;"><p>Измеритель-регламентатор 📐</p></span>
+                <p>Галочка <strong>всегда</strong> выставляет <em>максимальное значение в поле ширины</em>.</p>
+                <p>Работает за вас, как консьерж в вашем офисе.</p>
+                <p>🧾 <i>Совет: включите, если от настроек уже ребит в глазах</i></p>
+              </span>
+            </div>
             <div class="flex items-center gap-3 col-span-2 relative mb-2">
               <span class="w-44 text-white-castom">Высота карточки:</span>
               <input type="range" id="interfaceHight" min="180" max="1080" value="180" step="5" class="w-3/5 custom-range" aria-describedby="tip-interfaceWidth">
@@ -3234,7 +3248,8 @@ const Config = {
 
     // Интерфейс
     interfaceWidth: 1400,
-    interfaceHeight: 180
+    interfaceHeight: 180,
+    enableWidthInput: false
   },
 
   colors: {
@@ -3293,6 +3308,7 @@ const Elements = {
   interfaceWidth: document.getElementById('interfaceWidth'),
   interfaceWidthInput: document.getElementById('interfaceWidthInput'),
   interfaceWidthValue: document.getElementById('interfaceWidthValue'),
+  enableWidthInputCheckbox: document.getElementById('enableWidthInputCheckbox'),
   interfaceHeight: document.getElementById('interfaceHight'),
   interfaceHeightInput: document.getElementById('interfaceHightInput'),
   interfaceHeightValue: document.getElementById('interfaceHightValue'),
@@ -4143,6 +4159,11 @@ function setupEventListeners() {
           localStorage.setItem('printerCamsV2', JSON.stringify(settings));
       }
   });
+  
+  // Event listener for enableWidthInputCheckbox
+  Elements.enableWidthInputCheckbox.addEventListener('change', () => {
+      saveToLocalStorage();
+  });
   function handleImportFile(file) {
     const reader = new FileReader();
     reader.onload = evt => {
@@ -4271,6 +4292,7 @@ function setupEventListeners() {
     Elements.dividerWidthInput.value = s.dividerWidth;
     Elements.dividerWidthValue.textContent = s.dividerWidth + '%';
     Elements.enableDividersCheckbox.checked = s.enableDividers;
+    Elements.enableWidthInputCheckbox.checked = s.enableWidthInput;
     Elements.namedDrivInput.value = s.namedDriv;
     Elements.namedDrivValue.textContent = s.namedDriv + 'rem';
 
@@ -4502,6 +4524,10 @@ function updateInterfaceWidth() {
 
     // Применяем ширину
     [Elements.mainInterfaceContainer, Elements.mainInterfaceContainerCameras].forEach(el => {
+        // Ensure smooth transition
+        if (!el.style.transition) {
+            el.style.transition = 'width 0.5s ease-in-out, max-width 0.5s ease-in-out';
+        }
         el.style.width = `${finalWidth}px`;
         el.style.maxWidth = `${finalWidth}px`;
         // Центрируем только если она меньше экрана
@@ -4517,6 +4543,50 @@ function updateInterfaceWidth() {
     Elements.interfaceWidthValue.textContent = 'px';
     saveToLocalStorage();
     debouncedUpdateDividers();
+    
+    // Remove transition after animation completes to avoid affecting other interactions
+    setTimeout(() => {
+        [Elements.mainInterfaceContainer, Elements.mainInterfaceContainerCameras].forEach(el => {
+            if (el && el.style.transition) {
+                el.style.transition = '';
+            }
+        });
+    }, 500);
+}
+
+// Delayed width adjustment function for when enableWidthInputCheckbox is checked
+let resizeTimeout;
+function delayedMaxWidthAdjustment() {
+    // Clear any existing timeout
+    if (resizeTimeout) {
+        clearTimeout(resizeTimeout);
+    }
+    
+    // Add smooth transition class for animation
+    const containers = [Elements.mainInterfaceContainer, Elements.mainInterfaceContainerCameras];
+    containers.forEach(el => {
+        if (el) {
+            el.style.transition = 'width 0.5s ease-in-out, max-width 0.5s ease-in-out';
+        }
+    });
+    
+    // Set a new timeout for 2 seconds
+    resizeTimeout = setTimeout(() => {
+        // Set the interface width to maximum available width
+        const maxWidth = window.innerWidth - 50; // 50px for padding
+        Elements.interfaceWidthInput.value = maxWidth;
+        Elements.interfaceWidth.value = maxWidth;
+        updateInterfaceWidth();
+        
+        // Remove transition after animation completes
+        setTimeout(() => {
+            containers.forEach(el => {
+                if (el) {
+                    el.style.transition = '';
+                }
+            });
+        }, 500);
+    }, 2000);
 }
 
 function updateInterfaceHeight() {
@@ -4555,7 +4625,14 @@ function updateInterfaceHeight() {
 
 // Добавим обработчик изменения размера окна
 window.addEventListener('resize', debounce(() => {
-    updateInterfaceWidth();
+    // Check if enableWidthInputCheckbox is checked
+    if (Elements.enableWidthInputCheckbox && Elements.enableWidthInputCheckbox.checked) {
+        // Use delayed max width adjustment
+        delayedMaxWidthAdjustment();
+    } else {
+        // Use normal behavior
+        updateInterfaceWidth();
+    }
 }, 100));
 
 // Обработчики событий для обоих инпутов
@@ -6661,6 +6738,7 @@ function saveToLocalStorage() {
     },
     interfaceWidth: +Elements.interfaceWidthInput.value,
     interfaceHeight: +Elements.interfaceHeightInput.value,
+    enableWidthInput: Elements.enableWidthInputCheckbox.checked,
   };
 
   localStorage.setItem('printerCamsV2', JSON.stringify(settings));
@@ -6744,6 +6822,9 @@ function loadFromLocalStorage() {
     const savedHeight = settings.interfaceHeight ?? defaults.interfaceHeight;
     Elements.interfaceHeight.value = savedHeight;
     Elements.interfaceHeightInput.value = savedHeight;
+    
+    // Load enableWidthInputCheckbox state
+    Elements.enableWidthInputCheckbox.checked = settings.enableWidthInput ?? false;
 
     Elements.dividerColorInput.value = settings.dividerColor ?? defaults.dividerColor;
     Elements.dividerThicknessInput.value = settings.dividerThickness ?? defaults.dividerThickness;
