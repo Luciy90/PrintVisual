@@ -4326,6 +4326,7 @@ function setupEventListeners() {
     Elements.namedDrivValue.textContent = e.target.value + 'rem';
     debouncedUpdateDividers();
     updateCameraTitleFontSize();
+    clearToolbarInlineStyles(); // Очищаем встроенные стили панели инструментов
     saveToLocalStorage();
   });
   // Divider Settings width sync
@@ -4335,11 +4336,13 @@ function setupEventListeners() {
   Elements.dividerWidthInput.addEventListener('input', (e) => {
     Elements.dividerWidthValue.textContent = e.target.value + '%';
     debouncedUpdateDividers();
+    clearToolbarInlineStyles(); // Очищаем встроенные стили панели инструментов
     saveToLocalStorage();
   });
 
   Elements.dividerAlignInput.addEventListener('change', () => {
     debouncedUpdateDividers();
+    clearToolbarInlineStyles(); // Очищаем встроенные стили панели инструментов
     saveToLocalStorage();
   });
 
@@ -4349,6 +4352,7 @@ function setupEventListeners() {
     inp.addEventListener('input', () => {
       updateHeader();
       updateToolbarColors();
+      clearToolbarInlineStyles(); // Очищаем встроенные стили панели инструментов
     })
   );
 
@@ -4360,6 +4364,7 @@ function setupEventListeners() {
       if (!document.fullscreenElement) {
         updateActionIconColors(); // Добавляем обновление цветов иконок
       }
+      clearToolbarInlineStyles(); // Очищаем встроенные стили панели инструментов
       saveToLocalStorage();
     });
   });
@@ -4371,6 +4376,7 @@ function setupEventListeners() {
   [Elements.hideLoaderCheckbox, Elements.loaderBgColorInput, Elements.loaderOpacityInput].forEach(input => {
     input.addEventListener('input', () => {
       updateLoader();
+      clearToolbarInlineStyles(); // Очищаем встроенные стили панели инструментов
       saveToLocalStorage();
     });
   });
@@ -4558,6 +4564,7 @@ Elements.interfaceWidth.addEventListener('input', e => {
     if (!isNaN(value)) {
         Elements.interfaceWidthInput.value = value;
         debouncedUpdateInterfaceWidth();
+        clearToolbarInlineStyles(); // Очищаем встроенные стили панели инструментов
     }
 })
 Elements.interfaceWidthInput.addEventListener('input', e => {
@@ -4566,6 +4573,7 @@ Elements.interfaceWidthInput.addEventListener('input', e => {
         Elements.interfaceWidth.value = value;
         debouncedUpdateInterfaceWidth();
         updateInterfaceWidth();
+        clearToolbarInlineStyles(); // Очищаем встроенные стили панели инструментов
         saveToLocalStorage();
     }
 });
@@ -4576,6 +4584,7 @@ Elements.interfaceHeight.addEventListener('input', e => {
     if (!isNaN(value)) {
         Elements.interfaceHeightInput.value = value;
         debouncedUpdateInterfaceHeight();
+        clearToolbarInlineStyles(); // Очищаем встроенные стили панели инструментов
     }
 });
 
@@ -4584,6 +4593,7 @@ Elements.interfaceHeightInput.addEventListener('input', e => {
     if (!isNaN(value)) {
         Elements.interfaceHeight.value = value;
         debouncedUpdateInterfaceHeight();
+        clearToolbarInlineStyles(); // Очищаем встроенные стили панели инструментов
     }
 });
 
@@ -5281,15 +5291,27 @@ function renderCameras() {
       updateInterfaceHeight();
       currentFullscreenCamera = null;
       // Prevent unwanted toolbar style modifications after exiting fullscreen
-      setTimeout(() => {
-        const toolbars = document.querySelectorAll('[data-fa-i2svg]');
-        toolbars.forEach(toolbar => {
-          toolbar.style.color = '';
-        });
-      }, 100);
+      clearToolbarInlineStyles();
     }
   }
   document.addEventListener('fullscreenchange', syncFullscreenFlag);
+
+  // Function to clear inline styles from toolbar elements
+  function clearToolbarInlineStyles() {
+    setTimeout(() => {
+      const toolbars = document.querySelectorAll('[data-fa-i2svg]');
+      toolbars.forEach(toolbar => {
+        toolbar.style.color = '';
+      });
+    }, 100);
+  }
+
+  // Call clearToolbarInlineStyles when settings are changed
+  const originalSaveToLocalStorage = saveToLocalStorage;
+  saveToLocalStorage = function() {
+    clearToolbarInlineStyles();
+    return originalSaveToLocalStorage.apply(this, arguments);
+  };
 
   function enterFullscreen(cameraElement) {
     if (!cameraElement) {
