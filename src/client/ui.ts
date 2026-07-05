@@ -6,6 +6,69 @@ import { hexToRgbStr, parseRGB, rgbToHsv, hsvToRgb } from './utils.js';
 declare const lucide: any;
 let resizeTimeout: any;
 
+// === MODAL SET FUNCTIONS ===
+export function updateOpenSettingsButtonState() {
+  const btn = document.getElementById('openSettingsBtn');
+  if (!btn) return;
+  
+  const hasChanges = State.settingsChanged || false;
+  if (hasChanges) {
+    btn.classList.add('settings-changed');
+  } else {
+    btn.classList.remove('settings-changed');
+  }
+}
+
+export function openModalSet() {
+  const modal = document.getElementById('modalSet');
+  const overlay = document.getElementById('modalOverlay');
+  if (!modal || !overlay) return;
+  
+  modal.classList.remove('hidden');
+  overlay.classList.remove('hidden');
+  
+  setTimeout(() => {
+    modal.classList.add('show');
+    overlay.classList.add('show');
+  }, 10);
+  
+  document.body.style.overflow = 'hidden';
+}
+
+export function closeModalSet() {
+  const modal = document.getElementById('modalSet');
+  const overlay = document.getElementById('modalOverlay');
+  if (!modal || !overlay) return;
+  
+  modal.classList.remove('show');
+  overlay.classList.remove('show');
+  
+  setTimeout(() => {
+    modal.classList.add('hidden');
+    overlay.classList.add('hidden');
+  }, 300);
+  
+  document.body.style.overflow = '';
+}
+
+export function unlockTableHeight() {
+  const tableContainer = document.getElementById('cameraTableContainer');
+  if (!tableContainer) return;
+  
+  tableContainer.style.maxHeight = 'none';
+  tableContainer.style.overflowY = 'visible';
+  tableContainer.classList.add('unlocked');
+}
+
+export function restoreTableHeight() {
+  const tableContainer = document.getElementById('cameraTableContainer');
+  if (!tableContainer) return;
+  
+  tableContainer.style.maxHeight = '60vh';
+  tableContainer.style.overflowY = 'auto';
+  tableContainer.classList.remove('unlocked');
+}
+
 export function animateHeight(fn: Function, el: HTMLElement) {
   const s = el.offsetHeight;
   fn();

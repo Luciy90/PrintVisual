@@ -169,3 +169,113 @@ export function renderCameras() {
     // This function is usually defined in app.ts to handle the actual rendering of camera boxes
     // I'll leave it as a stub or move the logic here if I can.
 }
+
+// === DRAG AND DROP HELPER FUNCTIONS ===
+export function recordPos(): Map<HTMLElement, number> {
+  const m = new Map<HTMLElement, number>();
+  const tbody = document.getElementById('cameraTableBody');
+  if (!tbody) return m;
+  
+  tbody.querySelectorAll('tr').forEach(r => {
+    m.set(r as HTMLElement, r.getBoundingClientRect().top);
+  });
+  return m;
+}
+
+export function playFLIP(prev: Map<HTMLElement, number>) {
+  const tbody = document.getElementById('cameraTableBody');
+  if (!tbody) return;
+  
+  tbody.querySelectorAll('tr').forEach(r => {
+    const dy = prev.get(r as HTMLElement)! - r.getBoundingClientRect().top;
+    if (dy) {
+      (r as HTMLElement).style.transform = `translateY(${dy}px)`;
+      (r as HTMLElement).style.transition = 'transform .3s cubic-bezier(.4,0,.2,1)';
+      requestAnimationFrame(() => (r as HTMLElement).style.transform = '');
+      r.addEventListener('transitionend', () => (r as HTMLElement).style.transition = '', { once: true });
+    }
+  });
+}
+
+export function addRow(isDammy: boolean) {
+  // Import cameras from state or pass as parameter
+  const { normalizeCameraData } = require('./cameras.js');
+  const camData = isDammy 
+    ? { ip: 'dammy', stream: '', name: '' } 
+    : { ip: '', stream: '', name: '' };
+  
+  // This needs to be handled in app.ts where cameras array is accessible
+  console.warn('addRow should be called from app.ts with cameras array');
+}
+
+export function updateEmpty(input: HTMLInputElement) {
+  const td = input.closest('.ip-cell');
+  if (td) td.classList.toggle('is-empty', !input.value.trim());
+}
+
+export function convertToDammy(row: HTMLElement) {
+  // This needs cameras array access - should be handled in app.ts
+  const idx = row.parentElement ? Array.from(row.parentElement.children).indexOf(row) : -1;
+  console.warn('convertToDammy should be called from app.ts with cameras array');
+}
+
+// === ACCORDION FUNCTIONS ===
+export function initAccordion() {
+  document.querySelectorAll('.accordion').forEach((acc) => {
+    const btn = acc.querySelector('.accordion-toggle');
+    const content = acc.querySelector('.accordion-content');
+
+    if (!btn || !content) return;
+
+    content.style.maxHeight = '0';
+
+    btn.addEventListener('click', (event) => {
+      // Ignore clicks on custom checkbox
+      if ((event.target as HTMLElement).closest('.custom-checkbox-container')) return;
+
+      const isOpen = acc.classList.contains('accordion-open');
+
+      if (isOpen) {
+        closeAccordion(acc);
+        updateAccordionCheckboxState(acc, false);
+      } else {
+        // Close other accordions
+        document.querySelectorAll('.accordion.accordion-open').forEach(openAcc => {
+          closeAccordion(openAcc);
+          updateAccordionCheckboxState(openAcc, false);
+        });
+
+        // Open current
+        acc.classList.add('accordion-open');
+        content.style.display = 'block';
+        const h = content.scrollHeight + 30;
+        content.style.maxHeight = '0';
+        setTimeout(() => {
+          content.style.maxHeight = h + 'px';
+          content.style.opacity = '1';
+        }, 10);
+
+        updateAccordionCheckboxState(acc, true);
+      }
+    });
+  });
+}
+
+export function closeAccordion(acc: HTMLElement) {
+  const content = acc.querySelector('.accordion-content') as HTMLElement;
+  if (!content) return;
+  
+  acc.classList.remove('accordion-open');
+  content.style.maxHeight = '0';
+  content.style.opacity = '0';
+  setTimeout(() => {
+    content.style.display = 'none';
+  }, 400);
+}
+
+export function updateAccordionCheckboxState(acc: HTMLElement, isChecked: boolean) {
+  const checkbox = acc.querySelector('.accordion-checkbox') as HTMLInputElement;
+  if (checkbox) {
+    checkbox.checked = isChecked;
+  }
+}
