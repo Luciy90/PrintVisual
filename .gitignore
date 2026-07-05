@@ -12,3 +12,8 @@ wheels/
 .env
 .vscode/
 .old
+node_modules/
+dist/
+data/*.json
+reports/coverage/lcov-report/
+reports/coverage/lcov.info

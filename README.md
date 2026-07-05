@@ -54,11 +54,114 @@ PrintVisual — это продвинутая веб-система монито
 - Сетевой доступ к IP-камерам 3D-принтеров
 - Разрешение экрана не менее 800px по ширине
 
-### Быстрый старт
+### Быстрый старт через Node.js / Express
+
+1. **Установите зависимости**
+   ```bash
+   npm install
+   ```
+
+2. **Запустите приложение в режиме разработки**
+   ```bash
+   npm run dev
+   ```
+
+3. **Откройте интерфейс**
+   ```text
+   http://localhost:8765
+   ```
+
+4. **Проверьте API**
+   ```text
+   http://localhost:8765/api/health
+   ```
+
+Для production-сборки:
+
+```bash
+npm run build
+npm start
+```
+
+По умолчанию Express отдаёт frontend из папки `public/` и предоставляет REST API для серверных операций. Старый монолитный файл `print 1.8.28.html` сохранён в корне как legacy-источник и fallback, но для получения MAC и сетевого сканирования рекомендуется запуск через Node.js.
+
+Текущая frontend-структура:
+
+```text
+public/
+  index.html
+  styles.css
+  api-client.js
+  app.js
+  redirect.js
+
+src/client/
+  api.ts
+  app.ts
+```
+
+`public/app.js` и `public/api-client.js` являются результатом сборки. Основные изменения frontend-логики нужно вносить в `src/client/`, затем запускать:
+
+```bash
+npm run build:client
+```
+
+### Автоматические тесты
+
+Для критичных серверных модулей добавлен набор автоматических тестов на `Vitest`.
+
+Основные команды:
+
+```bash
+npm test
+npm run test:watch
+npm run test:coverage
+```
+
+Перед локальной сдачей изменений рекомендуется прогонять:
+
+```bash
+npm run typecheck
+npm run build
+npm run test:coverage
+```
+
+Тесты покрывают:
+
+- Zod-схемы валидации из `src/schemas.ts`;
+- MAC lookup в `src/services/printerService.ts`;
+- recovery plan и сетевое сканирование в `src/services/networkScanner.ts`;
+- HTTP-интеграцию API и вспомогательные address helpers.
+
+Отчёты сохраняются в `reports/`:
+
+- `reports/tests/results.json`
+- `reports/tests/junit.xml`
+- `reports/coverage/coverage-summary.json`
+- `reports/latest-summary.md`
+
+Подробная документация по запуску, конфигурации и расширению тестового набора находится в `docs/testing.md`.
+
+### REST API
+
+- `GET /api/health` - проверка состояния сервера.
+- `GET /api/settings` - получить сохранённые настройки.
+- `PUT /api/settings` - полностью сохранить настройки приложения.
+- `PATCH /api/settings` - частично обновить настройки.
+- `GET /api/printers/mac?address=192.168.88.115` - получить MAC принтера по адресу.
+- `POST /api/printers/mac` - получить MAC с параметрами в JSON body.
+- `POST /api/network/scan` - просканировать список подсетей.
+- `POST /api/network/recovery-plan` - построить план восстановления IP по сохранённым MAC.
+
+Валидация входных данных выполняется через Zod. Настройки сервера сохраняются в `data/printerCamsV2.json`.
+
+При запуске через Express серверное хранилище является основным источником настроек. Клиент сначала загружает `/api/settings`; если серверное хранилище пустое, но в браузере уже есть старые настройки `localStorage`, они автоматически импортируются на сервер. `localStorage` остаётся совместимым локальным кэшем для старого режима запуска.
+
+### Быстрый старт как один HTML-файл
 
 1. **Запуск приложения**
    ```
-   Откройте файл `print 1.8.23.html` в веб-браузере
+   Откройте файл `print 1.8.28.html` в веб-браузере
    ```
 
 2. **Первоначальная настройка**
@@ -103,11 +206,19 @@ PrintVisual — это продвинутая веб-система монито
 ## Дополнительная информация
 
 ### Техническая архитектура
-Приложение построено на базе нативных веб-технологий:
+Приложение переносится на гибридную архитектуру Node.js + текущий HTML-клиент:
+- **Backend**: Node.js, Express, TypeScript
+- **Валидация**: Zod-схемы для REST API
+- **API**: `/api/settings`, `/api/printers/mac`, `/api/network/scan`, `/api/network/recovery-plan`
+- **Хранение на сервере**: JSON-файл `data/printerCamsV2.json`
+- **Frontend-клиент**: `public/index.html`, `public/styles.css`, `public/api-client.js`, `public/app.js`, `public/redirect.js`
+- **Frontend-исходники**: `src/client/api.ts`, `src/client/app.ts`
+
+Клиентская часть по-прежнему использует:
 - **Frontend**: HTML5, CSS3 с использованием Tailwind CSS
 - **JavaScript**: Vanilla ES6+ без внешних зависимостей
 - **Иконки**: Lucide Icons и Font Awesome
-- **Хранение данных**: localStorage API для персистентности
+- **Хранение данных**: серверный JSON-файл как основной источник при запуске через Express; `localStorage` используется для обратной совместимости и первичного импорта старых настроек
 
 ### Безопасность и конфиденциальность
 - **Локальная обработка**: Весь код выполняется на клиентской стороне

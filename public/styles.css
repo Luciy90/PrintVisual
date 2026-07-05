@@ -1,0 +1,1987 @@
+:root {
+      /*BASE*/
+
+      --black: 0 0 0;
+      --white: 255 255 255;
+      --primary: 99 102 241;      /* indigo-500 */
+      --secondary: 236 72 153;    /* fuchsia-500 */
+      --surface: 15 23 42;        /* slate-900 */
+      --surface-alt: 30 41 59;    /* slate-800 */
+
+      --named-driv-font-size: 0.9rem;
+      --border-right: 2px;
+    }
+    #consentModal {
+      font-family:'Inter', sans-serif;
+    }
+    .reveal{opacity:0;transform:translateY(25px)}
+
+    .reveal.show{animation:fadeIn .8s ease forwards}
+    @keyframes fadeIn{0%{opacity:0;transform:translateY(25px)}100%{opacity:1;transform:none}}
+
+    body { 
+      font-family: 'Inter', sans-serif; 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    html, body {
+      background: 
+      linear-gradient(135deg, 
+        rgb(var(--base-color1)), 
+        rgb(var(--base-color2))
+      );
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      height: 100%;
+    }
+    .bg-cams {
+      background-color: rgb(var(--base-color-rgb)/0.98);
+    }
+
+    .camera-title { text-shadow: 0 1px 3px #000a; }
+    .notification {
+      will-change: transform, opacity;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      box-sizing: border-box;
+      cursor: pointer;
+      pointer-events: auto;
+      white-space: nowrap;
+    }
+    .notification.collapsed {
+      /*pointer-events: none !important;*/
+      animation: bottom 0.6s ease, opacity 0.4s ease;
+      bottom: 0px !important;
+    }
+    #notificationActions {
+      position: absolute;
+      bottom: 76px;
+      right: 25px; /* совпадает с отступом контейнера */
+      z-index: 35;
+      opacity: 0;
+      transform: translateY(4px);
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+    #notificationActions.show {
+      opacity: 0.8;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    #settingsChangedNotification {
+      position: absolute;
+      top: -12px;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      max-width: inherit;
+      background: linear-gradient(135deg, rgb(var(--base-color1)), rgb(var(--base-color2)));
+      backdrop-filter: blur(12px);
+      border-radius: 1rem;
+      box-shadow:
+        inset 0 0 0 1px rgb(var(--white)/0.1),
+        0 8px 24px rgb(var(--black)/0.25);
+      color: rgb(var(--text-rgb));
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      opacity: 1;
+      animation: inner-pulse 3s infinite ease-in-out;
+      transform: translateY(-80px);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      z-index: 30;
+    }
+
+    .notif-enter {
+      opacity: 0;
+      transform: translateY(36px) scale(0.98);
+      filter: blur(10px);
+      animation: notif-in 0.7s cubic-bezier(.4,0,.2,1) forwards;
+      will-change: opacity, transform, filter;
+    }
+
+
+    /* Панель настроек */
+    .settings-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 100%;
+      width: 100%;
+      max-width: 36rem; /* 9 * 4rem = 36rem => xl по Tailwind */
+      border-top-left-radius: 1rem; /* rounded-l-2xl */
+      border-bottom-left-radius: 1rem;
+      box-shadow: 0 25px 50px -12px rgb(var(--black)/0.25); /* shadow-2xl */
+      z-index: 50;
+      opacity: 0;
+      transform: translateX(100%);
+      animation: appear 0.3s ease-out forwards;
+      background:linear-gradient(114deg, rgb(var(--base-color1)),rgb(var(--base-color2)) 90%);
+      border:1.5px solid rgba(120,86,255,.13);
+      box-shadow: 0 18px 60px 0 rgba(60,30,90,0.22), 0 2px 8px 0 rgba(0,0,0,0.06);
+      backdrop-filter: blur(10px) saturate(1.4);
+    }
+
+    /*Заголовок SettingsPanel*/
+    .settings-panel-header {
+      display: flex;
+      align-items: center; /* items-center */
+      justify-content: space-between; /* justify-between */
+      padding-left: 2rem;  /* px-8 (1rem = 16px → 8 * 0.25rem = 2rem) */
+      padding-right: 2rem;
+      padding-top: 1.75rem;  /* py-7 (0.25rem * 7 = 1.75rem) */
+      padding-bottom: 1.75rem;
+      border-bottom-width: 1px; /* border-b */
+      border-color: rgba(79, 65, 219, 0.2); /* border-indigo-700/20 */
+      background-color: transparent; /* bg-white/0 */
+    }
+
+
+    /* Красивый стиль для кнопки закрытия */
+    .close-btn-fancy {
+      border: 2px solid rgba(167,139,250,0.28);
+      box-shadow:
+        0 2px 8px 0 #764ba233,
+        0 0.5px 2px 0 #fff5;
+      color: #fff;
+      border-radius: 1.2em;
+      transition:
+        background 0.25s, 
+        box-shadow 0.22s,
+        transform 0.18s,
+        border 0.18s;
+      position: relative;
+      overflow: hidden;
+    }
+    .close-btn-fancy:hover, .close-btn-fancy:focus {
+      background: linear-gradient(120deg, #fff2, rgb(var(--base-color2)) 80%);
+      border-color: #a78bfa;
+      box-shadow:
+        0 8px 22px 0 #a78bfa44,
+        0 2px 8px 0 #fff5;
+      color: #fff;
+      transform: scale(1.08);
+    }
+    .close-btn-fancy:active {
+      transform: scale(0.97) rotate(1deg);
+      box-shadow:
+        0 1px 6px 0 #764ba233,
+        0 0.5px 2px 0 #fff5;
+    }
+
+    .close-btn-fancy svg {
+      transition: transform 0.22s cubic-bezier(.4,0,.2,1);
+    }
+
+    .close-btn-fancy:hover svg, .close-btn-fancy:focus svg {
+      transform: rotate(90deg) scale(1.12);
+    }
+
+    /* Стилизация подсказки для кнопох хедера */
+    .custom-tooltip {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      will-change: transform, background;
+      position: absolute;
+      bottom: -42px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.95);
+      color: rgb(var(--text-rgb));
+      font-size: 11px;
+      padding: 6px 16px;
+      border-radius: 0.75rem;
+      box-shadow: 0 8px 24px 0 rgba(168, 85, 247, 0.15);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s cubic-bezier(.4,0,.2,1),
+                  transform 0.22s cubic-bezier(.4,0,.2,1);
+      z-index: 20;
+      white-space: nowrap;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      user-select: none;
+      border: 2px solid rgb(var(--base-color-rgb)/0.3);
+      backdrop-filter: saturate(120%);
+
+      /* Градиент + плавная анимация фона */
+      background: linear-gradient(
+          145deg,
+          rgb(var(--base-color1)/0.96),
+          rgb(var(--base-color2)/0.96)
+        )
+        0% 0% / 200% 200%;
+      animation: shimmer 4s ease-in-out infinite;
+    }
+
+    /* Активируем анимацию при появлении */
+    .custom-tooltip.show {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+      animation-play-state: running;
+    }
+
+    /* Стрелочка-указатель с тем же градиентом */
+    .custom-tooltip::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: -8px;
+      transform: translateX(-50%);
+      width: 7px;
+      height: 7px;
+      background: linear-gradient(
+          135deg,
+          rgb(var(--base-color1)/0.96),
+          rgb(var(--base-color2)/0.96)
+        )
+        100% 100% / 200% 200%;
+      clip-path: polygon(0 100%, 50% 0, 100% 100%);
+      z-index: 19;
+      animation: shimmer 4s ease-in-out infinite;
+    }
+    .custom-tooltip.show::after {
+      animation-play-state: running;
+    }
+
+    /* Плавное «перетекание» градиента */
+    @keyframes shimmer {
+      0%   { background-position: 10% 10%; }
+      50%  { background-position: 90% 90%; }
+      100% { background-position: 10% 10%; }
+    }
+
+    /* Interface width transition */
+    #mainInterfaceContainer,
+    #mainInterfaceContainerCameras {
+      transition: width 0.5s ease-in-out, max-width 0.5s ease-in-out;
+      box-sizing: border-box;
+    }
+    /* Горизонтальный разделитель между строками grid */
+    #cameraContainer {
+      position: relative;
+    }
+
+    #cameraContainer::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background-color: rgb(var(--white)/0); /* Цвет разделителя */
+      z-index: 0;
+      pointer-events: none;
+    }
+    .horizontal-divider {
+      border-radius: 9px; /* Полный скругление — как линия с закруглёнными краями */
+      box-shadow: 0 2px 6px rgb(var(--black)/0.05); /* Лёгкая тень */
+      transition:
+        opacity 0.3s ease,
+        background-color 0.3s ease,
+        transform 0.3s ease;
+    }
+
+    .horizontal-divider:hover {
+      transform: scaleX(1.02);
+    }
+    .divider-hitbox {
+      pointer-events: auto;
+    }
+    
+
+    #floatingToolbar > div {
+      backdrop-filter: blur(12px);
+    }
+    #settingsPanel {
+      z-index: 800;
+    } 
+    /* Разрешаем вертикальную прокрутку внутри панели настроек */
+    #settingsPanel .space-y-6 {
+      max-height: calc(100vh - 160px); /* Оставить место под заголовок и кнопки */
+      overflow-y: visible;
+    }
+
+
+    .card {
+      /* color used to softly clip top and bottom of the .words container */
+      --bg-color: #141414;
+      background-color: var(--bg-color);
+      padding: 1rem 2rem;
+      border-radius: 1.25rem;
+    }
+    .loader {
+      color: rgb(124, 124, 124);
+      font-family: "Poppins", sans-serif;
+      font-weight: 500;
+      font-size: 25px;
+      -webkit-box-sizing: content-box;
+      box-sizing: content-box;
+      height: 40px;
+      padding: 10px 10px;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      border-radius: 8px;
+    }
+    .words {
+      overflow: hidden;
+      position: relative;
+    }
+    .words::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        var(--bg-color) 10%,
+        transparent 30%,
+        transparent 70%,
+        var(--bg-color) 90%
+      );
+      z-index: 20;
+    }
+    .word {
+      display: block;
+      height: 100%;
+      padding-left: 6px;
+      color: #956afa;
+      animation: spin_4991 12s infinite;
+    }
+    input::placeholder {
+      color: #9ca3af; /* серый цвет */
+    }
+
+    /* === Кнопки === */
+    .button {
+      margin: 0;
+      height: auto;
+      background: transparent;
+      padding: 0;
+      border: none;
+      cursor: pointer;
+      --border-right: 3px;
+      --text-stroke-color:  rgba(255,255,255,0.01);
+      --animation-color: rgb(var(--base-color1));
+      --fs-size: 2em;
+      letter-spacing: 3px;
+      text-decoration: none;
+      font-size: 10px;
+      font-family: "Arial";
+      position: relative;
+      text-transform: uppercase;
+      color: transparent;
+      -webkit-text-stroke: 1px var(--text-stroke-color);
+    }
+    .btn-3d { 
+      transition: box-shadow .22s,transform .16s,background .45s,border .18s; 
+      will-change: transform,box-shadow; 
+    }
+    .btn-3d:hover{
+      transform:translateY(-2px) scale(1.04);
+      box-shadow:
+        0 12px 44px rgb(var(--shedow-rgb)/0.6),
+        0 2px 8px rgb(var(--shedow-rgb))
+    }
+    .glass-btn {
+      cursor: pointer;
+      position: relative;
+      backdrop-filter: opacity(0.5) !important;
+      overflow: visible !important; 
+    }
+    /* Улучшенный эффект при наведении на кнопки */
+    .glass-btn:active {
+      transform: translateY(1px) scale(0.98);
+    }
+    /* Анимация при появлении */
+    .glass-btn:hover .custom-tooltip,
+    .glass-btn:focus-visible .custom-tooltip {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
+    .glass-btn:focus .custom-tooltip,
+    .glass-btn:hover .custom-tooltip {
+      pointer-events: auto;
+    }
+    /* Деактивация кнопок при активации импорта настроек*/
+    .btn-disabled {
+      opacity: 0.6;
+      filter: blur(0.7px);
+      pointer-events: none;
+      transform: scale(0.98);
+      transition: all 0.3s ease;
+    }
+    /* Красивый стиль для кнопки закрытия */
+    .close-btn-fancy {
+      border: 2px solid rgba(167,139,250,0.28);
+      box-shadow:
+        0 2px 8px 0 rgb(var(--shedow-rgb)/0.4),
+        0 0.5px 2px 0 rgb(var(--shedow-rgb)/0.2);
+      color: rgb(var(--text-rgb));
+      border-radius: 1.2em;
+      transition:
+        background 0.25s, 
+        box-shadow 0.22s,
+        transform 0.18s,
+        border 0.18s;
+      position: relative;
+      overflow: hidden;
+    }
+    .close-btn-fancy:hover, .close-btn-fancy:focus {
+      background: linear-gradient(120deg, rgb(var(--base1-light-rgb)/0.4), rgb(var(--base2-light-rgb)/0.55) 80%);
+      border-color: rgb(var(--shedow-rgb)/0.8);
+      box-shadow:
+        0 8px 22px 0 rgb(var(--shedow-rgb)/0.2),
+        0 2px 8px 0 rgb(var(--shedow-rgb)/0.6);
+      color: #fff;
+      transform: scale(1.08);
+    }
+    .close-btn-fancy:active {
+      transform: scale(0.97) rotate(1deg);
+      box-shadow:
+        0 1px 6px 0 #764ba233,
+        0 0.5px 2px 0 #fff5;
+    }
+    .close-btn-fancy svg {
+      transition: transform 0.22s cubic-bezier(.4,0,.2,1);
+    }
+    .close-btn-fancy:hover svg, .close-btn-fancy:focus svg {
+      transform: rotate(90deg) scale(1.12);
+    }
+
+
+    /* This is the text that appears on hover */
+    .hover-text {
+      position: absolute;
+      box-sizing: border-box;
+      content: attr(data-text);
+      color: var(--animation-color);
+      width: 0%;
+      inset: 0;
+      border-right: 2px solid var(--animation-color);
+      overflow: hidden;
+      transition: width 0.8s ease, filter 0.8s ease;
+      -webkit-text-stroke: 1px var(--animation-color);
+    }
+
+    /* === СТИЛИ ДЛЯ МОДАЛЬНОГО ОКНА === */
+
+    .modal-glass {
+      background: rgb(var(--shiftedRightDark-rgb)/0.6);
+      backdrop-filter: blur(16px) saturate(140%);
+      box-shadow: 0 6px 32px 0 rgba(60,0,130,.18), 0 2px 8px 0 rgba(0,0,0,.12);
+      border: 1.5px solid rgba(168, 85, 247, 0.22);
+    }
+    .ray {
+      filter: blur(22px);
+      opacity: .7;
+      pointer-events: none;
+    }
+
+    .social-btn {
+      position: relative;
+      transition: transform .18s, box-shadow .18s;
+      box-shadow:
+        0 6px 24px rgb(var(--shedow-rgb)/0.3),
+        0 1px 4px rgb(var(--shedow-rgb)/0.1);
+      outline: none;
+      border: none;
+      cursor: pointer;
+    }
+    .social-btn svg,
+    .social-btn i {
+      filter: drop-shadow(0 1px 5px rgb(var(--textInvert-rgb)/0.6));
+      stroke: rgb(var(--text-rgb)/0.8);
+    }
+    .social-btn:focus-visible {
+      outline: 2px solid rgb(var(--shedow-rgb));
+      outline-offset: 2px;
+    }
+    .social-btn:hover, .social-btn:focus-visible {
+      transform: translateY(-3px) scale(1.08);
+      box-shadow: 0 6px 20px 0 rgb(var(--shedow-rgb)/0.6), 0 2px 8px 0 rgb(var(--shedow-rgb)/0.2);
+      outline: 1px solid rgb(var(--shedow-rgb)/0.2);
+    }
+    .tooltip {
+      pointer-events: none;
+      opacity: 0;
+      position: absolute;
+      left: 50%;
+      top: -55px;
+      transform: translateX(-50%) scale(.97);
+      background: linear-gradient(
+        145deg,
+        rgb(var(--base-color1)/0.9),
+        rgb(var(--base-color2)/0.9)
+      ) 0% 0% / 200% 200%;
+      color: rgb(var(--text-rgb));
+      padding: 6px 18px;
+      font-size: 15px;
+      border-radius: 0.75rem;
+      font-weight: 500;
+      box-shadow:
+        0 6px 24px rgb(var(--shedow-rgb)/0.2),
+        0 1px 4px rgb(var(--shedow-rgb)/0.6);
+      white-space: nowrap;
+      z-index: 20;
+      border: 1.5px solid #a78bfa44;
+      transition: opacity .22s cubic-bezier(.4,0,.2,1), transform .22s cubic-bezier(.4,0,.2,1);
+      animation: fadeInTooltip .35s cubic-bezier(.4,0,.2,1);
+      backdrop-filter: blur(10px) saturate(120%);
+    }
+
+    .social-btn:hover .tooltip, .social-btn:focus-visible .tooltip {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+      pointer-events: auto;
+    }
+    .social-btn .tooltip:after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -8px;
+      transform: translateX(-50%);
+      width: 7px;
+      height: 7px;
+      background: linear-gradient(
+        145deg,
+        rgb(var(--base-color1)/0.9),
+        rgb(var(--base-color2)/0.9)
+      ) 0% 0% / 200% 200%;
+      border-left: 1.5px solid rgb(var(--base-color2)/0.4);
+      border-bottom: 1.5px solid rgb(var(--base-color2)/0.4);
+      border-radius: 0 0 4px 0;
+      clip-path: polygon(50% 100%, 0 0, 100% 0);
+      z-index: 21;
+    }
+
+
+    /* Основные стили карточки */
+    .camera-box {
+      background: rgba(35,36,56,0.65);
+      border-radius: 0.9rem;
+      box-shadow: 0 2px 18px 0 rgba(160,120,255,0.13),
+        0 1.5px 8px 0 rgba(0,0,0,0.15),
+        0 1px 2px 0 #fff1 inset;
+      border: 2px solid rgba(255,255,255,0.11);
+      backdrop-filter: blur(18px) saturate(180%);
+      transition: box-shadow .32s cubic-bezier(.4,0,.2,1),
+        transform .36s cubic-bezier(.4,0,.2,1),
+        border .24s cubic-bezier(.4,0,.2,1),
+        filter .22s cubic-bezier(.4,0,.2,1);
+      will-change: transform, box-shadow, filter;
+      position: relative;
+      overflow: hidden;
+      transform-style: preserve-3d;
+    }
+
+    .camera-box .camera-img img {
+      transition: transform .44s cubic-bezier(.42,1.8,.2,1), filter .28s;
+      will-change: transform;
+      border-radius: 0.7rem;
+      box-shadow: 0 5px 26px 0 rgba(120,50,220,0.08),
+        0 1.5px 7px 0 rgba(120,50,220,0.08);
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+      min-height: 140px;
+      /*max-height: 190px;*/
+      display: block;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      z-index: 1;
+      /*backface-visibility: hidden;*/
+    }
+
+    .camera-box.drag-over {
+      outline: none;
+      border: 2px solid rgb(var(--shedow-rgb));
+      box-shadow: 0 8px 34px 0 rgb(var(--shedow-rgb)/0.8);
+    }
+
+
+    /* Полноэкранный режим */
+    .camera-box.fullscreen .zone-right {
+      opacity: 0 !important;
+      pointer-events: none;
+    }
+    .camera-box.fullscreen .zone-left {
+      cursor: default;
+    }
+    .camera-box.fullscreen .camera-img img {
+      border-radius: 0;
+    }
+
+    /* Добавляем градиентный эффект */
+    .camera-box::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        linear-gradient(120deg,rgb(var(--base-color-rgb)/0.15) 0%,rgb(var(--avg-light-rgb)/0.07) 100%),
+        radial-gradient(ellipse at 80% 10%,rgb(var(--white)/0.11) 0,rgb(var(--white)/0.01) 70%);
+      mix-blend-mode: screen;
+      opacity: .85;
+      transition: opacity .4s;
+    }
+
+    /* Эффекты при наведении */
+    .camera-box:hover,
+    .camera-box:focus-within {
+      box-shadow:
+        0 12px 44px rgb(var(--shedow-rgb)/0.2),
+        0 2px 8px rgb(var(--shedow-rgb)/0.6);
+      border: 2px solid rgb(var(--shedow-rgb)/0.5);
+      filter: brightness(1.08) saturate(1.11);
+      transform: translateY(-2px) scale(1.04) perspective(700px) rotateY(-1.2deg) rotateX(0.7deg);
+      z-index: 30;
+    }
+
+    /* Стили для изображения камеры */
+    .camera-box .camera-img img {
+      transition: transform .44s cubic-bezier(.42,1.8,.2,1), filter .28s;
+      will-change: transform;
+      border-radius: 0.7rem;
+      box-shadow: 0 5px 26px 0 rgb(var(--base-color-rgb)/0.08),
+        0 1.5px 7px 0 rgb(var(--base-color-rgb)/0.08);
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+      min-height: 140px;
+      max-height: 190px;
+      display: block;
+      cursor: grab;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+    }
+
+    /* Улучшенные стили для заголовка камеры */
+    .camera-box .camera-title {
+      position: absolute;
+      bottom: 0.8rem;
+      left: 0.8rem;
+      max-width: 82%;
+      z-index: 3;
+      
+      /* Улучшенный стеклянный эффект */
+      background: rgba(20, 20, 33, 0.65);
+      backdrop-filter: blur(8px) saturate(160%);
+      border: 1px solid rgb(var(--white)/0.15);
+      box-shadow: 
+        0 4px 24px -1px rgb(var(--black)/0.24),
+        0 1.5px 6px 0 rgb(var(--black)/0.12),
+        0 2px 4px 0 rgb(var(--white)/0.05) inset;
+      
+      /* Улучшенная типографика */
+      color: rgb(var(--white)/0.95);
+      font-size: var(--named-driv-font-size);
+      line-height: 1.48;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      
+      /* Улучшенное оформление */
+      padding: 0.28rem 0.48rem 0.2rem;
+      border-radius: 0.4rem;
+      
+      /* Улучшенная читаемость */
+      text-shadow: 
+        0 1px 4px rgb(var(--black)/0.4),
+        0 2px 8px rgb(var(--black)/0.2);
+      
+      /* Анимация */
+      transition: 
+        transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+        background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      /* Обрезка длинного текста */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Эффект при наведении на карточку */
+    .camera-box:hover .camera-title {
+      background: rgb(var(--stickyHeader-rgb)/0.75);
+      transform: translateY(-2px);
+      box-shadow: 
+        0 6px 28px -2px rgb(var(--black)/0.28),
+        0 2px 8px 0 rgb(var(--black)/0.15),
+        0 2px 4px 0 rgb(var(--white)/0.06) inset;
+    }
+    
+    /* Градиентный эффект внизу карточки */
+    .camera-box .bottom-glass {
+      position: absolute;
+      left: 0; 
+      right: 0; 
+      bottom: 0;
+      height: 45%;
+      background: linear-gradient(0deg,rgb(var(--white)/0.16) 17%,rgb(var(--white)/0.04) 94%);
+      filter: blur(8px);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Базовые стили для контейнера кнопок */
+    .camera-box:not(.camera-disconnected) .zone-right {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 0.75rem;
+      padding: 1rem 0.75rem;
+      opacity: 0;
+      transform: translateX(10px);
+      transition: all 0.3s cubic-bezier(.4,0,.2,1);
+      z-index: 2;
+    }
+
+    /* Появление панели при наведении */
+    .camera-box:not(.camera-disconnected):hover .zone-right {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Базовые стили кнопок */
+    .action-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      border: 1.5px solid rgb(var(--base-color-rgb)/0.3);
+      backdrop-filter: blur(5px);
+      transition: all 0.25s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* Градиентный фон кнопки при наведении */
+    .action-icon::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 1;
+    }
+
+    /* Показываем градиент при наведении */
+    .action-icon:hover::before {
+      opacity: 1;
+    }
+
+    /* Стили для иконок внутри кнопок */
+    .action-icon i,
+    .action-icon svg {
+      font-size: 1.15rem;
+      color: rgb(var(--avg-light-rgb));
+      transition: all 0.25s cubic-bezier(.4,0,.2,1);
+      z-index: 2;
+      position: relative;
+    }
+
+    /* Эффекты при наведении */
+    .action-icon:hover {
+      transform: translateY(-2px) scale(1.08);
+      border-color: rgb(var(--white)/0.3);
+      box-shadow: 
+        0 4px 20px rgb(var(--shedow-rgb)/0.45),
+        0 2px 8px rgb(var(--shedow-rgb)/0.2);
+    }
+    .action-icon:hover i,
+    .action-icon:hover svg {
+      color: rgb(var(--white));
+      mix-blend-mode: normal;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+
+    /* Анимация при клике */
+    .action-icon:active {
+      transform: translateY(0) scale(0.95);
+    }
+
+    /* Video Stream Toggle Switch */
+    .stream-toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      transition: all 0.25s cubic-bezier(.4,0,.2,1);
+    }
+
+    .stream-toggle-container:hover {
+      transform: translateY(-2px) scale(1.08);
+    }
+
+    .stream-toggle-container .switch {
+      pointer-events: auto;
+    }
+
+    .switch {
+     --secondary-container: #3a4b39;
+     --primary: #84da89;
+     font-size: 10px;
+     position: relative;
+     display: inline-block;
+     width: 3.7em;
+     height: 1.8em;
+     cursor: pointer;
+     z-index: 10;
+    }
+
+    .switch input {
+     display: none;
+     opacity: 0;
+     width: 0;
+     height: 0;
+    }
+
+    .slider {
+     position: absolute;
+     cursor: pointer;
+     top: 0;
+     left: 0;
+     right: 0;
+     bottom: 0;
+     background-color: #313033;
+     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+     border-radius: 30px;
+     border: 1px solid transparent;
+    }
+
+    .slider:before {
+     position: absolute;
+     content: "";
+     height: 1.4em;
+     width: 1.4em;
+     border-radius: 20px;
+     left: 0.1em;
+     bottom: 0.15em;
+     background-color: #aeaaae;
+     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    input:checked + .slider::before {
+     background-color: var(--primary);
+    }
+
+    input:checked + .slider {
+     background-color: var(--secondary-container);
+    }
+
+    input:focus + .slider {
+     box-shadow: 0 0 1px var(--secondary-container);
+    }
+
+    input:checked + .slider:before {
+     transform: translateX(1.8em);
+    }
+
+    /* Дополнительные стили для плавности */
+    .switch:hover .slider:before {
+     transform: scale(1.1);
+    }
+
+    .switch input:checked:hover + .slider:before {
+     transform: translateX(1.8em) scale(1.1);
+    }
+
+    /* Улучшенные стили для переключателя */
+    .switch:hover .slider {
+      box-shadow: 0 0 8px rgba(132, 218, 137, 0.3);
+    }
+
+    .switch:active .slider {
+      transform: scale(0.95);
+    }
+
+    /* Отличительные стили для переключателя */
+    .switch {
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+
+    /* Стили для отключенного состояния */
+    .switch input:not(:checked) + .slider {
+      background-color: #4a4a4a;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .switch input:not(:checked) + .slider:before {
+      background-color: #888;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+
+    /* Стили для включенного состояния */
+    .switch input:checked + .slider {
+      background-color: var(--secondary-container);
+      border: 1px solid rgba(132, 218, 137, 0.3);
+      box-shadow: 0 0 8px rgba(132, 218, 137, 0.2);
+    }
+
+    .switch input:checked + .slider:before {
+      background-color: var(--primary);
+      box-shadow: 0 2px 6px rgba(132, 218, 137, 0.4);
+    }
+
+    /* Stream disabled state */
+    .camera-box.stream-disabled .camera-img img {
+      display: none !important;
+    }
+
+    .camera-box.stream-disabled .camera-img::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, 
+        rgb(var(--base-color-rgb)/0.3) 0%, 
+        rgb(var(--base-color-rgb)/0.1) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: rgb(var(--text-rgb)/0.6);
+      border-radius: 0.7rem;
+    }
+
+    /* Отключенное состояние */
+    .camera-box.camera-disconnected .zone-right {
+      display: none !important;
+    }
+
+    /* Плавная анимация для status-dot */
+    .camera-box:not(.camera-disconnected) .status-dot {
+      transition: transform 0.3s cubic-bezier(.42,1.8,.2,1);
+    }
+    .camera-box:not(.camera-disconnected):hover .status-dot {
+      transform: scale(1.1);
+    }
+
+    /* Стили для отключенных камер */
+    .camera-box.camera-disconnected {
+        transform: none !important;
+        transition: none !important;
+        cursor: grab !important; /* Меняем курсор на move для индикации возможности перетаскивания */
+        pointer-events: all !important; /* Разрешаем все события указателя */
+    }
+    .camera-box.camera-disconnected:hover,
+    .camera-box.camera-disconnected:focus-within {
+        transform: none !important;
+        box-shadow: 
+        0 4px 20px rgb(var(--shedow-rgb)/0.4),
+        0 2px 8px rgb(var(--shedow-rgb)/0.1);
+        filter: grayscale(0.1) opacity(0.85) !important;
+    }
+    .camera-box.camera-disconnected .camera-img {
+        pointer-events: none !important;
+    }
+    .camera-box.camera-disconnected .camera-img img {
+        display: none !important;
+    }
+    .camera-box.camera-disconnected::before {
+        opacity: 0.5 !important;
+    }
+
+    /* Пустой слот  */
+    .camera-box.dammy {
+      border: 2px dashed #93c5fd;
+      background: linear-gradient(135deg, 
+        rgb(var(--avg-light-rgb)), 
+        rgb(var(--avg-dark-rgb))
+      );
+      background-color: rgba(147, 197, 255, 0.01);
+      cursor: grab;
+    }
+    .camera-box.dammy .disconnected-svg,
+    .camera-box.dammy .fa-expand {
+      display: none !important;
+    }
+    .camera-box.dammy .camera-title {
+      display: none;
+    }
+    .camera-box.dammy:hover,
+    .camera-box.dammy.drag-over {
+      border-color: rgb(var(--tetrad1-light-rgb));
+      background-color: rgb(var(--tetrad2-light-rgb));
+      box-shadow: 
+        0 4px 20px rgb(var(--shedow-rgb)/0.4),
+        0 2px 8px rgb(var(--shedow-rgb)/0.1);
+    }
+
+
+    /* Индикатор состояния (status-dot) */
+    .status-dot {
+      position: absolute;
+      top: 1.2rem;
+      left: 1.1rem;
+      width: 12px; 
+      height: 12px;
+      border-radius: 100%;
+      z-index: 2;
+      transition: background .22s, box-shadow .22s;
+    }
+
+    /* Эффект свечения вокруг точки */
+    .status-dot::after {
+      content: "";
+      position: absolute;
+      left: -7px; 
+      top: -8px;
+      width: 24px; 
+      height: 24px;
+      border-radius: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.4;
+    }
+    .status-dot.initial {
+      background: radial-gradient(ellipse at 60% 30%, #6b7280 0%, #4b5563 90%);
+      box-shadow: 0 0 18px #6b7280bb, 0 0 8px #9ca3afaa, 0 0 2.5px #fff9;
+      border: 2px solid #999;
+      animation: pulse-initial 1.3s infinite cubic-bezier(.49,1.7,.2,1.2);
+    }
+    .status-dot.initial::after {
+      background: radial-gradient(circle, #6b728044 40%, transparent 73%);
+      animation: pulse-glow-off 1.3s infinite cubic-bezier(.49,1.7,.2,1.2);
+    }
+    .status-dot.connect {
+      background: radial-gradient(ellipse at 60% 30%, #34d399 0%, #059669 90%);
+      box-shadow: 0 0 18px #34d399bb, 0 0 8px #a7f3d0aa, 0 0 2.5px #fff9;
+      border: 2px solid #fff;
+      animation: pulse-online 1.3s infinite cubic-bezier(.49,1.7,.2,1.2);
+    }
+    .status-dot.connect::after {
+      background: radial-gradient(circle, #34d39944 40%, transparent 73%);
+      animation: pulse-glow-off 1.3s infinite cubic-bezier(.49,1.7,.2,1.2);
+    }
+    .status-dot.disconnected {
+      background: radial-gradient(ellipse at 60% 30%, #f87171 0%, #b91c1c 90%);
+      box-shadow: 0 0 18px #f87171bb, 0 0 8px #fca5a5aa, 0 0 2.5px #fff9;
+      border: 2px solid #fff;
+      animation: pulse-offline 1.3s infinite cubic-bezier(.49,1.7,.2,1.2);
+    }
+    .status-dot.disconnected::after {
+      background: radial-gradient(circle, #f8717144 40%, transparent 73%);
+      animation: pulse-glow-off 1.3s infinite cubic-bezier(.49,1.7,.2,1.2);
+    }
+    .status-dot.warning {
+      background: radial-gradient(ellipse at 60% 30%, #fbbf24 0%, #b45309 90%);
+      box-shadow: 0 0 18px #fbbf24cc, 0 0 8px #fde68aaa, 0 0 2.5px #fff9;
+      border: 2px solid #fff;
+      animation: pulse-warning 1.3s infinite cubic-bezier(.49,1.7,.2,1.2);
+    }
+    .status-dot.warning::after {
+      background: radial-gradient(circle, #fbbf2444 40%, transparent 73%);
+      animation: pulse-glow-off 1.3s infinite cubic-bezier(.49,1.7,.2,1.2);
+    }
+    .camera-stub {
+      z-index: 1;
+      font-size: 1.05rem;
+      background: rgb(var(--black)/0.2);
+      border-radius: 0.6rem;
+      text-align: center;
+      pointer-events: auto;
+      transition: background 0.2s;
+    }
+    .camera-stub.items-center p {
+      color: rgb(var(--tetrad2-light-rgb)/0.8);
+      font-size: 0.5rem;
+    }
+    .camera-stub.items-center h1 {
+      color: rgb(var(--tetrad1-light-rgb)/0.7);
+    }
+
+
+    /* Стили для окна с klipper */
+    #cameraSettingsModal {
+      will-change: opacity, visibility;
+      z-index: 750;
+    }
+    #cameraSettingsModal .modal-glass {
+      background: rgba(30, 27, 75, 0.78);
+      backdrop-filter: blur(16px) saturate(140%);
+      box-shadow: 0 6px 32px 0 rgba(60,0,130,.18), 0 2px 8px 0 rgba(0,0,0,.12);
+    }
+    #cameraSettingsModal .action-icon {
+      background: rgb(var(--white)/0.1);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgb(var(--white)/0.2);
+    }
+    #cameraSettingsModal .action-icon:hover {
+      background: rgb(var(--white)/0.2);
+      transform: translateY(-2px);
+    }
+    #cameraSettingsModal .close-settings-modal {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(.4,0,.2,1);
+    }
+    .manage-icon:hover svg,
+    .expand-icon:hover svg {
+      color: rgb(var(--white)/0.85) !important;
+    }
+
+
+    /* Панель настроек */
+    .panel-appear {
+      opacity: 0;
+      transform: 
+        translateX(500px) 
+        scale(0.95) 
+        perspective(1000px) 
+        rotateY(-50deg);
+      transform-origin: left center;
+      filter: blur(8px);
+      pointer-events: none;
+      transition: 
+        opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+        filter 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform, opacity, filter;
+    }
+    .panel-appear-active {
+      opacity: 1 !important;
+      transform: 
+        translateX(0) 
+        scale(1) 
+        perspective(1000px) 
+        rotateY(0deg) !important;
+      filter: blur(0) !important;
+      pointer-events: auto !important;
+    }
+
+    /* Добавляем стиль для overlay с размытием */
+    #overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 400;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .4s cubic-bezier(.4,0,.2,1);
+      background: linear-gradient(
+        135deg,
+        rgb(var(--base-color-rgb)/0.4),
+        rgb(var(--shiftedLightWight-rgb)/0.2),
+        rgb(var(--shiftedRightDark-rgb)/0.5)
+      );
+    }
+    .overlay-blur {
+      backdrop-filter: blur(8px);
+      transition: 
+        opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        backdrop-filter 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    /* Добавляем эффект глубины для контента панели */
+    .panel-content {
+      transform-style: preserve-3d;
+      perspective: 2000px;
+    }
+    .panel-item {
+      transform: translateZ(0);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 0.75rem; /* rounded-xl */
+      background-color: rgb(var(--white)/0.05); /* bg-white/5 */
+      border-width: 1px; /* border */
+      border-color: rgba(62, 49, 136, 0.3); /* border-indigo-700/30 */
+      position: relative; /* relative */
+      transition-property: all; /* transition-all */
+      transition-duration: 0.2s; /* duration-200 */
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .panel-item:hover {
+      transform: translateZ(10px);
+    }
+    .color-input {
+      appearance: none;
+      width: 2.1em; height: 2.1em;
+      border-radius: .8em; border: 2.2px solid rgba(167,139,250,0.22);
+      box-shadow: 0 1.5px 5px 0 rgba(160,94,255,0.09) inset, 0 1.5px 8px 0 #fff2;
+      cursor: pointer;
+      background: linear-gradient(120deg,rgba(121,74,251,0.09),rgba(102,126,234,.14));
+      transition: border .19s,box-shadow .19s,filter .19s,background .19s;
+      outline: none;
+      padding: 0; margin: 0; position: relative; z-index: 1;
+    }
+    .color-input:hover {
+      border: 2.2px solid #a78bfa;
+      box-shadow: 0 4px 18px 0 #a78bfa44, 0 1px 4px #fff5;
+      filter: brightness(1.08) saturate(1.11);
+      background: linear-gradient(112deg,#a78bfa22 0%,#f472b622 100%);
+    }
+    .color-input::-webkit-color-swatch { 
+      border-radius: .7em; 
+      border: none; 
+      padding: 0;
+    }
+    .color-input::-moz-color-swatch { 
+      border-radius: .7em; 
+      border: none; 
+      padding: 0;
+    }
+    .color-input:active { 
+      filter: brightness(0.99);
+    }
+    .card-3d { 
+      transition:box-shadow .25s,transform .22s,border-color .18s; 
+      box-shadow: 0 2px 8px 0 #1b183c2b;
+    }
+    .card-3d:hover { 
+      box-shadow:
+        0 12px 44px rgb(var(--shedow-rgb)/0.6),
+        0 2px 8px rgb(var(--shedow-rgb));
+      transform: translateY(-4px) scale(1.015) rotateX(2deg) rotateY(-2deg); 
+      border-color: rgb(var(--shedow-rgb)/.5); z-index: 2;
+    }
+    /* Кастомный чекбокс */
+    .container-chekbox {
+      cursor: pointer;
+      width: auto !important;
+    }
+    .container-chekbox input {
+      display: none;
+    }
+    .container-chekbox svg {
+      overflow: visible;
+    }
+    label.container-chekbox,
+    label.container-chekbox svg {
+      color: rgb(var(--text-rgb));
+    }
+    .path-chekbox {
+      fill: none;
+      stroke: rgb(var(--text-rgb));
+      stroke-width: 6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke-dasharray 0.5s ease, stroke-dashoffset 0.5s ease;
+      stroke-dasharray: 241 9999999;
+      stroke-dashoffset: 0;
+    }
+    .container-chekbox input:checked ~ svg .path-chekbox {
+      stroke-dasharray: 70.5096664428711 9999999;
+      stroke-dashoffset: -262.2723388671875;
+    }
+    /* Dropzone 3D hover */
+    .dropzone {
+      border: 1.7px dashed rgb(var(--tetrad-color1-rgb));
+      background: linear-gradient(120deg, 
+        rgb(var(--tetrad1-light-rgb)/0.12) 0%, 
+        rgb(var(--tetrad1-dark-rgb)/0.07) 100%);
+      border-radius: 1.1em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2.1rem 1rem 1.6rem;
+      margin-bottom: 1.3rem;
+      margin-top: 0.5rem;
+      position: relative;
+      transition: all 0.3s ease-in-out;
+      cursor: pointer;
+      min-height: 130px;
+      gap: 0.5rem;
+    }
+    .dropzone.dragover {
+      transform: scale(1.02);
+      border-color:  rgb(var(--shedow-rgb));
+      box-shadow:
+        0 12px 44px rgb(var(--shedow-rgb)/0.6),
+        0 2px 8px rgb(var(--shedow-rgb)/0.8);
+      background: linear-gradient(120deg, 
+        rgb(var(--tetrad2-light-rgb)/0.22) 0%, 
+        rgb(var(--tetrad2-dark-rgb)/0.18) 100%);
+    }
+    .dropzone .dz-icon {
+      opacity: 0.83;
+      font-size: 2.5rem;
+    }
+    .dropzone .dz-label {
+
+      font-size: 1.13rem;
+      font-weight: 500;
+      margin-bottom: .2em;
+      text-align: center;
+    }
+    .dropzone .dz-or {
+      font-size: 0.9rem;
+      margin: 0.3em 0;
+      text-align: center;
+    }
+    .dropzone input[type="file"] {
+      display: none;
+    }
+    .dropzone-3d {
+      transition: box-shadow .22s, transform .16s; 
+      box-shadow: 0 2px 10px 0 #a78bfa22;
+    }
+    .dropzone-3d:hover {
+      box-shadow:
+        0 6px 22px rgb(var(--shedow-rgb)/0.1),
+        0 1px 4px rgb(var(--shedow-rgb)/0.2);
+      transform: translateY(-3px) scale(1.03) rotateX(2deg) rotateY(-2deg);
+      border-color:rgb(var(--tetrad-color2-rgb));
+    }
+    /* Состояние закрытого аккордиона */
+    .accordion-disabled { 
+      pointer-events: none; 
+      opacity: 0.7; 
+      filter: blur(1.5px);
+    }
+    /* Glass effect styles */
+    .glass {
+      background: linear-gradient(114deg,
+        rgb(var(--base-color1)),
+        rgb(var(--base-color2)) 90%
+      );
+      border: 1.5px solid rgba(120,86,255,.13);
+      box-shadow: 0 18px 60px 0 rgba(60,30,90,0.22), 0 2px 8px 0 rgba(0,0,0,0.06);
+      backdrop-filter: blur(10px) saturate(1.4);
+    }
+    /* Анимация для аккордеона - Старая */
+    .accordion-header { cursor:pointer; user-select:none; }
+    .accordion-header i,
+    .accordion-header swg { 
+      transition: transform 0.2s; 
+    }
+    .accordion-header.active i,
+    .accordion-header.active swg {
+      transform: rotate(90deg);
+    }
+    .accordion-content {
+      overflow: hidden;
+      transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+      will-change: max-height, opacity;
+    }
+    .accordion-content.collapsing {
+      transition: max-height 0.3s ease-in, opacity 0.3s ease-in;
+    }
+    #checkbox {
+      display: none;
+    }
+    
+    /* CSS стили для чекбоксов */
+    .custom-checkbox-container {
+      position: absolute;
+      width: 22px;
+      height: 28px;
+      right: 20px;
+      top: 16px ;
+      user-select: none;
+      pointer-events: none;
+      color: rgb(var(--text-rgb));
+    }
+
+    .accordion-checkbox {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+      pointer-events: none;
+    }
+    .toggle {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition-duration: .5s;
+      color: rgb(var(--text-rgb));
+    }
+    .bars {
+      width: 100%;
+      height: 2px;
+      background-color: rgb(var(--text-rgb));
+      border-radius: 2px;
+    }
+    #bar2 {
+      transition-duration: .8s;
+    }
+    #bar1,
+    #bar3 {
+      width: 70%;
+    }
+    .accordion-checkbox:checked + .toggle .bars {
+      position: absolute;
+      transition-duration: .5s;
+    }
+    .accordion-checkbox:checked + .toggle #bar2 {
+      transform: scaleX(0);
+      transition-duration: .5s;
+    }
+    .accordion-checkbox:checked + .toggle #bar1 {
+      width: 100%;
+      transform: rotate(45deg);
+      transition-duration: .5s;
+    }
+    .accordion-checkbox:checked + .toggle #bar3 {
+      width: 100%;
+      transform: rotate(-45deg);
+      transition-duration: .5s;
+    }
+    .accordion-checkbox:checked + .toggle {
+      transition-duration: .5s;
+      transform: rotate(180deg);
+    }
+    /* Анимация для аккордеона - новая */
+    /* Базовые стили аккордеона */
+    .accordion .accordion-content {
+      overflow: visible;
+      max-height: 0;
+      opacity: 0;
+      transition: 
+        max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: max-height, opacity;
+    }
+    /* Состояние открытого аккордеона */
+    .accordion.accordion-open .accordion-content {
+      opacity: 1;
+    }
+    /* Плавное появление контента */
+    .accordion-content > * {
+      transform: translateY(-10px);
+      opacity: 0;
+      transition: 
+        transform 0.3s ease,
+        opacity 0.3s ease;
+    }
+    .accordion.accordion-open .accordion-content > *:not(.dropIndicator) {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .tooltip-settings {
+      position: absolute;
+      bottom: 0%;
+      right: 108%;
+      /* Обновленный фон с градиентом */
+      background: linear-gradient(
+        90deg,
+        rgb(var(--base-color-rgb)/0.1) 65%,
+        rgb(var(--base-color-rgb)/0.85) 100%
+      );
+      /* Стеклянный эффект */
+      backdrop-filter: blur(8px);
+      /* Обновленная граница */
+      border: 1px solid rgb(var(--white)/0.1);
+      /* Тень для глубины */
+      box-shadow: 
+        0 4px 15px -3px rgb(var(--black)/0.3),
+        0 2px 6px -2px rgb(var(--black)/0.2),
+        inset 0 0 0 1px rgb(var(--white)/0.1);
+      /* Базовые стили */
+      color: rgb(var(--text-rgb)/0.9);
+      padding: 0.5em 0.9em;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+      /* Начальное состояние для анимации */
+      opacity: 0;
+      transform: 
+        translateX(10px)
+        translateY(5px)
+        rotateX(-10deg)
+        rotateY(10deg)
+        scale(0.95);
+      transform-origin: center right;
+      /* Плавная анимация */
+      transition: 
+        opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        backdrop-filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      /* Важные свойства */
+      pointer-events: none;
+      z-index: 1000;
+    }
+    /* Состояние при наведении на родительский элемент */
+    .items-center:hover .tooltip-settings,
+    input[type="color"]:hover ~ .tooltip-settings,
+    input[type="range"]:hover ~ .tooltip-settings,
+    select:hover ~ .tooltip-settings {
+      opacity: 1;
+      transform: 
+        translateX(0)
+        translateY(0)
+        rotateX(0)
+        rotateY(0)
+        scale(1);
+      backdrop-filter: blur(8px);
+    }
+    /* Добавляем небольшую стрелку */
+    .tooltip-settings::after {
+      content: '';
+      position: absolute;
+      right: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-style: solid;
+      border-width: 6px 0 6px 6px;
+      border-color: transparent transparent transparent rgb(var(--white)/0.1);
+    }
+    /* Показываем tooltip только при наведении на его родительский блок */
+    .items-center:hover .tooltip-settings,
+    input[type="color"]:hover ~ .tooltip-settings,
+    input[type="range"]:hover ~ .tooltip-settings,
+    select:hover ~ .tooltip-settings {
+      opacity: 1;
+      backdrop-filter: blur(15px);
+      z-index: 2;
+    }
+
+    /* Стили для раздела настроек GRID */
+    #dropIndicator{
+      transform-origin:center;
+      transition:opacity .3s cubic-bezier(.4,0,.2,1),transform .3s cubic-bezier(.4,0,.2,1)
+    }
+    .dropIndicator{
+      position: absolute;
+      left: 0.5rem; /* left-2 (1rem = 16px → 0.5rem = 8px) */
+      right: 0.5rem;
+      height: 2px; /* h-px — стандартная высота в 1 пиксель */
+      background-image: linear-gradient(
+        to right,
+        rgb(var(--tetrad2-light-rgb)/0.6) 0%,
+        rgb(var(--tetrad1-light-rgb)/0.7) 50%,
+        rgb(var(--tetrad2-light-rgb)/0.6) 100%
+      );
+      border-radius: 9999px; /* rounded-full */
+      opacity: 0;
+      pointer-events: none;
+    }
+    .draggingSet{opacity:.35}
+      tbody tr:not(.dammy-slot):hover{background:rgb(var(--shiftedRightDark-rgb)/0.08)}
+      tbody tr:not(.dammy-slot):hover td{background:inherit}
+    .dynamic-input{
+      color:rgb(var(--text-rgb));
+      transition:background .2s,box-shadow .35s,transform .3s
+    }
+    .dynamic-input::placeholder {
+      color:rgb(var(--text-rgb)/0.3);
+    }
+    .dynamic-input.is-focused{
+      background:radial-gradient(500px circle at var(--ix,50%) var(--iy,50%),rgb(var(--shiftedRightDark-rgb)/0.14),rgb(var(--scrollableTableH-rgb)/0.1) 30%,transparent 70%);
+      box-shadow:inset 0 0 0 1px rgb(var(--scrollableTableB-rgb)/0.35),0 0 0 2px rgb(var(--dynamic-input-box-b)/0.2),0 4px 12px rgb(var(--black)/0.15);
+      outline:none;
+      transform:scale(1.012);
+      color:#fff;
+    }
+    .ip-cell.is-empty{
+      border-right:1px dashed rgb(var(--tetrad1-dark-rgb)/0.5);
+      background:linear-gradient(90deg,transparent 0%,rgb(var(--tetrad1-dark-rgb)/0.12) 30%,rgb(var(--tetrad1-dark-rgb)/0.18) 55%,rgb(var(--tetrad1-dark-rgb)/0.24) 100%);
+      background-size:200% 100%;
+      animation:pulseEmptyGrad 3.4s ease-in-out infinite
+    }
+    .ip-cell.is-empty .dynamic-input{
+      font-style:italic;
+      color: rgb(var(--shedow-rgb));
+      opacity: 0.85
+    }
+    .dammy-slot .dynamic-input{
+      background:linear-gradient(110deg, rgb(var(--white)/0.04) 0%, rgb(var(--white)/0.1) 55%, rgb(var(--white)/0.04) 100%);
+      background-size:200% 100%;
+      animation:slotShimmer 8s ease-in-out infinite;
+      font-style:italic;
+      letter-spacing:.025em;
+    }
+    .modal-expanded{
+      max-width:none;
+      width:100%;
+      height:100%;
+      background: linear-gradient(135deg, rgb(var(--base-color1)/0.7) 0%, rgb(var(--base-color2)/0.7) 100%);
+    }
+    .camerasTableBody > :not([hidden]) ~ :not([hidden]) {
+      margin-top: -1px; /* "схлопывание" бордеров */
+      border-top: 1px solid rgb(var(--white)/0.05);
+    }
+
+    /* Стиль таблицы */
+    .scrollable-table {
+      max-height: 12rem;
+      overflow-y: auto; 
+      border-radius: 1rem;
+      border-width: 1px;
+      border-color: rgb(var(--white)/0.12);
+      background-color: rgb(var(--white)/0.04);
+      box-shadow: inset 0 2px 4px rgb(var(--black)/0.04);
+      transition-property: height;
+      transition-duration: 300ms;
+      transition-timing-function: ease;
+      width: 100%; 
+    }
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    thead tr.sticky, thead th.sticky {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    .scrollable-table::-webkit-scrollbar{width:8px;height:8px}
+    .scrollable-table::-webkit-scrollbar-thumb{background:linear-gradient(to bottom, rgb(var(--scrollableTableH-rgb)) 0%, rgb(var(--scrollableTableB-rgb)) 100%); border-radius:4px}
+    .scrollable-table::-webkit-scrollbar-track{background:transparent}
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      background-color: rgb(var(--stickyHeader-rgb)/0.8);
+      backdrop-filter: blur(4px);
+      color: rgb(var(--scrollableTableH-rgb)); 
+      z-index: 10;
+    }
+    /* кнопка разварачивания интерфейса настроек камер */
+    .openSettingsBtnModal {
+      position: absolute;
+      width: 20px;
+      height: 28px;
+      right: 56px;
+      top: 16px ;
+      color: rgb(var(--text-rgb));
+      transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    /* Эффект свечения при наведении */
+    .openSettingsBtnModal::before {
+      inset: -2px;
+      opacity: 0;
+      z-index: -1;
+      transition: opacity 1.2s ease;
+    }
+    .openSettingsBtnModal:hover {
+      color: rgb(var(--white));
+      transform: translateY(-1px);
+      text-shadow: 0 0 8px rgb(var(--white)/0.7);
+    }
+    .openSettingsBtnModal:hover::before {
+      opacity: 0.5;
+    }
+    .openSettingsBtnModal:hover svg,
+    .openSettingsBtnModal:hover i {
+      filter: drop-shadow(0 0 8px rgb(var(--white)/0.7));
+      transform: rotate(180deg);
+    }
+    .openSettingsBtnModal svg,
+    .openSettingsBtnModal i {
+      transition: transform 1.6s ease, filter 0.3s ease;
+    }
+    .openSettingsBtnModal:active {
+      transform: translateY(1px) scale(0.98);
+    }
+    /* Скрываем кнопку, если аккордеон mainSectionWrap закрыт */
+    #mainSectionWrap:not(.accordion-open) #openSettingsBtnModal {
+      opacity: 0;
+      visibility: hidden;
+    }
+    #mainSectionWrap.accordion-open #openSettingsBtnModal {
+      opacity: 1;
+      visibility: visible;
+    }
+    /* Индикатор Drag and Drop */
+    .handle {
+      color: rgb(var(--stickyHeader-rgb));
+    }
+
+    .custom-range {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      background: transparent;
+    }
+
+    /* Трек */
+    .custom-range::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg,
+        rgb(var(--tetrad2-light-rgb)) 0%,
+        rgb(var(--tetrad2-dark-rgb)) 100%
+      );
+      border-radius: 999px;
+    }
+
+    /* Thumb (ползунок) */
+    .custom-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgb(var(--tetrad-color2-rgb));
+      cursor: pointer;
+      margin-top: -6px; /* Центрируем относительно трека */
+    }
+
+    /* Для Firefox */
+    .custom-range::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgb(var(--tetrad-color2-rgb));
+      cursor: pointer;
+      border: none;
+    }
+
+    .custom-range::-moz-range-track {
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg,
+        rgb(var(--tetrad2-light-rgb)) 0%,
+        rgb(var(--tetrad2-dark-rgb)) 100%
+      );
+      border-radius: 999px;
+    }
+
+
+    .anim-border{
+      position:relative;
+      padding: 2.2rem 0rem 5rem 0rem;
+      z-index: 1;
+      background: rgb(var(--stickyHeader-rgb)/0.4);
+
+    }
+    .anim-border:before{
+      content:"";
+      position:absolute;
+      background-size:1000% 1000%;
+      pointer-events:none;
+    }
+
+    .icon-pulse svg{animation:pulseGlow 3s ease-in-out infinite;}
+
+    .text-white-castom,
+    .text-white-castom svg,
+    .text-white-castom i {
+      color: rgb(var(--text-rgb));
+    }
+    .text-whiteW1-castom,
+    .text-whiteW1-castom svg,
+    .text-whiteW1-castom i {
+      color: rgb(var(--textW1-rgb));
+    }
+    .text-white-castom-80,
+    .text-white-castom-80 svg,
+    .text-white-castom-80 i {
+      color: rgb(var(--text-rgb)/0.7);
+    }
+    input.text-white-castom,
+    select.text-white-castom {
+      color: rgb(var(--white));
+    }
+    #loaderOverlay {
+      z-index: 999;
+      background-color: #111;
+      transition: background-color 2.5s ease;
+    }
+
+    /* Слово автомагически */ 
+    .magick-text {
+      position: relative;
+      transition: all 0.4s ease;
+    }
+
+    .magick-text:active {
+      transform: scale(0.96);
+    }
+
+    .magick-text:before,
+    .magick-text:after {
+      position: absolute;
+      content: "";
+      width: 150%;
+      left: 50%;
+      height: 100%;
+      transform: translateX(-50%);
+      z-index: -1000;
+      background-repeat: no-repeat;
+    }
+
+    .magick-text:hover:before {
+      top: -70%;
+      background-image: radial-gradient(circle, #a89215 20%, transparent 20%),
+        radial-gradient(circle, transparent 20%, #13a5be 20%, transparent 30%),
+        radial-gradient(circle, #a3b82d 20%, transparent 20%),
+        radial-gradient(circle, #590cbe 20%, transparent 20%),
+        radial-gradient(circle, transparent 10%, #bd1717 15%, transparent 20%),
+        radial-gradient(circle, #2a7ce8 20%, transparent 20%),
+        radial-gradient(circle, #30e82a 20%, transparent 20%),
+        radial-gradient(circle, #e92c75 20%, transparent 20%),
+        radial-gradient(circle, #914fe7 20%, transparent 20%);
+      background-size: 10% 10%, 20% 20%, 15% 15%, 20% 20%, 18% 18%, 10% 10%, 15% 15%,
+        10% 10%, 18% 18%;
+      background-position: 50% 120%;
+      animation: greentopBubbles 0.6s ease;
+    }
+
+    .magick-text:hover::after {
+      bottom: -70%;
+      background-image: radial-gradient(circle, #ff93db 20%, transparent 20%),
+        radial-gradient(circle, #2ae8df 20%, transparent 20%),
+        radial-gradient(circle, transparent 10%, #71ffbd 15%, transparent 20%),
+        radial-gradient(circle, #2a9ce8 20%, transparent 20%),
+        radial-gradient(circle, #7814fc 20%, transparent 20%),
+        radial-gradient(circle, #73e4f8 20%, transparent 20%),
+        radial-gradient(circle, #f8d3a9 20%, transparent 20%);
+      background-size: 15% 15%, 20% 20%, 18% 18%, 20% 20%, 15% 15%, 20% 20%, 18% 18%;
+      background-position: 50% 0%;
+      animation: greenbottomBubbles 0.6s ease;
+    }
+
+
+
+
+    .scrollbar-thin::-webkit-scrollbar {
+      width: 7px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+      background: linear-gradient(120deg, rgb(var(--scrollableTableH-rgb)) 40%, rgb(var(--scrollableTableB-rgb)) 100%);
+      border-radius: 8px;
+    }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-thumb { background: #bdbdbd44; border-radius: 8px;}
+
+    /*** Анимации  ***/
+    @keyframes pulseEmptyGrad{
+      0%{background-position:0 0}
+      50%{background-position:100% 0}
+      100%{background-position:0 0}}
+    @keyframes slotShimmer{
+      0%{background-position:-150% 0}
+      50%{background-position:150% 0}
+      100%{background-position:-150% 0}}
+    .animate-row-in3d{animation:rowIn3d .55s cubic-bezier(.4,0,.2,1)}
+    @keyframes rowIn3d{
+      0%{opacity:0;transform:perspective(600px) rotateX(-6deg) translateY(24px)}
+      100%{opacity:1;transform:none}}
+    .animate-row-out{animation:rowOut .3s cubic-bezier(.4,0,.2,1) forwards}
+    @keyframes rowOut{
+      0%{opacity:1}
+      100%{opacity:0;transform:translateY(12px)}}
+    .animate-pulse-slow{animation:pulseSlow 7s ease-in-out infinite}
+    @keyframes pulseSlow{0%,100%{opacity:.35}50%{opacity:.55}}
+    .animate-bounce-slow {
+      animation: bounce 3s ease-in-out infinite;}
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0);}
+      50% { transform: translateY(-10px);}}
+    .animate-gradient-slow {background-size: 400% 400%; animation: gradient-shift 8s ease infinite;}
+    @keyframes gradient-shift {
+      0% { background-position: 0% 50%;}
+      50% { background-position: 100% 50%;}
+      100% { background-position: 0% 50%;}}
+    @keyframes fadeInTooltip { 
+      0% { opacity: 0; transform: translateX(-50%) scale(0.93) translateY(8px);} 
+      100% { opacity: 1; transform: translateX(-50%) scale(1);}}
+    @keyframes fadeIn { 
+      from { opacity: 0; transform: translateY(10px);} 
+      to   { opacity: 1; transform: translateY(0);}}
+    @keyframes pulse-offline { 
+      0% { box-shadow: 0 0 11px #f87171aa, 0 0 2px #fca5a577, 0 0 2.5px #fff9;} 
+      70% { box-shadow: 0 0 18px #f87171dd, 0 0 8px #fca5a5cc, 0 0 3.5px #fff9;} 
+      100% { box-shadow: 0 0 11px #f8717188, 0 0 2px #fca5a544, 0 0 2.5px #fff9;}}
+    @keyframes pulse-warning {
+      0% { box-shadow: 0 0 11px #fbbf24aa, 0 0 2px #fde68a77, 0 0 2.5px #fff9;}
+      70% { box-shadow: 0 0 18px #fbbf24dd, 0 0 8px #fde68acc, 0 0 3.5px #fff9;}
+      100% { box-shadow: 0 0 11px #fbbf2488, 0 0 2px #fde68a44, 0 0 2.5px #fff9;}}
+    @keyframes pulse-online { 
+      0% { box-shadow: 0 0 11px #34d399aa, 0 0 2px #a7f3d0aa, 0 0 2.5px #fff9;} 
+      75% { box-shadow: 0 0 18px #34d399cc, 0 0 8px #a7f3d0cc, 0 0 3.5px #fff9;} 
+      100% { box-shadow: 0 0 11px #34d39977, 0 0 2px #a7f3d055, 0 0 2.5px #fff9;}}
+    @keyframes pulse-initial {
+      0% { box-shadow: 0 0 11px #6b7280aa, 0 0 2px #9ca3afaa, 0 0 2.5px #fff9; }
+      75% { box-shadow: 0 0 18px #6b7280cc, 0 0 8px #9ca3afcc, 0 0 3.5px #fff9; }
+      100% { box-shadow: 0 0 11px #6b728077, 0 0 2px #9ca3af55, 0 0 2.5px #fff9; }}
+    @keyframes pulse-glow-off { 
+      0% { opacity: 0.2; transform: scale(0.92);} 
+      76% { opacity: 0.4; transform: scale(1.11);} 
+      100% { opacity: 0.1; transform: scale(0.92);}}
+    .notification.wave-out {animation: waveOut 0.6s ease-in-out forwards;}
+    @keyframes waveOut { 
+      0% { transform: translateX(6%) scale(0.93);} 
+      100% { transform: translateX(100%) scale(0.8); opacity: 0;}}
+    .notification.fade-out-up {animation: fadeOutUp 0.6s ease-in-out forwards;}
+    @keyframes fadeOutUp { 
+      0% { transform: translateX(6%) scale(0.93);}
+      100% { transform: translateX(100%) scale(0.8); opacity: 0;}}
+    @keyframes notif-in {
+      0% { opacity: 0; transform: translateY(36px) scale(0.98); filter: blur(10px);}
+      60% { opacity: 1; transform: translateY(-6px) scale(1.04); filter: blur(2px);}
+      100% { opacity: 1; transform: translateY(0px) scale(1); filter: blur(0);}}
+    .notif-leave {animation: notif-out 0.35s cubic-bezier(.4,0,.2,1) forwards; will-change: opacity, transform, filter;}
+    @keyframes notif-out {
+      to { opacity: 0; transform: translateY(34px) scale(0.97); filter: blur(10px);}}
+    .animate-fade-in {animation: fade-in 0.2s ease-out forwards;}
+    @keyframes fade-in { /* Окно помощи */
+      from { opacity: 0; transform: scale(0.95);}
+      to { opacity: 1; transform: scale(1);}}
+    @keyframes spin_4991 { /* Агимация закрузки */
+      10% { -webkit-transform: translateY(-102%); transform: translateY(-102%);}
+      25% { -webkit-transform: translateY(-100%); transform: translateY(-100%);}
+      35% { -webkit-transform: translateY(-202%); transform: translateY(-202%);}
+      50% { -webkit-transform: translateY(-200%); transform: translateY(-200%);}  
+      60% { -webkit-transform: translateY(-302%); transform: translateY(-302%);}
+      75% { -webkit-transform: translateY(-300%); transform: translateY(-300%);}
+      85% { -webkit-transform: translateY(-402%); transform: translateY(-402%);}
+      100% { -webkit-transform: translateY(-400%); transform: translateY(-400%);}}
+    .modal-fade-in {animation: modal-fade-in .33s cubic-bezier(.4,0,.2,1);}
+    @keyframes modal-fade-in {
+      0% { opacity: 0; transform: translateY(32px) scale(.97);}
+      55% { opacity: 1; transform: translateY(-4px) scale(1.01);}
+      100% { opacity: 1; transform: translateY(0) scale(1);}}
+    .modal-fade-out {animation: modal-fade-out .33s cubic-bezier(.4,0,.2,1);}
+    @keyframes modal-fade-out {
+      0% { opacity: 1; transform: translateY(0) scale(1);}
+      90% { opacity: 0; transform: translateY(32px) scale(.97);}
+      100% { opacity: 0; transform: translateY(32px) scale(.97);}}
+    .expand-icon:hover i, .expand-icon:hover svg {animation: pulse-expand 1.2s infinite cubic-bezier(.4,0,.2,1);}
+    @keyframes pulse-expand {
+      0% { transform: scale(1);}
+      50% { transform: scale(1.15);}
+      100% { transform: scale(1);}}
+    .manage-icon:hover i, .manage-icon:hover svg {animation: rotate-gear 3s linear infinite;}
+    @keyframes rotate-gear {
+      from { transform: rotate(0deg);}
+      to { transform: rotate(360deg);}}
+    @keyframes inner-pulse {
+      0% { box-shadow: inset 0 0 0 2px rgba(255, 0, 0, 0.4), 0 8px 24px rgb(var(--black)/0.25);}
+      50% { box-shadow: inset 0 0 0 2px rgba(255, 200, 0, 0.6), 0 8px 24px rgb(var(--black)/0.3);}
+      100% { box-shadow: inset 0 0 0 2px rgba(255, 0, 0, 0.4), 0 8px 24px rgb(var(--black)/0.25);}}
+    @keyframes gradient-shift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes greentopBubbles {
+      0% {background-position: 5% 90%, 10% 90%, 10% 90%, 15% 90%, 25% 90%, 25% 90%, 40% 90%, 55% 90%, 70% 90%;}
+      50% {background-position: 0% 80%, 0% 20%, 10% 40%, 20% 0%, 30% 30%, 22% 50%, 50% 50%, 65% 20%, 90% 30%;}
+      100% {background-position: 0% 70%, 0% 10%, 10% 30%, 20% -10%, 30% 20%, 22% 40%, 50% 40%, 65% 10%, 90% 20%;
+        background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;}}
+    @keyframes greenbottomBubbles {
+      0% {background-position: 10% -10%, 30% 10%, 55% -10%, 70% -10%, 85% -10%, 70% -10%, 70% 0%;}
+      50% {background-position: 0% 80%, 20% 80%, 45% 60%, 60% 100%, 75% 70%, 95% 60%, 105% 0%;}
+      100% {background-position: 0% 90%, 20% 90%, 45% 70%, 60% 110%, 75% 80%, 95% 70%, 110% 10%;
+        background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;}}
+    
+  

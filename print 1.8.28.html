@@ -5474,11 +5474,53 @@ async function fetchJsonIfReadable(url, timeout = 1200) {
   }
 }
 
+function getAppApiUrl(path) {
+  if (!/^https?:$/.test(window.location.protocol)) return '';
+  return `${window.location.origin}${path}`;
+}
+
+async function fetchAppApiJson(path, options = {}, timeout = 1500) {
+  const url = getAppApiUrl(path);
+  if (!url) return null;
+  const response = await fetchWithTimeout(url, {
+    cache: 'no-store',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(options.headers || {})
+    },
+    ...options
+  }, timeout);
+  const text = await response.text();
+  return text ? JSON.parse(text) : null;
+}
+
+let appApiSettingsSyncTimer = null;
+
+function syncSettingsToAppApi(settings) {
+  if (!getAppApiUrl('/api/settings')) return;
+  clearTimeout(appApiSettingsSyncTimer);
+  appApiSettingsSyncTimer = setTimeout(() => {
+    fetchAppApiJson('/api/settings', {
+      method: 'PUT',
+      body: JSON.stringify(settings)
+    }, 2500).catch(() => {
+      // Local storage remains the primary compatibility store if the API is unavailable.
+    });
+  }, 350);
+}
+
 async function fetchPrinterMac(ip, options = {}) {
   const host = normalizePrinterAddress(ip).split('/')[0];
   if (!host || host.toLowerCase() === 'dammy') return null;
 
   const timeout = options.timeout || 1200;
+  try {
+    const apiResult = await fetchAppApiJson(`/api/printers/mac?address=${encodeURIComponent(host)}`, {}, timeout + 400);
+    if (apiResult?.mac) return { mac: normalizeMac(apiResult.mac), source: apiResult.source || 'app-api' };
+  } catch {
+    // App API is unavailable; continue with browser-side fallbacks.
+  }
+
   const endpoints = [
     `http://127.0.0.1:32117/mac?ip=${encodeURIComponent(host)}`,
     `http://localhost:32117/mac?ip=${encodeURIComponent(host)}`,
@@ -5600,6 +5642,30 @@ async function fetchLocalHelperSubnet(subnet, timeout = 1800) {
   return [];
 }
 
+async function fetchAppApiNetworkScan(subnets, options = {}) {
+  try {
+    const data = await fetchAppApiJson('/api/network/scan', {
+      method: 'POST',
+      body: JSON.stringify({
+        subnets,
+        concurrency: options.concurrency || 24,
+        probeTimeoutMs: options.probeTimeout || 700,
+        macTimeoutMs: options.macTimeout || 900
+      })
+    }, options.scanTimeout || Math.max(12000, subnets.length * 9000));
+    const devices = Array.isArray(data?.devices) ? data.devices : [];
+    return devices.map(device => ({
+      ip: device.ip,
+      reachable: Boolean(device.reachable),
+      mac: normalizeMac(device.mac || ''),
+      source: device.source || 'app-api',
+      nameHint: device.nameHint || ''
+    })).filter(device => device.ip);
+  } catch {
+    return null;
+  }
+}
+
 async function scanDeviceAtIp(ip, options = {}) {
   const reachable = await checkPrinterConnection(ip, ':8080/?action=stream', options.probeTimeout || 700);
   if (!reachable) return { ip, reachable: false, mac: '', source: '', nameHint: '' };
@@ -5626,6 +5692,13 @@ async function runConcurrent(items, limit, worker, onProgress) {
 
 async function scanSubnetsForPrinters(subnets, options = {}) {
   const results = [];
+  updateIpRecoveryProgress('Запуск серверного сканирования', 8);
+  const serverResults = await fetchAppApiNetworkScan(subnets, options);
+  if (serverResults) {
+    updateIpRecoveryProgress('Серверное сканирование завершено', 80);
+    return serverResults.filter(device => device.reachable);
+  }
+
   for (let s = 0; s < subnets.length; s++) {
     const subnet = subnets[s];
     updateIpRecoveryProgress(`Проверка сети ${subnet}.0/24`, Math.round((s / subnets.length) * 100));
@@ -7370,6 +7443,7 @@ function saveToLocalStorage() {
   };
 
   localStorage.setItem('printerCamsV2', JSON.stringify(settings));
+  syncSettingsToAppApi(settings);
 }
 
 // === Функции для управления состоянием переключателей видеопотока ===
@@ -7380,6 +7454,7 @@ function saveStreamToggleState(ip, isEnabled) {
   settings.streamToggles = settings.streamToggles || {};
   settings.streamToggles[ip] = isEnabled;
   localStorage.setItem('printerCamsV2', JSON.stringify(settings));
+  syncSettingsToAppApi(settings);
 }
 
 function loadStreamToggleState(ip) {
