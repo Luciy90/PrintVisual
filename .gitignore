@@ -1,7 +1,20 @@
-```
-# Build artifacts
-public/app.js
-public/app.js.map
-# Test reports
-reports/tests/
-```
+.gitignore (原始)
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+wheels/
+*.egg-info
+
+# Project files
+.venv
+.idea/
+.DS_Store
+.env
+.vscode/
+.old
+node_modules/
+dist/
+data/*.json
+reports/coverage/lcov-report/
+reports/coverage/lcov.info

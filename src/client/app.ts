@@ -1,3 +1,4 @@
+src/client/app.ts (修改后)
 // === CLIENT APP ENTRY POINT ===
 // Main application initialization for 3D Printer Cameras interface
 
@@ -17,23 +18,23 @@ import {
   updateAntsVisibility,
   setDefaultInterfaceWidth
 } from './ui.js';
-import { 
-  renderCameraTable, 
-  renderCameras, 
-  addCamera, 
+import {
+  renderCameraTable,
+  renderCameras,
+  addCamera,
   addDammy,
   onInputChange,
   deleteRow,
   reorderRows
 } from './cameras.js';
-import { 
-  enqueueNotification, 
-  animateAndRemoveNotification, 
+import {
+  enqueueNotification,
+  animateAndRemoveNotification,
   closeAllNotifications,
   schedulePositionUpdate
 } from './notifications.js';
-import { 
-  readLocalAppSettings, 
+import {
+  readLocalAppSettings,
   hasMeaningfulSettings,
   syncSettingsToAppApi,
   hydrateSettingsFromAppApi
@@ -62,46 +63,6 @@ import {
   disableAllStreams,
   refreshCameras
 } from './recovery.js';
-import {
-  openModalSet,
-  closeModalSet,
-  unlockTableHeight,
-  restoreTableHeight,
-  updateOpenSettingsButtonState
-} from './ui.js';
-import {
-  recordPos,
-  playFLIP,
-  addRow,
-  updateEmpty,
-  convertToDammy,
-  closeAccordion as closeAccordionCam,
-  updateAccordionCheckboxState as updateAccordionCheckboxStateCam
-} from './cameras.js';
-import {
-  addToBuffer,
-  flushBuffer,
-  checkAndRemoveDuplicateBuffer,
-  stripHtml,
-  updateAllNotificationPositions,
-  processPositionUpdateQueue,
-  processNotificationQueue,
-  checkAndRemoveDuplicate,
-  closeNotificationByDataNumber,
-  startGlobalCollapseTimer,
-  collapseNotification,
-  hideNonTopCollapsedNotifications,
-  getDividerGradient,
-  applyDividerGradient,
-  syncDividerStyles,
-  showConsent,
-  toggleSections,
-  hideLoader,
-  updateBorderRightValue,
-  updateStatusIndicator,
-  getCameraTableData,
-  initAnts
-} from './notifications.js';
 
 // === ДЕБАУНС ФУНКЦИИ ===
 const debouncedUpdateDividers = debounce(updateHorizontalDividers, 25);
@@ -128,7 +89,7 @@ const debouncedUpdateNotificationOpacity = debounce(() => {
 function init() {
   // Setup event listeners
   setupEventListeners();
-  
+
   // Initial UI updates
   updateHeader();
   updateToolbarColors();
@@ -138,40 +99,40 @@ function init() {
   updateLoader();
   updateToolbarVisibility();
   updateActionIconColors();
-  
+
   // Check consent
   if (!localStorage.getItem('printerCamsV2Consent')) {
     showConsentModal();
   } else {
     State.allowLocalStorage = true;
-    
+
     // Load settings
     const source = loadFromLocalStorage() ? 'local' : 'default';
     if (source === 'default') {
       loadCameras(Config.defaultCameras);
       renderCameraTable(Config.defaultCameras);
     }
-    
+
     renderCameras();
-    
+
     // Setup notification actions
     setupNotificationActions();
-    
+
     debouncedUpdateDividers();
   }
-  
+
   // Header text color change listener
   Elements.headerTextColorInput?.addEventListener('input', () => {
     updateHeader();
     updateToolbarColors();
   });
-  
+
   // Hide loader if consent modal is shown
   const consentModal = document.getElementById('consentModal');
   if (consentModal && !consentModal.classList.contains('hidden')) {
     document.getElementById('loaderOverlay')?.classList.add('hidden');
   }
-  
+
   // Initialize Lucide icons
   if (typeof (window as any).lucide !== 'undefined') {
     (window as any).lucide.createIcons();
@@ -182,7 +143,7 @@ function setupNotificationActions() {
   const expandNotificationsBtn = document.getElementById('expandNotificationsBtn');
   const closeAllNotificationsBtn = document.getElementById('closeAllNotificationsBtn');
   const notificationActions = document.getElementById('notificationActions');
-  
+
   if (expandNotificationsBtn) {
     expandNotificationsBtn.addEventListener('click', () => {
       const collapsed = getCollapsedNotifications();
@@ -194,7 +155,7 @@ function setupNotificationActions() {
       }
     });
   }
-  
+
   if (closeAllNotificationsBtn) {
     closeAllNotificationsBtn.addEventListener('click', () => {
       closeAllNotifications();
@@ -219,11 +180,11 @@ if (document.readyState === 'loading') {
 }
 
 // Export for potential external access
-export { 
-  init, 
-  Config, 
-  Elements, 
-  State, 
+export {
+  init,
+  Config,
+  Elements,
+  State,
   cameras,
   loadCameras,
   renderCameras,
