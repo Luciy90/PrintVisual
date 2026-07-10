@@ -1,0 +1,632 @@
+- generic [ref=f2e1]:
+  - generic [ref=f2e6]:
+    - iframe [active] [ref=f2e7]:
+      - search "Поиск в интернете" [ref=f3e2]:
+        - combobox "Запрос" [active] [ref=f3e3]
+        - button "Найти" [ref=f3e4] [cursor=pointer]
+    - generic:
+      - generic: Поиск Яндекса
+      - link "Открыть виртуальную клавиатуру" [ref=f2e8] [cursor=pointer]:
+        - /url: https://ya.ru/?open_keyboard=1
+      - button "Найти"
+  - generic:
+    - generic:
+      - banner "Шапка сайта":
+        - link "Логотип Бренда" [ref=f2e12] [cursor=pointer]:
+          - /url: /
+        - generic:
+          - button "Настройки" [ref=f2e16] [cursor=pointer]
+          - button "Войти" [ref=f2e24] [cursor=pointer]
+  - generic:
+    - link "Добавить в корзину" [ref=f2e28] [cursor=pointer]:
+      - /url: "#"
+    - link "Позвонить" [ref=f2e29] [cursor=pointer]:
+      - /url: tel:+74952122734
+  - generic [ref=f2e31]:
+    - generic [ref=f2e33]:
+      - generic [ref=f2e37]:
+        - generic [ref=f2e39]:
+          - link "16 °C" [ref=f2e40] [cursor=pointer]:
+            - /url: https://dzen.ru/pogoda/10472
+            - generic [ref=f2e42]: +16°
+          - button "Варшава" [ref=f2e44] [cursor=pointer]
+        - generic [ref=f2e45]:
+          - generic "Биржевые котировки" [ref=f2e46]:
+            - link "Курс USD/RUB" [ref=f2e47] [cursor=pointer]:
+              - /url: /news/rubric/quotes/0
+              - generic [ref=f2e48]: $ 76,66
+            - link "Курс EUR/RUB" [ref=f2e49] [cursor=pointer]:
+              - /url: /news/rubric/quotes/1
+              - generic [ref=f2e50]: € 87,67
+            - link "Курс OIL" [ref=f2e51] [cursor=pointer]:
+              - /url: /news/rubric/quotes/2
+              - generic [ref=f2e52]: 76,27
+          - generic [ref=f2e59]:
+            - link [ref=f2e60] [cursor=pointer]:
+              - /url: https://yandex.ru/an/count/WX8ejI_zOoVX2Lcw0IKG04FTRqP8G3yqYeI6OXI8A-44Ji2SG1MV0DSR9g0t_uwCHIBWXJwVovqzs-_SUSEThz_nUiCThdrFyQYTGt4Z922g1jOY6aL2GqLM7DNyIUA8n10LoLfabK42oPfammW9Y8HIa3K48p1b4yO3HnK2o42fR6uJ04A12mmwZaf4pCXCYFLyRB34cJF0Lzu38u8BP51TM7bQfAY0Wptq8-0dl3oVRvWmX4a68N-5Z9bjl3vCRBFxGC0Du00sS7MOC4coOUlh2FSv3UBctn1Tgs5l_WtHjHgs7MZGUfgjpw3r6R8naLA3KKIWm4vwOD1o44TQOUfZaXPfOMjX1yq3YZopfQzkhe0fcFSOiO_HFOoP0XGCEGEC63-3-KQNIUh2B9fRc2w61nedOIQu6A6fvyF4JQuF4pTt_niz4HxW7_vYBh0DhFTxRM2zd-jxQ9d__iLSuAzT0lPe_DabO8z6fZc7a5bcBhrqEOWO3xhHrn7kSzxilNpPbxbfcVHZ2JmuWIbTZbl_zKrbCYyylwLrdQcfJEQ5vxKJlEw1C3qXug4PmJ8-2a0H11e2fWDURuTOhbGgbI5Su0A7JSSflm0qRdW91IWIG1FyjhVDtjXR45CEgz3dPG9ks244LU2KSmMSZvgLjjIZoLQgOnYe9EuOHiRJ1qeuFJh6cGSCAbJlo2Caqv6NRK3hVm00~2
+            - link "Установите Яндекс Браузер" [ref=f2e61] [cursor=pointer]:
+              - /url: https://yandex.ru/an/count/WX8ejI_zOoVX2Lcw0IKG04FTRqP8G3yqYeI6OXI8A-44Ji2SG1MV0DSR9g0t_uwCHIBWXJwVovqzs-_SUSEThz_nUiCThdrFyQYTGt4Z922g1jOY6aL2GqLM7DNyIUA8n10LoLfabK42oPfammW9Y8HIa3K48p1b4yO3HnK2o42fR6uJ04A12mmwZaf4pCXCYFLyRB34cJF0Lzu38u8BP51TM7bQfAY0Wptq8-0dl3oVRvWmX4a68N-5Z9bjl3vCRBFxGC0Du00sS7MOC4coOUlh2FSv3UBctn1Tgs5l_WtHjHgs7MZGUfgjpw3r6R8naLA3KKIWm4vwOD1o44TQOUfZaXPfOMjX1yq3YZopfQzkhe0fcFSOiO_HFOoP0XGCEGEC63-3-KQNIUh2B9fRc2w61nedOIQu6A6fvyF4JQuF4pTt_niz4HxW7_vYBh0DhFTxRM2zd-jxQ9d__iLSuAzT0lPe_DabO8z6fZc7a5bcBhrqEOWO3xhHrn7kSzxilNpPbxbfcVHZ2JmuWIbTZbl_zKrbCYyylwLrdQcfJEQ5vxKJlEw1C3qXug4PmJ8-2a0H11e2fWDURuTOhbGgbI5Su0A7JSSflm0qRdW91IWIG1FyjhVDtjXR45CEgz3dPG9ks244LU2KSmMSZvgLjjIZoLQgOnYe9EuOHiRJ1qeuFJh6cGSCAbJlo2Caqv6NRK3hVm00~2
+      - dialog [ref=f2e62]:
+        - generic [ref=f2e66]:
+          - generic [ref=f2e68]: Яндекс станет основным поиском
+          - generic [ref=f2e69]: "Это удобно: вводите запрос — и получаете результаты в любимой поисковой системе."
+          - link "Продолжить" [ref=f2e71] [cursor=pointer]:
+            - /url: https://yandex.ru/an/count/WbiejI_zOoVX2La_0cqI04DXVnKKY2lX14x0d40Ldm0tWJs1FG5j0bflc83U_3io5ec05_fyBdVsRBzpvmrtldx7wmrtkFVp-OGwdr0RQazn6uz2ypo7Ifqbga98rY8gK8XdYQ0GHLOhKb3IZ2Jgq55IaHN7qO-Lo6Y6DOc4Kf0r12Em7J1b4yO3HnK2o42fR6uJ04A12mmwZhvFHnKi8urAW9ZBFZBG2jSP5KIh9WB6_aXTLx9CKGyK4p1M8j9LyY7iFtYz1wu9iPwF3POuSmRuodjWH7213AeBAq-B51Lmi3ZA58Y0G8Vp-OO9GvXa4F9No9ZPnkl3n3Qx3mJS00vW0rU1lxB83LjVHtY4gq7S_1kYQpNipRyXkbR3baY3bcRhCsXzXcnCfDHW514ei9CU6BGU0ts1ZOCuqWfJ7vEqI0jR2pje7b3acIrzTNC5JC6ynuXzZEvXp1IWOCWPOCJu6SmtkanI5sRHtC9qCJpGE0apmSK8JJqV9cvoVPYukVlVw8dm0F_m5tE1RM2ztsi3w_rStqFB_FSlvW9_xHAmH-FFBW5xD3BDA8mmoyobbou74UD1D_ewGYqhR_Pvlko_vy97FvR0WnD0_Dfb-QzlchB8fkYtjAupDKrPP5FqsWbUzv1WQb590BC4yHxPb45WGa0xuFLsYELAfL8PmWKkSDXB4yfVWfTOXb208W446VoVmdD7qPt-D0BM1wJ9hmXVt5k9YI6SfQqO9nRj_mOe5t0t3ltye5D_bmDJ8DLARKvQleceRW3lwTG4fr_Bef2y8myHAqTUje6M_m40~2
+          - generic "Закрыть" [ref=f2e72] [cursor=pointer]
+    - generic [ref=f2e76]:
+      - complementary "Боковое меню навигации" [ref=f2e78]:
+        - list [ref=f2e79]:
+          - link "Главная" [ref=f2e80] [cursor=pointer]:
+            - /url: https://dzen.ru/
+            - listitem [ref=f2e81]
+          - link "Подписки" [ref=f2e85] [cursor=pointer]:
+            - /url: https://dzen.ru/subscriptions-manager
+            - listitem [ref=f2e86]
+          - link "Найти" [ref=f2e90] [cursor=pointer]:
+            - /url: https://dzen.ru/explore
+            - listitem [ref=f2e91]
+          - link "Новости" [ref=f2e95] [cursor=pointer]:
+            - /url: https://dzen.ru/news
+            - listitem [ref=f2e96]
+          - link "Статьи" [ref=f2e100] [cursor=pointer]:
+            - /url: https://dzen.ru/articles
+            - listitem [ref=f2e101]
+          - link "Видео" [ref=f2e105] [cursor=pointer]:
+            - /url: https://dzen.ru/video
+            - listitem [ref=f2e106]
+          - link "Ролики" [ref=f2e110] [cursor=pointer]:
+            - /url: https://dzen.ru/shorts
+            - listitem [ref=f2e111]
+          - link "Видеоигры" [ref=f2e117] [cursor=pointer]:
+            - /url: https://dzen.ru/topic/games
+            - listitem [ref=f2e118]
+          - link "Детям" [ref=f2e122] [cursor=pointer]:
+            - /url: https://dzen.ru/topic/multiki
+            - listitem [ref=f2e123]
+        - button [ref=f2e128]
+      - main [ref=f2e133]:
+        - generic [ref=f2e137]:
+          - generic [ref=f2e138]:
+            - article "Новости" [ref=f2e141]:
+              - generic [ref=f2e142]:
+                - generic [ref=f2e147]:
+                  - link "index" [ref=f2e148] [cursor=pointer]:
+                    - /url: https://dzen.ru/news
+                    - generic "Новости на тему" [ref=f2e150]: Главное
+                  - link "Poland" [ref=f2e152] [cursor=pointer]:
+                    - /url: https://dzen.ru/news/region/poland
+                    - generic "Новости на тему" [ref=f2e154]: Польша
+                  - link "stoic_zakatov" [ref=f2e156] [cursor=pointer]:
+                    - /url: https://dzen.ru/topic/zemlya-sozdatelei
+                    - generic "Новости на тему" [ref=f2e158]: Столица закатов
+                  - link "mashmoney" [ref=f2e160] [cursor=pointer]:
+                    - /url: https://dzen.ru/id/69b6a72cdbc5135fe5998d4f
+                    - generic "Новости на тему" [ref=f2e162]: Mash Money
+                  - link "chronologic" [ref=f2e164] [cursor=pointer]:
+                    - /url: https://dzen.ru/news/rubric/chronologic
+                    - generic "Новости на тему" [ref=f2e166]: Свежее
+                  - link "svo" [ref=f2e168] [cursor=pointer]:
+                    - /url: https://dzen.ru/topic/svo-tema
+                    - generic "Новости на тему" [ref=f2e170]: СВО
+                  - link "politics" [ref=f2e172] [cursor=pointer]:
+                    - /url: https://dzen.ru/topic/politika
+                    - generic "Новости на тему" [ref=f2e174]: Политика
+                  - link "incident" [ref=f2e176] [cursor=pointer]:
+                    - /url: https://dzen.ru/topic/proisshestviya
+                    - generic "Новости на тему" [ref=f2e178]: Происшествия
+                  - link "society" [ref=f2e180] [cursor=pointer]:
+                    - /url: https://dzen.ru/topic/obshchestvo
+                    - generic "Новости на тему" [ref=f2e182]: Общество
+                  - link "business" [ref=f2e184] [cursor=pointer]:
+                    - /url: https://dzen.ru/topic/economy
+                    - generic "Новости на тему" [ref=f2e186]: Экономика
+                  - link "sport" [ref=f2e188] [cursor=pointer]:
+                    - /url: https://dzen.ru/topic/sport
+                    - generic "Новости на тему" [ref=f2e190]: Спорт
+                  - link "showbusiness" [ref=f2e192] [cursor=pointer]:
+                    - /url: https://dzen.ru/topic/shou-biznes
+                    - generic "Новости на тему" [ref=f2e194]: Шоу-бизнес
+                  - link "auto" [ref=f2e196] [cursor=pointer]:
+                    - /url: https://dzen.ru/topic/auto
+                    - generic "Новости на тему" [ref=f2e198]: Авто
+                  - link "world" [ref=f2e200] [cursor=pointer]:
+                    - /url: https://dzen.ru/topic/sobytiya-v-mire
+                    - generic "Новости на тему" [ref=f2e202]: В мире
+                  - link "culture" [ref=f2e204] [cursor=pointer]:
+                    - /url: https://dzen.ru/topic/culture
+                    - generic "Новости на тему" [ref=f2e206]: Культура
+                  - link "computers" [ref=f2e208] [cursor=pointer]:
+                    - /url: https://dzen.ru/topic/it
+                    - generic "Новости на тему" [ref=f2e210]: Технологии
+                  - link "science" [ref=f2e212] [cursor=pointer]:
+                    - /url: https://dzen.ru/topic/science
+                    - generic "Новости на тему" [ref=f2e214]: Наука
+                  - button [ref=f2e216] [cursor=pointer]
+                - generic "Кебаб в карточке" [ref=f2e223]:
+                  - button "Меню" [ref=f2e224] [cursor=pointer]
+              - generic [ref=f2e228]:
+                - list [ref=f2e229]:
+                  - listitem [ref=f2e230]:
+                    - link "Открыть новости по теме" [ref=f2e232] [cursor=pointer]:
+                      - /url: https://dzen.ru/news/story/5b9cba89-5b51-554c-b94c-b28a36a6bf87?from=main_portal&lang=ru&persistent_id=3378198352&story=56da9c10-1ec8-51d5-8fa8-b69fce5878d0&t=7481440259188723712
+                      - paragraph [ref=f2e235]:
+                        - text: Трамп приказал бомбить Иран с невиданной силой, если с ним что-то случится
+                        - button "Ещё по теме" [ref=f2e237]
+                    - generic [ref=f2e239]:
+                      - generic [ref=f2e240]: Ещё по теме
+                      - list [ref=f2e241]:
+                        - listitem [ref=f2e242]:
+                          - link "Открыть новости по теме" [ref=f2e244] [cursor=pointer]:
+                            - /url: https://dzen.ru/news/story/80cc06b6-679d-5494-a946-20ddc046ea4c?from=main_portal&lang=ru&persistent_id=3378194174&story=68942f30-1613-50f0-978d-44c1d9e0e8c8&t=7481422513281433600
+                            - paragraph [ref=f2e247]: Тегеран предостерег Израиль от присоединения к ударам США по Ирану
+                        - listitem [ref=f2e248]:
+                          - link "Открыть новости по теме" [ref=f2e250] [cursor=pointer]:
+                            - /url: https://dzen.ru/news/story/61642017-f735-5124-81db-608276403410?from=main_portal&lang=ru&persistent_id=3378197507&story=d856905d-5bdc-512f-819e-a22c594d2dc1&t=7481426977170128896
+                            - paragraph [ref=f2e253]: Трамп заявил, что Иран обратился к США с просьбой продолжить мирные переговоры
+                        - listitem [ref=f2e254]:
+                          - link "Открыть новости по теме" [ref=f2e256] [cursor=pointer]:
+                            - /url: https://dzen.ru/news/story/c27e3b49-e8d1-5338-bfa5-840f10e88f53?from=main_portal&lang=ru&persistent_id=3378200174&story=4385fb36-55bd-5530-a314-d240be0648be&t=7481431812959375360
+                            - paragraph [ref=f2e259]: "Галибаф: Иран готов к тотальной обороне в случае предательства США меморандума"
+                  - listitem [ref=f2e260]:
+                    - link "Открыть новости по теме" [ref=f2e262] [cursor=pointer]:
+                      - /url: https://dzen.ru/news/story/257c0fd4-7b50-5fd8-b08d-78504511f046?from=main_portal&lang=ru&persistent_id=3378200526&story=40c49d60-ca58-5cbb-88de-46ec240c5d00&t=7481440103978504192
+                      - paragraph [ref=f2e265]: "Патрушев: террорист Усама бен Ладен был агентом ЦРУ"
+                  - listitem [ref=f2e266]:
+                    - link "Открыть новости по теме" [ref=f2e268] [cursor=pointer]:
+                      - /url: https://dzen.ru/news/story/123c6a24-8a53-576a-a8af-7f1fe60b3717?from=main_portal&lang=ru&persistent_id=3378189301&story=e18c5041-c5e3-5374-97c9-fbb34bcf90e4&t=7481440999558877184
+                      - paragraph [ref=f2e271]:
+                        - text: "Песков: тема продажи Турцией российских С-400 относится к сверхчувствительным"
+                        - button "Ещё по теме" [ref=f2e273]
+                    - generic [ref=f2e275]:
+                      - generic [ref=f2e276]: Ещё по теме
+                      - list [ref=f2e277]:
+                        - listitem [ref=f2e278]:
+                          - link "Открыть новости по теме" [ref=f2e280] [cursor=pointer]:
+                            - /url: https://dzen.ru/news/story/7c7ecaf2-4edd-5756-bf92-9f460cb9820b?from=main_portal&lang=ru&persistent_id=3378192310&story=670a8ff5-8b7b-5e5d-98b5-f2fabad21dca&t=7481440996518002688
+                            - paragraph [ref=f2e283]: Bloomberg узнал о просьбе Турции к России разрешить перепродажу С-400
+                        - listitem [ref=f2e284]:
+                          - link "Открыть новости по теме" [ref=f2e286] [cursor=pointer]:
+                            - /url: https://dzen.ru/news/story/b0f8ab11-f57e-5af9-b24f-f38871c6583e?from=main_portal&lang=ru&persistent_id=3378201164&story=44453095-15e5-5890-9f17-8939c94079c4&t=7481438527226380288
+                            - paragraph [ref=f2e289]: "Фидан: переговоры с Россией необходимы для решения вопроса по ЗРК С-400"
+                  - listitem [ref=f2e290]:
+                    - link "Открыть новости по теме" [ref=f2e292] [cursor=pointer]:
+                      - /url: https://dzen.ru/news/story/1b47ccb3-ef26-548a-aa4e-0dedc9a32bf5?from=main_portal&lang=ru&persistent_id=3378194618&story=b2b26e8b-c75c-5b6b-b709-808b37e20cbf&t=7481439483888406528
+                      - paragraph [ref=f2e295]: Красный Крест в Крыму начнет выдавать гуманитарную помощь
+                  - listitem [ref=f2e297]:
+                    - link "Открыть новости по теме" [ref=f2e299] [cursor=pointer]:
+                      - /url: https://dzen.ru/news/story/54202908-c4af-5c3f-8e75-8b989bc31c5d?from=main_portal&lang=ru&persistent_id=3378193545&story=21a9f39a-bcfe-587c-814f-957c9d68c944&t=7481437462443593728
+                      - paragraph [ref=f2e302]: "Голикова: почти 40% взрослых россиян страдают «болезнями-всадниками»"
+                - link "Ещё 5 новостей" [ref=f2e303] [cursor=pointer]:
+                  - /url: https://dzen.ru/news
+            - article "Карточка рекламы" [ref=f2e307]
+          - generic [ref=f2e314]:
+            - generic [ref=f2e316]:
+              - article "Карточка этажа" [ref=f2e320]:
+                - link [ref=f2e321] [cursor=pointer]:
+                  - /url: https://dzen.ru/a/akqCW2NZjEwEkB67?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CNSoxZvzMyCUAVDHCWoFAZQBLH%2BQAQA%3D&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                - generic [ref=f2e327]:
+                  - generic [ref=f2e328]:
+                    - generic [ref=f2e329]:
+                      - link "Аватар канала" [ref=f2e331] [cursor=pointer]:
+                        - /url: https://dzen.ru/cifrohype?country_code=ru&lang=ru&parent_rid=3067853769.867.1783714682691.72460&from_parent_id=-9102120749779008998&from_parent_type=native&from_page=other_page
+                      - generic [ref=f2e334]:
+                        - link "Название канала" [ref=f2e336] [cursor=pointer]:
+                          - /url: https://dzen.ru/cifrohype?country_code=ru&lang=ru&parent_rid=3067853769.867.1783714682691.72460&from_parent_id=-9102120749779008998&from_parent_type=native&from_page=other_page
+                          - generic "ЦИФРОХАЙП" [ref=f2e337]
+                        - generic [ref=f2e339]: 874,3 тыс читали · 5 дней назад
+                    - button "Три точки" [ref=f2e342] [cursor=pointer]
+                  - generic [ref=f2e345]:
+                    - link "Какие русские фамилии действительно можно считать самыми старыми" [ref=f2e346] [cursor=pointer]:
+                      - /url: https://dzen.ru/a/akqCW2NZjEwEkB67?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CNSoxZvzMyCUAVDHCWoFAZQBLH%2BQAQA%3D&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                    - generic [ref=f2e348]: Многие убеждены, что самые старые русские фамилии это Ивановы, Петровы или Сидоровы. Такое мнение встречается очень часто, ведь именно эти фамилии сегодня считаются самыми распространёнными. Однако историки смотрят на этот вопрос совсем иначе. Если говорить именно о древности происхождения, то первенство принадлежит вовсе не фамилиям, образованным от привычных имён. Настоящие старожилы русского фамильного мира ведут свою историю от княжеских уделов, старинных боярских прозвищ и первых знатных родов, существовавших ещё в эпоху Древней Руси...
+              - article "Карточка этажа" [ref=f2e352]:
+                - link [ref=f2e353] [cursor=pointer]:
+                  - /url: https://dzen.ru/a/ak4CKNuqyiEzxmT9?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CN6C6If0MyDQAVDwDGoK0AEBtgO3AyzPAZABAA%3D%3D&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                - generic [ref=f2e359]:
+                  - generic [ref=f2e360]:
+                    - generic [ref=f2e361]:
+                      - link "Аватар канала" [ref=f2e363] [cursor=pointer]:
+                        - /url: https://dzen.ru/yunashev_live?country_code=ru&lang=ru&parent_rid=3067853769.867.1783714682691.72460&from_parent_id=4112555166427222220&from_parent_type=native&from_page=other_page
+                      - generic [ref=f2e366]:
+                        - link "Название канала" [ref=f2e368] [cursor=pointer]:
+                          - /url: https://dzen.ru/yunashev_live?country_code=ru&lang=ru&parent_rid=3067853769.867.1783714682691.72460&from_parent_id=4112555166427222220&from_parent_type=native&from_page=other_page
+                          - generic "Юнашев LIVE" [ref=f2e369]
+                        - generic [ref=f2e373]: 289,5 тыс читали · 2 дня назад
+                    - button "Три точки" [ref=f2e376] [cursor=pointer]
+                  - generic [ref=f2e379]:
+                    - 'link "Игра с огнём: Киев провоцирует Польшу на заявление территориальных претензий" [ref=f2e380] [cursor=pointer]':
+                      - /url: https://dzen.ru/a/ak4CKNuqyiEzxmT9?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CN6C6If0MyDQAVDwDGoK0AEBtgO3AyzPAZABAA%3D%3D&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                    - generic [ref=f2e382]: В Польше премьер и президент находятся на разных политических флангах. Дональд Туск — либерал, проевропейский политик, чья главная цель — сделать Польшу видимым и значимым членом ЕС и НАТО. Пускай даже за счёт национальных интересов. Кароль Навроцкий представляет жёсткое национально-патриотическое крыло. Историк по образованию, бывший глава Института национальной памяти, он очень трепетно относится к идеологическим моментам. В итоге поддержка Украины и отношение к ней являются водоразделом польской политики...
+            - article [ref=f2e386]:
+              - generic [ref=f2e387]:
+                - generic [ref=f2e388]:
+                  - link "Смотреть. Есть. Пить." [ref=f2e390] [cursor=pointer]:
+                    - /url: https://dzen.ru/sep633?country_code=ru&lang=ru&parent_rid=3067853769.867.1783714682691.72460&from_parent_id=8912840620671723532&from_parent_type=native&from_page=other_page
+                  - generic [ref=f2e393]: 22 часа
+                - generic [ref=f2e397]:
+                  - generic [ref=f2e398]:
+                    - 'heading "Лучшие способы приготовить идеальные креветки: три простых и проверенных рецепта" [level=3] [ref=f2e401] [cursor=pointer]'
+                    - 'link "Читать статью: Лучшие способы приготовить идеальные креветки: три простых и проверенных рецепта" [ref=f2e402] [cursor=pointer]':
+                      - /url: https://dzen.ru/a/akY4o1Q8cGMaFgcv?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CKKHjsb0MyDQAVDwDGoG0AEBLM8BkAEA&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                  - region "Карточка статьи" [ref=f2e403]:
+                    - paragraph [ref=f2e406] [cursor=pointer]: "Чрезмерное употребление алкоголя вредит всему! Российский рынок морепродуктов в последние годы набирает обороты, а креветки стали настоящим хитом. По данным Рыбного союза, отечественные компании за январь-март выловили 5,4 тыс. тонн креветок (+29%). Импорт тоже не отстает: в страну завезли 85 тыс. тонн (+15%). Лидеры среди поставщиков: Эквадор, Индия, Китай, Вьетнам, Таиланд и Индонезия. И все же многим из нас трудно правильно приготовить креветки. Они очень постные, небольшие и существует очень узкий промежуток времени между идеально приготовленными и резиновыми..."
+                    - 'link "Читать статью: Лучшие способы приготовить идеальные креветки: три простых и проверенных рецепта" [ref=f2e407] [cursor=pointer]':
+                      - /url: https://dzen.ru/a/akY4o1Q8cGMaFgcv?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CKKHjsb0MyDQAVDwDGoG0AEBLM8BkAEA&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                - generic [ref=f2e409]:
+                  - button "Нравится" [ref=f2e410] [cursor=pointer]:
+                    - generic [ref=f2e416]: "417"
+                  - link "Комментировать" [ref=f2e417] [cursor=pointer]:
+                    - /url: https://dzen.ru/a/akY4o1Q8cGMaFgcv?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&rid=3067853769.867.1783714682691.72460&integration=site_desktop&place=layout&secdata=CKKHjsb0MyDQAVDwDGoG0AEBLM8BkAEA&clid=1400&referrer_clid=1400&#comments_data=p_root
+                    - generic [ref=f2e421]: "59"
+                  - link "Просмотры" [ref=f2e422] [cursor=pointer]:
+                    - /url: https://dzen.ru/a/akY4o1Q8cGMaFgcv?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CKKHjsb0MyDQAVDwDGoG0AEBLM8BkAEA&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                    - generic [ref=f2e426]: 50,3 тыс
+                  - link [ref=f2e427] [cursor=pointer]:
+                    - /url: https://dzen.ru/a/akY4o1Q8cGMaFgcv?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CKKHjsb0MyDQAVDwDGoG0AEBLM8BkAEA&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+              - 'link "Читать статью: Лучшие способы приготовить идеальные креветки: три простых и проверенных рецепта" [ref=f2e433] [cursor=pointer]':
+                - /url: https://dzen.ru/a/akY4o1Q8cGMaFgcv?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CKKHjsb0MyDQAVDwDGoG0AEBLM8BkAEA&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+            - generic [ref=f2e436]:
+              - 'link "Голикова: 37% россиян страдают от «болезней-всадников»" [ref=f2e438] [cursor=pointer]':
+                - /url: https://dzen.ru/news/story/54202908-c4af-5c3f-8e75-8b989bc31c5d?lang=ru&opertop=1&persistent_id=3378193545&rubric=personal_feed&story=73f7dd5d-e642-5144-af85-28478b8fa6ae&t=7481437462443593728&rid=3067853769.867.1783714682691.72460
+                - paragraph [ref=f2e441]: "Голикова: 37% россиян страдают от «болезней-всадников»"
+              - link "Данила Козловский и Оксана Акиньшина покинули Россию" [ref=f2e443] [cursor=pointer]:
+                - /url: https://dzen.ru/news/story/a621eaf9-b90d-5986-bf9a-95d3a1e92400?lang=ru&opertop=1&persistent_id=3378175362&rubric=personal_feed&story=23c979cb-feb1-5638-83a4-0b3a8310c657&t=7481422437737824256&rid=3067853769.867.1783714682691.72460
+                - paragraph [ref=f2e446]: Данила Козловский и Оксана Акиньшина покинули Россию
+              - link "38-лентняя звезда «Уральских пельменей» снялась в купальнике на Мальдивах" [ref=f2e448] [cursor=pointer]:
+                - /url: https://dzen.ru/news/story/32b220ef-8d1d-5b48-a19d-dd45f9fd0e00?lang=ru&opertop=1&persistent_id=3376984949&rubric=personal_feed&story=79980e65-0d47-591f-9604-b2754ff73e75&t=7481381339967524864&rid=3067853769.867.1783714682691.72460
+                - paragraph [ref=f2e451]: 38-лентняя звезда «Уральских пельменей» снялась в купальнике на Мальдивах
+              - link "Супруга онкобольного Евгения Алдонина перестала выходить на связь в соцсетях" [ref=f2e453] [cursor=pointer]:
+                - /url: https://dzen.ru/news/story/f09ce771-5d28-5f0d-8a7c-0411f9d8aec8?lang=ru&opertop=1&persistent_id=3378195024&rubric=personal_feed&story=d130da01-c359-52f8-afcc-519042c1d0b3&t=7481434009612845056&rid=3067853769.867.1783714682691.72460
+                - paragraph [ref=f2e456]: Супруга онкобольного Евгения Алдонина перестала выходить на связь в соцсетях
+              - link "Огромные очереди туристов выстроились на границе с Абхазией" [ref=f2e458] [cursor=pointer]:
+                - /url: https://dzen.ru/news/story/b09bcc19-0632-5ca5-8586-ce2dcbdfa0e5?lang=ru&opertop=1&persistent_id=3378200054&rubric=personal_feed&story=2bccca5a-e729-52b4-9554-8de98740aa0c&t=7481436184166531072&rid=3067853769.867.1783714682691.72460
+                - paragraph [ref=f2e461]: Огромные очереди туристов выстроились на границе с Абхазией
+            - article [ref=f2e465]:
+              - generic [ref=f2e466]:
+                - generic [ref=f2e467]:
+                  - link "GadgetPage" [ref=f2e469] [cursor=pointer]:
+                    - /url: https://dzen.ru/gadgetpage?country_code=ru&lang=ru&parent_rid=3067853769.867.1783714682691.72460&from_parent_id=4794814203090058262&from_parent_type=native&from_page=other_page
+                  - generic [ref=f2e472]: 1 неделя
+                - generic [ref=f2e476]:
+                  - generic [ref=f2e477]:
+                    - heading "Куда пропали мультики про Дональда и Микки Мауса" [level=3] [ref=f2e480] [cursor=pointer]
+                    - 'link "Читать статью: Куда пропали мультики про Дональда и Микки Мауса" [ref=f2e481] [cursor=pointer]':
+                      - /url: https://dzen.ru/a/akJFgVfTqj4UMo2X?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CISTm5%2FxMyCUAVCWCWoFAZQBdSyQAQA%3D&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                  - region "Карточка статьи" [ref=f2e482]:
+                    - paragraph [ref=f2e485] [cursor=pointer]: "Еще каких-нибудь 20–30 лет назад казалось, что Микки Маус, Дональд Дак, Гуфи, Плуто и Скрудж Макдак — это вечные герои мультэфира. Их крутили по телевизору, выпускали на кассетах, потом на DVD, они постоянно мелькали в детских передачах и казались такими же обязательными персонажами детства, как Том и Джерри или Багз Банни. А потом многие вдруг заметили странную вещь: классических новых мультфильмов про Дональда и Микки почти не видно. Герои никуда не исчезли, их лица до сих пор на футболках, игрушках, кружках, заставках Disney, в парках развлечений и на детских товарах..."
+                    - 'link "Читать статью: Куда пропали мультики про Дональда и Микки Мауса" [ref=f2e486] [cursor=pointer]':
+                      - /url: https://dzen.ru/a/akJFgVfTqj4UMo2X?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CISTm5%2FxMyCUAVCWCWoFAZQBdSyQAQA%3D&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                - generic [ref=f2e488]:
+                  - button "Нравится" [ref=f2e489] [cursor=pointer]:
+                    - generic [ref=f2e495]: "472"
+                  - link "Комментировать" [ref=f2e496] [cursor=pointer]:
+                    - /url: https://dzen.ru/a/akJFgVfTqj4UMo2X?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&rid=3067853769.867.1783714682691.72460&integration=site_desktop&place=layout&secdata=CISTm5%2FxMyCUAVCWCWoFAZQBdSyQAQA%3D&clid=1400&referrer_clid=1400&#comments_data=p_root
+                    - generic [ref=f2e500]: "213"
+                  - link "Просмотры" [ref=f2e501] [cursor=pointer]:
+                    - /url: https://dzen.ru/a/akJFgVfTqj4UMo2X?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CISTm5%2FxMyCUAVCWCWoFAZQBdSyQAQA%3D&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                    - generic [ref=f2e505]: 38,2 тыс
+                  - link [ref=f2e506] [cursor=pointer]:
+                    - /url: https://dzen.ru/a/akJFgVfTqj4UMo2X?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CISTm5%2FxMyCUAVCWCWoFAZQBdSyQAQA%3D&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+              - 'link "Читать статью: Куда пропали мультики про Дональда и Микки Мауса" [ref=f2e511] [cursor=pointer]':
+                - /url: https://dzen.ru/a/akJFgVfTqj4UMo2X?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CISTm5%2FxMyCUAVCWCWoFAZQBdSyQAQA%3D&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+            - article [ref=f2e515]:
+              - generic [ref=f2e516]:
+                - generic [ref=f2e517]:
+                  - link "Hi-Tech Mail" [ref=f2e519] [cursor=pointer]:
+                    - /url: https://dzen.ru/hi-tech.mail.ru?country_code=ru&lang=ru&parent_rid=3067853769.867.1783714682691.72460&from_parent_id=5915431165498616362&from_parent_type=native&from_page=other_page
+                  - generic [ref=f2e524]: 1 неделя
+                - generic [ref=f2e528]:
+                  - generic [ref=f2e529]:
+                    - heading "Россиянам объяснили, чем отличаются белые и желтые крышки для консервации" [level=3] [ref=f2e532] [cursor=pointer]
+                    - 'link "Читать статью: Россиянам объяснили, чем отличаются белые и желтые крышки для консервации" [ref=f2e533] [cursor=pointer]':
+                      - /url: https://dzen.ru/a/akesm8DdYlsm_zgb?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CM349L%2FyMyCUAVDHCWoFAZQBLH%2BQAQA%3D&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                  - region "Карточка статьи" [ref=f2e534]:
+                    - paragraph [ref=f2e537] [cursor=pointer]: "В разгар сезона домашних заготовок в сети снова обсуждают старый вопрос: чем на самом деле отличаются белые и желтые металлические крышки для банок и стоит ли переплачивать за золотистые варианты. Разбор темы опубликовал в блоге iXBT Live пользователь Antoxa400, пообщавшийся с опытными любителями домашних заготовок. По его словам, цвет крышки — не украшение, а сигнал о типе защитного покрытия, от которого напрямую зависит, достоят ли банки до зимы. Основа у обеих крышек одна — пищевая жесть марки ЭЖК с тонким электролитическим слоем олова..."
+                    - 'link "Читать статью: Россиянам объяснили, чем отличаются белые и желтые крышки для консервации" [ref=f2e538] [cursor=pointer]':
+                      - /url: https://dzen.ru/a/akesm8DdYlsm_zgb?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CM349L%2FyMyCUAVDHCWoFAZQBLH%2BQAQA%3D&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                - generic [ref=f2e540]:
+                  - button "Нравится" [ref=f2e541] [cursor=pointer]:
+                    - generic [ref=f2e547]: "3575"
+                  - link "Комментировать" [ref=f2e548] [cursor=pointer]:
+                    - /url: https://dzen.ru/a/akesm8DdYlsm_zgb?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&rid=3067853769.867.1783714682691.72460&integration=site_desktop&place=layout&secdata=CM349L%2FyMyCUAVDHCWoFAZQBLH%2BQAQA%3D&clid=1400&referrer_clid=1400&#comments_data=p_root
+                    - generic [ref=f2e552]: "402"
+                  - link "Просмотры" [ref=f2e553] [cursor=pointer]:
+                    - /url: https://dzen.ru/a/akesm8DdYlsm_zgb?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CM349L%2FyMyCUAVDHCWoFAZQBLH%2BQAQA%3D&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                    - generic [ref=f2e557]: 421,7 тыс
+                  - link [ref=f2e558] [cursor=pointer]:
+                    - /url: https://dzen.ru/a/akesm8DdYlsm_zgb?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CM349L%2FyMyCUAVDHCWoFAZQBLH%2BQAQA%3D&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+              - 'link "Читать статью: Россиянам объяснили, чем отличаются белые и желтые крышки для консервации" [ref=f2e563] [cursor=pointer]':
+                - /url: https://dzen.ru/a/akesm8DdYlsm_zgb?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CM349L%2FyMyCUAVDHCWoFAZQBLH%2BQAQA%3D&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+            - article "Карточка рекламы" [ref=f2e567]
+            - generic [ref=f2e578]:
+              - article [ref=f2e580]:
+                - generic [ref=f2e581]:
+                  - generic [ref=f2e582]:
+                    - generic: 29:27
+                    - generic [ref=f2e583] [cursor=pointer]:
+                      - generic:
+                        - generic "Видеоплеер":
+                          - generic:
+                            - generic:
+                              - generic:
+                                - generic: 1,0×
+                                - generic:
+                                  - generic [ref=f2e586]:
+                                    - generic "Timeline episode" [ref=f2e589]
+                                    - generic "временная шкала" [ref=f2e590]
+                                  - button "Включить звук" [ref=f2e591]
+                                  - generic:
+                                    - generic:
+                                      - generic:
+                                        - generic:
+                                          - generic:
+                                            - generic:
+                                              - text: 00:00
+                                              - generic: /29:27
+                      - link "Земля создателей. Эпизод 4. Нижний Новгород" [ref=f2e593]:
+                        - /url: https://dzen.ru/video/watch/6a4f8370bab9cd47ce20d5dd?clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                  - generic [ref=f2e594]:
+                    - generic [ref=f2e596]:
+                      - link "Нижний 800" [ref=f2e598] [cursor=pointer]:
+                        - /url: https://dzen.ru/nizhny800?country_code=ru&lang=ru&parent_rid=3067853769.867.1783714682691.72460&from_parent_id=659919183859134059&from_parent_type=gif&from_page=other_page
+                      - generic [ref=f2e601]: 13 часов
+                    - generic [ref=f2e606]:
+                      - link "Земля создателей. Эпизод 4. Нижний Новгород" [ref=f2e607] [cursor=pointer]:
+                        - /url: https://dzen.ru/video/watch/6a4f8370bab9cd47ce20d5dd?clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                      - heading "Земля создателей. Эпизод 4. Нижний Новгород" [level=3] [ref=f2e609] [cursor=pointer]
+                  - generic [ref=f2e610]:
+                    - button "Нравится" [ref=f2e611] [cursor=pointer]:
+                      - generic [ref=f2e617]: "132"
+                    - link "Комментировать" [ref=f2e618] [cursor=pointer]:
+                      - /url: https://dzen.ru/video/watch/6a4f8370bab9cd47ce20d5dd?rid=3067853769.867.1783714682691.72460&clid=1400&comment-request=1&referrer_clid=1400&#comments_data=p_root
+                      - generic [ref=f2e622]: "6"
+                    - link "Просмотры" [ref=f2e623] [cursor=pointer]:
+                      - /url: https://dzen.ru/video/watch/6a4f8370bab9cd47ce20d5dd?clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                      - generic [ref=f2e627]: 69,4 тыс
+                    - link [ref=f2e628] [cursor=pointer]:
+                      - /url: https://dzen.ru/video/watch/6a4f8370bab9cd47ce20d5dd?clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+              - article [ref=f2e630]:
+                - generic [ref=f2e631]:
+                  - generic [ref=f2e632]:
+                    - generic: 03:00
+                    - generic [ref=f2e633] [cursor=pointer]:
+                      - generic:
+                        - generic "Видеоплеер":
+                          - generic:
+                            - generic:
+                              - generic:
+                                - generic: 1,0×
+                                - generic:
+                                  - generic [ref=f2e636]:
+                                    - generic "Timeline episode" [ref=f2e639]
+                                    - generic "временная шкала" [ref=f2e640]
+                                  - button "Включить звук" [ref=f2e641]
+                                  - generic:
+                                    - generic:
+                                      - generic:
+                                        - generic:
+                                          - generic:
+                                            - generic:
+                                              - text: 00:00
+                                              - generic: /03:00
+                      - link "Всеволод Ищенко первые очки в Летней лиге НБА | Даллас — Голден Стэйт | 09.07.2026 | Взял Мяч НБА" [ref=f2e643]:
+                        - /url: https://dzen.ru/video/watch/6a5089535f9e0d5c5253a8ed?clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                  - generic [ref=f2e644]:
+                    - generic [ref=f2e646]:
+                      - link "Взял Мяч" [ref=f2e648] [cursor=pointer]:
+                        - /url: https://dzen.ru/gotball?country_code=ru&lang=ru&parent_rid=3067853769.867.1783714682691.72460&from_parent_id=-1197424001589139938&from_parent_type=gif&from_page=other_page
+                      - generic [ref=f2e651]: 14 часов
+                    - generic [ref=f2e656]:
+                      - link "Всеволод Ищенко первые очки в Летней лиге НБА | Даллас — Голден Стэйт | 09.07.2026 | Взял Мяч НБА" [ref=f2e657] [cursor=pointer]:
+                        - /url: https://dzen.ru/video/watch/6a5089535f9e0d5c5253a8ed?clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                      - heading "Всеволод Ищенко первые очки в Летней лиге НБА | Даллас — Голден Стэйт | 09.07.2026 | Взял Мяч НБА" [level=3] [ref=f2e659] [cursor=pointer]
+                  - generic [ref=f2e660]:
+                    - button "Нравится" [ref=f2e661] [cursor=pointer]:
+                      - generic [ref=f2e667]: "9"
+                    - link "Комментировать" [ref=f2e668] [cursor=pointer]:
+                      - /url: https://dzen.ru/video/watch/6a5089535f9e0d5c5253a8ed?rid=3067853769.867.1783714682691.72460&clid=1400&comment-request=1&referrer_clid=1400&#comments_data=p_root
+                    - link "Просмотры" [ref=f2e672] [cursor=pointer]:
+                      - /url: https://dzen.ru/video/watch/6a5089535f9e0d5c5253a8ed?clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                      - generic [ref=f2e676]: "1169"
+                    - link [ref=f2e677] [cursor=pointer]:
+                      - /url: https://dzen.ru/video/watch/6a5089535f9e0d5c5253a8ed?clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+            - article [ref=f2e681]:
+              - generic [ref=f2e682]:
+                - generic [ref=f2e683]:
+                  - link "REMPLANNER | СТУДИЯ ДИЗАЙНА | ПЛАНИРОВЩИК ДЛЯ РЕМОНТА" [ref=f2e685] [cursor=pointer]:
+                    - /url: https://dzen.ru/remplanner?country_code=ru&lang=ru&parent_rid=3067853769.867.1783714682691.72460&from_parent_id=-6718013508687492579&from_parent_type=native&from_page=other_page
+                  - generic [ref=f2e688]: 13 часов
+                - generic [ref=f2e692]:
+                  - generic [ref=f2e693]:
+                    - 'heading "С 2026 года дачи стали неликвидными: меняют на квартиры в Турции и Таиланде" [level=3] [ref=f2e696] [cursor=pointer]'
+                    - 'link "Читать статью: С 2026 года дачи стали неликвидными: меняют на квартиры в Турции и Таиланде" [ref=f2e697] [cursor=pointer]':
+                      - /url: https://dzen.ru/a/ag8Z7Te91RYolcIY?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CJbd1Nb0MyDQAVDwDGoG0AEBLM8BkAEA&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                  - region "Карточка статьи" [ref=f2e698]:
+                    - paragraph [ref=f2e701] [cursor=pointer]: "После пандемии и роста цен владельцы дач столкнулись с тем, что их старая дача с маленьким участком может стоить 2–4 млн рублей, и на эти деньги можно легко позволить себе новую квартиру у моря. Сегодня за цену обычной дачи в Подмосковье, Ленинградской области или на юге России можно купить квартиру в Турции, Таиланде или Вьетнаме. Причём речь идёт не о «деревенском жилье», а о современных жилых комплексах с бассейнами, охраной и морем в пешей доступности. Давайте посмотрим три варианта: Турецкий..."
+                    - 'link "Читать статью: С 2026 года дачи стали неликвидными: меняют на квартиры в Турции и Таиланде" [ref=f2e702] [cursor=pointer]':
+                      - /url: https://dzen.ru/a/ag8Z7Te91RYolcIY?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CJbd1Nb0MyDQAVDwDGoG0AEBLM8BkAEA&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                - generic [ref=f2e704]:
+                  - button "Нравится" [ref=f2e705] [cursor=pointer]:
+                    - generic [ref=f2e711]: "137"
+                  - link "Комментировать" [ref=f2e712] [cursor=pointer]:
+                    - /url: https://dzen.ru/a/ag8Z7Te91RYolcIY?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&rid=3067853769.867.1783714682691.72460&integration=site_desktop&place=layout&secdata=CJbd1Nb0MyDQAVDwDGoG0AEBLM8BkAEA&clid=1400&referrer_clid=1400&#comments_data=p_root
+                    - generic [ref=f2e716]: "186"
+                  - link "Просмотры" [ref=f2e717] [cursor=pointer]:
+                    - /url: https://dzen.ru/a/ag8Z7Te91RYolcIY?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CJbd1Nb0MyDQAVDwDGoG0AEBLM8BkAEA&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                    - generic [ref=f2e721]: 36,3 тыс
+                  - link [ref=f2e722] [cursor=pointer]:
+                    - /url: https://dzen.ru/a/ag8Z7Te91RYolcIY?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CJbd1Nb0MyDQAVDwDGoG0AEBLM8BkAEA&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+              - 'link "Читать статью: С 2026 года дачи стали неликвидными: меняют на квартиры в Турции и Таиланде" [ref=f2e727] [cursor=pointer]':
+                - /url: https://dzen.ru/a/ag8Z7Te91RYolcIY?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CJbd1Nb0MyDQAVDwDGoG0AEBLM8BkAEA&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+            - article [ref=f2e731]:
+              - generic [ref=f2e732]:
+                - generic [ref=f2e733]:
+                  - link "7ДнейКино" [ref=f2e735] [cursor=pointer]:
+                    - /url: https://dzen.ru/kino7days?country_code=ru&lang=ru&parent_rid=3067853769.867.1783714682691.72460&from_parent_id=-253544692254935564&from_parent_type=native&from_page=other_page
+                  - generic [ref=f2e740]: 11 часов
+                - generic [ref=f2e744]:
+                  - generic [ref=f2e745]:
+                    - heading "10 новых зарубежных фильмов 2026 года, которые вы могли пропустить" [level=3] [ref=f2e748] [cursor=pointer]
+                    - 'link "Читать статью: 10 новых зарубежных фильмов 2026 года, которые вы могли пропустить" [ref=f2e749] [cursor=pointer]':
+                      - /url: https://dzen.ru/a/alCwjWyzWSGxyhA5?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CIr4%2Btn0MyDQAVDwDGoG0AEBLM8BkAEA&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                  - region "Карточка статьи" [ref=f2e750]:
+                    - paragraph [ref=f2e753] [cursor=pointer]: За первую половину 2026 года в мировой прокат вышло немало картин, которые пока остаются в тени больших премьер, но удивляют оригинальными историями и сильными актерскими работами. Не все самые интересные фильмы года сопровождаются масштабной рекламной кампанией, но среди таких премьер часто скрываются картины, которые приятно удивляют свежими идеями. От масштабной научной фантастики до музыкальных драм, психологических триллеров и средневековых хорроров — собрали 10 зарубежных фильмов, которые вы могли пропустить...
+                    - 'link "Читать статью: 10 новых зарубежных фильмов 2026 года, которые вы могли пропустить" [ref=f2e754] [cursor=pointer]':
+                      - /url: https://dzen.ru/a/alCwjWyzWSGxyhA5?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CIr4%2Btn0MyDQAVDwDGoG0AEBLM8BkAEA&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                - generic [ref=f2e756]:
+                  - button "Нравится" [ref=f2e757] [cursor=pointer]:
+                    - generic [ref=f2e763]: "80"
+                  - link "Комментировать" [ref=f2e764] [cursor=pointer]:
+                    - /url: https://dzen.ru/a/alCwjWyzWSGxyhA5?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&rid=3067853769.867.1783714682691.72460&integration=site_desktop&place=layout&secdata=CIr4%2Btn0MyDQAVDwDGoG0AEBLM8BkAEA&clid=1400&referrer_clid=1400&#comments_data=p_root
+                    - generic [ref=f2e768]: "13"
+                  - link "Просмотры" [ref=f2e769] [cursor=pointer]:
+                    - /url: https://dzen.ru/a/alCwjWyzWSGxyhA5?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CIr4%2Btn0MyDQAVDwDGoG0AEBLM8BkAEA&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                    - generic [ref=f2e773]: 12,6 тыс
+                  - link [ref=f2e774] [cursor=pointer]:
+                    - /url: https://dzen.ru/a/alCwjWyzWSGxyhA5?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CIr4%2Btn0MyDQAVDwDGoG0AEBLM8BkAEA&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+              - 'link "Читать статью: 10 новых зарубежных фильмов 2026 года, которые вы могли пропустить" [ref=f2e779] [cursor=pointer]':
+                - /url: https://dzen.ru/a/alCwjWyzWSGxyhA5?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CIr4%2Btn0MyDQAVDwDGoG0AEBLM8BkAEA&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+            - article "Карточка рекламы" [ref=f2e783]
+            - generic [ref=f2e789]:
+              - link "Билялетдинов покинул пост тренера костромского «Спартака»" [ref=f2e791] [cursor=pointer]:
+                - /url: https://sportsdzen.ru/news/story/b3780b9b-17e7-58f5-b0d1-08d073a982f6?lang=ru&opertop=1&persistent_id=3378198818&rubric=personal_feed&story=2427a4ff-7a83-5bd5-84b4-c357de758e8e&t=7481437602306850816&rid=3067853769.867.1783714682691.72460
+                - paragraph [ref=f2e794]: Билялетдинов покинул пост тренера костромского «Спартака»
+              - link "Жена Олега Газманова объяснила появление детской люльки на свадьбе дочери" [ref=f2e796] [cursor=pointer]:
+                - /url: https://dzen.ru/news/story/abb3a32f-cdf2-54b7-a8c4-c3e803a17b4c?lang=ru&opertop=1&persistent_id=3378175328&rubric=personal_feed&story=64cd4d0a-018a-5f2f-81d1-511efa3a12d5&t=7481373995040772096&rid=3067853769.867.1783714682691.72460
+                - paragraph [ref=f2e799]: Жена Олега Газманова объяснила появление детской люльки на свадьбе дочери
+              - link "День особой молитвы у православных верующих идет в ночь на субботу" [ref=f2e801] [cursor=pointer]:
+                - /url: https://dzen.ru/news/story/482f5def-84cc-5c6f-b8d8-5cf1c51f1aa6?lang=ru&opertop=1&persistent_id=3378192526&rubric=personal_feed&story=8e33056e-5e3a-5442-948a-a896342c6b01&t=7481417356749574144&rid=3067853769.867.1783714682691.72460
+                - paragraph [ref=f2e804]: День особой молитвы у православных верующих идет в ночь на субботу
+              - link "Часы растеряли форму" [ref=f2e806] [cursor=pointer]:
+                - /url: https://dzen.ru/news/story/4c78937f-63b1-5241-879b-f9c37e0d2abe?lang=ru&opertop=1&persistent_id=3378199670&rubric=personal_feed&story=6292abd1-9361-554b-bec0-88b1096e7432&t=7481413006778175488&rid=3067853769.867.1783714682691.72460
+                - paragraph [ref=f2e809]: Часы растеряли форму
+              - link "Муж Маши Распутиной Захаров впервые рассказал о пенсии артистки" [ref=f2e811] [cursor=pointer]:
+                - /url: https://dzen.ru/news/story/786c96af-7164-5117-bc46-ed6a7fec61b5?lang=ru&opertop=1&persistent_id=3377768319&rubric=personal_feed&story=21ebee56-f506-5a2f-97e9-4439083dede2&t=7481412526362591232&rid=3067853769.867.1783714682691.72460
+                - paragraph [ref=f2e814]: Муж Маши Распутиной Захаров впервые рассказал о пенсии артистки
+            - generic [ref=f2e822]:
+              - article [ref=f2e824]:
+                - generic [ref=f2e825]:
+                  - generic [ref=f2e826]:
+                    - generic: 02:43
+                    - generic [ref=f2e827] [cursor=pointer]:
+                      - generic:
+                        - generic "Видеоплеер":
+                          - generic:
+                            - generic:
+                              - generic:
+                                - generic: 1,0×
+                                - generic:
+                                  - generic [ref=f2e830]:
+                                    - generic "Timeline episode" [ref=f2e833]
+                                    - generic "временная шкала" [ref=f2e834]
+                                  - button "Включить звук" [ref=f2e835]
+                                  - generic:
+                                    - generic:
+                                      - generic:
+                                        - generic:
+                                          - generic:
+                                            - generic:
+                                              - text: 00:00
+                                              - generic: /02:43
+                      - link "Клава Кока - СПЛЕТНИ. ШУМ. ЛУК. (Премия МУЗ-ТВ 2026) live" [ref=f2e837]:
+                        - /url: https://dzen.ru/video/watch/6a4de5955e34a424d1cbca85?clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                  - generic [ref=f2e838]:
+                    - generic [ref=f2e840]:
+                      - link "Клава Кока" [ref=f2e842] [cursor=pointer]:
+                        - /url: https://dzen.ru/klavakoka?country_code=ru&lang=ru&parent_rid=3067853769.867.1783714682691.72460&from_parent_id=7690439935170116134&from_parent_type=gif&from_page=other_page
+                      - generic [ref=f2e847]: 2 дня
+                    - generic [ref=f2e852]:
+                      - link "Клава Кока - СПЛЕТНИ. ШУМ. ЛУК. (Премия МУЗ-ТВ 2026) live" [ref=f2e853] [cursor=pointer]:
+                        - /url: https://dzen.ru/video/watch/6a4de5955e34a424d1cbca85?clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                      - heading "Клава Кока - СПЛЕТНИ. ШУМ. ЛУК. (Премия МУЗ-ТВ 2026) live" [level=3] [ref=f2e855] [cursor=pointer]
+                  - generic [ref=f2e856]:
+                    - button "Нравится" [ref=f2e857] [cursor=pointer]:
+                      - generic [ref=f2e863]: "82"
+                    - link "Комментировать" [ref=f2e864] [cursor=pointer]:
+                      - /url: https://dzen.ru/video/watch/6a4de5955e34a424d1cbca85?rid=3067853769.867.1783714682691.72460&clid=1400&comment-request=1&referrer_clid=1400&#comments_data=p_root
+                      - generic [ref=f2e868]: "17"
+                    - link "Просмотры" [ref=f2e869] [cursor=pointer]:
+                      - /url: https://dzen.ru/video/watch/6a4de5955e34a424d1cbca85?clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                      - generic [ref=f2e873]: 45,7 тыс
+                    - link [ref=f2e874] [cursor=pointer]:
+                      - /url: https://dzen.ru/video/watch/6a4de5955e34a424d1cbca85?clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+              - article [ref=f2e876]:
+                - generic [ref=f2e877]:
+                  - generic [ref=f2e878]:
+                    - generic: 02:44
+                    - generic [ref=f2e879] [cursor=pointer]:
+                      - generic:
+                        - generic "Видеоплеер":
+                          - generic:
+                            - generic:
+                              - generic:
+                                - generic: 1,0×
+                                - generic:
+                                  - generic [ref=f2e882]:
+                                    - generic "Timeline episode" [ref=f2e885]
+                                    - generic "временная шкала" [ref=f2e886]
+                                  - button "Включить звук" [ref=f2e887]
+                                  - generic:
+                                    - generic:
+                                      - generic:
+                                        - generic:
+                                          - generic:
+                                            - generic:
+                                              - text: 00:00
+                                              - generic: /02:44
+                      - link "НОВАЯ ВОЛГА С50 — что скрывается за седаном VOLGA?" [ref=f2e889]:
+                        - /url: https://dzen.ru/video/watch/69cfa992c9482669cc770af6?clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                  - generic [ref=f2e890]:
+                    - generic [ref=f2e892]:
+                      - 'link "INcar: Автоновости" [ref=f2e894] [cursor=pointer]':
+                        - /url: https://dzen.ru/incar_news?country_code=ru&lang=ru&parent_rid=3067853769.867.1783714682691.72460&from_parent_id=-1317755626118558738&from_parent_type=gif&from_page=other_page
+                      - generic [ref=f2e899]: 3 мес
+                    - generic [ref=f2e904]:
+                      - link "НОВАЯ ВОЛГА С50 — что скрывается за седаном VOLGA?" [ref=f2e905] [cursor=pointer]:
+                        - /url: https://dzen.ru/video/watch/69cfa992c9482669cc770af6?clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                      - heading "НОВАЯ ВОЛГА С50 — что скрывается за седаном VOLGA?" [level=3] [ref=f2e907] [cursor=pointer]
+                  - generic [ref=f2e908]:
+                    - button "Нравится" [ref=f2e909] [cursor=pointer]:
+                      - generic [ref=f2e915]: "74"
+                    - link "Комментировать" [ref=f2e916] [cursor=pointer]:
+                      - /url: https://dzen.ru/video/watch/69cfa992c9482669cc770af6?rid=3067853769.867.1783714682691.72460&clid=1400&comment-request=1&referrer_clid=1400&#comments_data=p_root
+                      - generic [ref=f2e920]: "16"
+                    - link "Просмотры" [ref=f2e921] [cursor=pointer]:
+                      - /url: https://dzen.ru/video/watch/69cfa992c9482669cc770af6?clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                      - generic [ref=f2e925]: 56,7 тыс
+                    - link [ref=f2e926] [cursor=pointer]:
+                      - /url: https://dzen.ru/video/watch/69cfa992c9482669cc770af6?clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+            - article [ref=f2e930]:
+              - generic [ref=f2e931]:
+                - generic [ref=f2e932]:
+                  - link "Шеф Влад" [ref=f2e934] [cursor=pointer]:
+                    - /url: https://dzen.ru/chefvlad?country_code=ru&lang=ru&parent_rid=3067853769.867.1783714682691.72460&from_parent_id=-6615905096372216023&from_parent_type=native&from_page=other_page
+                  - generic [ref=f2e937]: 6 дней
+                - generic [ref=f2e941]:
+                  - generic [ref=f2e942]:
+                    - 'heading "Что повара берут с собой на перекус: 5 идей для тех, кто весь день на ногах" [level=3] [ref=f2e945] [cursor=pointer]'
+                    - 'link "Читать статью: Что повара берут с собой на перекус: 5 идей для тех, кто весь день на ногах" [ref=f2e946] [cursor=pointer]':
+                      - /url: https://dzen.ru/a/akjhhZj-i2r-Zgkx?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CM%2FC5%2BXyMyCUAVDHCWoHAZQBtgMsf5ABAA%3D%3D&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                  - region "Карточка статьи" [ref=f2e947]:
+                    - paragraph [ref=f2e950] [cursor=pointer]: "Я 10 лет стою у плиты. И знаете, какой вопрос мне задают реже всего, но он самый жизненный? «Шеф, а что ты ешь, когда некогда даже присесть?» Не дома. Не в ресторане в выходной. А на работе, в аду, когда 50 заказов, а ты не жрал с утра, и в желудке уже начинается самопереваривание. Обычный человек думает, что повар клюёт деликатесы: ухватил гребешок, надкусил стейк, запил трюфельным соусом. Ха. Ха-ха. Нет. Повар жрёт на бегу, над мусорным ведром или у плиты, пока никто не видит. И его еда должна быть: быстрой, сытной, компактной и не требовать мытья посуды..."
+                    - 'link "Читать статью: Что повара берут с собой на перекус: 5 идей для тех, кто весь день на ногах" [ref=f2e951] [cursor=pointer]':
+                      - /url: https://dzen.ru/a/akjhhZj-i2r-Zgkx?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CM%2FC5%2BXyMyCUAVDHCWoHAZQBtgMsf5ABAA%3D%3D&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                - generic [ref=f2e953]:
+                  - button "Нравится" [ref=f2e954] [cursor=pointer]:
+                    - generic [ref=f2e960]: "4180"
+                  - link "Комментировать" [ref=f2e961] [cursor=pointer]:
+                    - /url: https://dzen.ru/a/akjhhZj-i2r-Zgkx?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&rid=3067853769.867.1783714682691.72460&integration=site_desktop&place=layout&secdata=CM%2FC5%2BXyMyCUAVDHCWoHAZQBtgMsf5ABAA%3D%3D&clid=1400&referrer_clid=1400&#comments_data=p_root
+                    - generic [ref=f2e965]: "511"
+                  - link "Просмотры" [ref=f2e966] [cursor=pointer]:
+                    - /url: https://dzen.ru/a/akjhhZj-i2r-Zgkx?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CM%2FC5%2BXyMyCUAVDHCWoHAZQBtgMsf5ABAA%3D%3D&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+                    - generic [ref=f2e970]: 233,8 тыс
+                  - link [ref=f2e971] [cursor=pointer]:
+                    - /url: https://dzen.ru/a/akjhhZj-i2r-Zgkx?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CM%2FC5%2BXyMyCUAVDHCWoHAZQBtgMsf5ABAA%3D%3D&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+              - 'link "Читать статью: Что повара берут с собой на перекус: 5 идей для тех, кто весь день на ногах" [ref=f2e976] [cursor=pointer]':
+                - /url: https://dzen.ru/a/akjhhZj-i2r-Zgkx?from=feed&utm_referrer=https%3A%2F%2Fzen.yandex.com&integration=site_desktop&place=layout&secdata=CM%2FC5%2BXyMyCUAVDHCWoHAZQBtgMsf5ABAA%3D%3D&clid=1400&rid=3067853769.867.1783714682691.72460&referrer_clid=1400&
+  - generic [ref=f2e1034]:
+    - generic [ref=f2e1037]:
+      - generic [ref=f2e1038]: Информация о контенте.
+      - generic [ref=f2e1039] [cursor=pointer]: Подробнее
+    - button "Понятно" [ref=f2e1040] [cursor=pointer]
+  - iframe
