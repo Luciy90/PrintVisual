@@ -9,6 +9,7 @@ import { apiRouter } from "./routes/index.js";
 
 export function createApp(): express.Express {
   const app = express();
+  const isProduction = process.env.NODE_ENV === "production";
 
   app.disable("x-powered-by");
   app.use(helmet({
@@ -23,7 +24,10 @@ export function createApp(): express.Express {
   app.use("/api", apiRouter);
   app.use(express.static(paths.publicDir, {
     index: false,
-    maxAge: "1h"
+    maxAge: isProduction ? "1h" : 0,
+    setHeaders: response => {
+      if (!isProduction) response.setHeader("Cache-Control", "no-store");
+    }
   }));
 
   app.get("/", (_req, res, next) => {

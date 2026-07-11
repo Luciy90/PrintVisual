@@ -1,11 +1,11 @@
 {
     "schema_version": 2,
-    "commit": "",
-    "indexed_at": "2026-07-10T20:28:44Z",
-    "project": "PrintVisual",
-    "nodes": 931,
-    "edges": 1727,
-    "original_size": 3014656,
-    "compressed_size": 541632,
-    "compression_level": 9
+    "commit": "f142a00483f78489394477bad6716ea68b90ae10",
+    "indexed_at": "2026-07-11T10:04:19Z",
+    "project": "G-Documents-Project-PrintVisual",
+    "nodes": 996,
+    "edges": 1793,
+    "original_size": 4259840,
+    "compressed_size": 649993,
+    "compression_level": 3
 }

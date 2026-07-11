@@ -12,5 +12,5 @@
     "isolatedModules": true
   },
   "include": ["src/client/**/*.ts"],
-  "exclude": ["src/client/*.legacy-extracted.ts"]
+  "exclude": ["src/client/*.legacy-extracted.ts", "src/client/app.legacy-runtime.ts"]
 }

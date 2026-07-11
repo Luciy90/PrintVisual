@@ -1,205 +1,102 @@
---- src/client/app.ts (原始)
+// Strict modular client migration surface.
+//
+// The production browser bundle is still built from app.legacy-extracted.ts.
+// Keep this module side-effect free until all legacy initialization and event
+// handling has been migrated and verified against the legacy runtime.
 
+export { Config } from './config.js';
+export { Elements } from './elements.js';
+export { State, TaskState, pendingRestores, suppressNotifications } from './state.js';
 
-+++ src/client/app.ts (修改后)
-// === CLIENT APP ENTRY POINT ===
-// Main application initialization for 3D Printer Cameras interface
-
-import { Config } from './config.js';
-import { Elements } from './elements.js';
-import { State, cameras, loadCameras, suppressNotifications, pendingRestores } from './state.js';
-import {
-  updateHeader,
-  updateToolbarColors,
-  updateActionIconColors,
-  updateGrid,
-  updateInterfaceWidth,
-  updateInterfaceHeight,
-  updateLoader,
-  updateToolbarVisibility,
-  updateCameraTitleFontSize,
-  updateAntsVisibility,
-  setDefaultInterfaceWidth
-} from './ui.js';
-import {
-  renderCameraTable,
-  renderCameras,
+export type { Camera } from './cameras.js';
+export {
+  cameras,
+  normalizeCameraData,
+  loadCameras,
   addCamera,
   addDammy,
   onInputChange,
   deleteRow,
-  reorderRows
+  reorderRows,
+  renderCameraTable,
+  renderCameras
 } from './cameras.js';
-import {
+
+export {
+  animateHeight,
+  updateHeader,
+  updateToolbarColors,
+  updateActionIconColors,
+  updateNotificationOpacity,
+  updateGrid,
+  updateInterfaceWidth,
+  updateInterfaceHeight,
+  setDefaultInterfaceWidth,
+  updateLoader,
+  updateToolbarVisibility,
+  updateCameraTitleFontSize,
+  updateAntsVisibility
+} from './ui.js';
+
+export {
   enqueueNotification,
   animateAndRemoveNotification,
   closeAllNotifications,
-  schedulePositionUpdate
+  schedulePositionUpdate,
+  expandNotification
 } from './notifications.js';
-import {
+
+export {
   readLocalAppSettings,
   hasMeaningfulSettings,
   syncSettingsToAppApi,
   hydrateSettingsFromAppApi
 } from './settings.js';
-import { debounce, throttle } from './utils.js';
-import {
-  showConsentModal,
-  hideConsentModal,
-  showHelpModal,
-  hideHelpModal,
-  showResetConfirmModal,
-  hideResetConfirmModal,
-  handleExportSettings,
-  handleImportSettings,
-  saveToLocalStorage,
-  loadFromLocalStorage,
-  resetSettingsToDefaults,
-  applySettingsFromInputs,
-  setupEventListeners,
-  getCollapsedNotifications,
-  expandNotification,
-  updateHorizontalDividers,
-  initDragAndDrop,
-  initAccordion,
-  handleFullscreenToggle,
-  disableAllStreams,
-  refreshCameras
-} from './recovery.js';
 
-// === ДЕБАУНС ФУНКЦИИ ===
-const debouncedUpdateDividers = debounce(updateHorizontalDividers, 25);
-const debouncedSave = debounce(saveToLocalStorage, 100);
-const debouncedUpdateInterfaceWidth = debounce(updateInterfaceWidth, 15);
-const debouncedUpdateInterfaceHeight = debounce(updateInterfaceHeight, 15);
-const debouncedSaveOnDragEnd = debounce(saveToLocalStorage, 150);
-const debouncedUpdateNotificationOpacity = debounce(() => {
-  const opacityInput = Elements.notificationOpacityInput;
-  if (!opacityInput) return;
-  let opacityValue = parseFloat(opacityInput.value);
-  if (isNaN(opacityValue) || opacityValue < 0 || opacityValue > 1) {
-    opacityValue = 0.2;
-  }
-  const notifications = document.querySelectorAll('.notification');
-  notifications.forEach(notification => {
-    const isSystem = notification.classList.contains('system');
-    const isError = notification.classList.contains('error');
-    // Update opacity logic here
-  });
-}, 100);
-
-// === ИНИЦИАЛИЗАЦИЯ ===
-function init() {
-  // Setup event listeners
-  setupEventListeners();
-
-  // Initial UI updates
-  updateHeader();
-  updateToolbarColors();
-  updateGrid();
-  updateInterfaceWidth();
-  updateInterfaceHeight();
-  updateLoader();
-  updateToolbarVisibility();
-  updateActionIconColors();
-
-  // Check consent
-  if (!localStorage.getItem('printerCamsV2Consent')) {
-    showConsentModal();
-  } else {
-    State.allowLocalStorage = true;
-
-    // Load settings
-    const source = loadFromLocalStorage() ? 'local' : 'default';
-    if (source === 'default') {
-      loadCameras(Config.defaultCameras);
-      renderCameraTable(Config.defaultCameras);
-    }
-
-    renderCameras();
-
-    // Setup notification actions
-    setupNotificationActions();
-
-    debouncedUpdateDividers();
-  }
-
-  // Header text color change listener
-  Elements.headerTextColorInput?.addEventListener('input', () => {
-    updateHeader();
-    updateToolbarColors();
-  });
-
-  // Hide loader if consent modal is shown
-  const consentModal = document.getElementById('consentModal');
-  if (consentModal && !consentModal.classList.contains('hidden')) {
-    document.getElementById('loaderOverlay')?.classList.add('hidden');
-  }
-
-  // Initialize Lucide icons
-  if (typeof (window as any).lucide !== 'undefined') {
-    (window as any).lucide.createIcons();
-  }
-}
-
-function setupNotificationActions() {
-  const expandNotificationsBtn = document.getElementById('expandNotificationsBtn');
-  const closeAllNotificationsBtn = document.getElementById('closeAllNotificationsBtn');
-  const notificationActions = document.getElementById('notificationActions');
-
-  if (expandNotificationsBtn) {
-    expandNotificationsBtn.addEventListener('click', () => {
-      const collapsed = getCollapsedNotifications();
-      if (collapsed.length > 0) {
-        collapsed.forEach((notification: Element) => {
-          expandNotification(notification as HTMLElement);
-        });
-        notificationActions?.classList.remove('show');
-      }
-    });
-  }
-
-  if (closeAllNotificationsBtn) {
-    closeAllNotificationsBtn.addEventListener('click', () => {
-      closeAllNotifications();
-      notificationActions?.classList.add('hidden');
-    });
-  }
-}
-
-// Auto-hide loader after timeout
-setTimeout(() => {
-  const loader = document.getElementById('loaderOverlay');
-  if (loader && !loader.classList.contains('hidden')) {
-    loader.classList.add('hidden');
-  }
-}, 10000);
-
-// Start the app when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  init();
-}
-
-// Export for potential external access
 export {
-  init,
-  Config,
-  Elements,
-  State,
-  cameras,
-  loadCameras,
-  renderCameras,
-  renderCameraTable,
-  addCamera,
-  addDammy,
-  saveToLocalStorage,
-  updateActionIconColors,
-  updateToolbarColors,
-  updateHeader,
-  updateGrid,
-  updateInterfaceWidth,
-  updateInterfaceHeight,
-  enqueueNotification
-};
+  importSettingsFile,
+  createSettingsExportFile
+} from './settingsTransfer.js';
+
+export {
+  initializeHelpModal,
+  initializeConsentModal,
+  initializeResetModal,
+  showImportExportPanel,
+  hideImportExportPanel
+} from './modals.js';
+
+export {
+  initializeSettingsEvents,
+  showSettingsChangedNotification,
+  hideSettingsChangedNotification
+} from './settingsEvents.js';
+
+export { initializeSettingsPanel } from './settingsPanel.js';
+
+export { initializeCameraFullscreen } from './cameraFullscreen.js';
+
+export { initializeCameraGrid } from './cameraGrid.js';
+
+export { initializeCameraActions } from './cameraActions.js';
+
+export { initializePrintVisualClient } from './bootstrap.js';
+
+export {
+  normalizeMac,
+  normalizePrinterAddress,
+  extractIPv4,
+  getSubnetPrefix,
+  getScanSubnets,
+  getStreamUrlForProbe,
+  checkPrinterConnection,
+  fetchPrinterMac,
+  capturePrinterMacForCamera,
+  capturePrinterMacForInput,
+  scanSubnetsForPrinters,
+  buildMacDiscoveryMap,
+  matchSavedPrintersByMac,
+  replaceAddressHost,
+  applyIpReplacements,
+  recoverPrinterIpsByMac
+} from './recovery.js';

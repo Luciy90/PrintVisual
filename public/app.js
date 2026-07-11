@@ -536,6 +536,7 @@
       void Elements.settingsPanel.offsetWidth;
       Elements.overlay.style.backdropFilter = "blur(8px)";
       Elements.overlay.style.transition = "opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), backdrop-filter 0.4s cubic-bezier(0.4, 0, 0.2, 1)";
+      Elements.settingsPanel.classList.add("panel-appear-active");
       requestAnimationFrame(() => {
         Elements.overlay.style.opacity = "1";
         Elements.settingsPanel.classList.add("panel-appear-active");
@@ -933,7 +934,7 @@
       Elements.namedDrivValue.textContent = e.target.value + "rem";
       debouncedUpdateDividers();
       updateCameraTitleFontSize();
-      clearToolbarInlineStyles();
+      clearToolbarInlineStyles2();
       saveToLocalStorage();
     });
     [Elements.enableDividersCheckbox, Elements.dividerColorInput, Elements.dividerThicknessInput].forEach((input) => {
@@ -942,12 +943,12 @@
     Elements.dividerWidthInput.addEventListener("input", (e) => {
       Elements.dividerWidthValue.textContent = e.target.value + "%";
       debouncedUpdateDividers();
-      clearToolbarInlineStyles();
+      clearToolbarInlineStyles2();
       saveToLocalStorage();
     });
     Elements.dividerAlignInput.addEventListener("change", () => {
       debouncedUpdateDividers();
-      clearToolbarInlineStyles();
+      clearToolbarInlineStyles2();
       saveToLocalStorage();
     });
     [
@@ -960,7 +961,7 @@
       (inp) => inp.addEventListener("input", () => {
         updateHeader();
         updateToolbarColors();
-        clearToolbarInlineStyles();
+        clearToolbarInlineStyles2();
       })
     );
     [Elements.color1Input, Elements.color2Input].forEach((input) => {
@@ -969,17 +970,24 @@
         if (!document.fullscreenElement) {
           updateActionIconColors();
         }
-        clearToolbarInlineStyles();
+        clearToolbarInlineStyles2();
         saveToLocalStorage();
       });
     });
     Elements.colorIntOverInput.addEventListener("input", () => {
       saveToLocalStorage();
     });
+    function clearToolbarInlineStyles2() {
+      window.setTimeout(() => {
+        document.querySelectorAll("[data-fa-i2svg]").forEach((toolbar) => {
+          toolbar.style.color = "";
+        });
+      }, 100);
+    }
     [Elements.hideLoaderCheckbox, Elements.loaderBgColorInput, Elements.loaderOpacityInput].forEach((input) => {
       input.addEventListener("input", () => {
         updateLoader();
-        clearToolbarInlineStyles();
+        clearToolbarInlineStyles2();
         saveToLocalStorage();
       });
     });
@@ -2166,7 +2174,7 @@
       return `http://${ipWithoutPort}${streamPart}`;
     }
     function handleMouseEnter(camDiv, cam, e) {
-      if (!camDiv._parallaxEnabled || cam.ip === "dammy") return;
+      if (cam.ip === "dammy" || document.fullscreenElement) return;
       const rect = camDiv.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
@@ -2404,10 +2412,11 @@
       const isDammy = cam.ip === "dammy";
       if (isDammy) {
         camDiv.classList.add("dammy");
-        camDiv.style.opacity = "0";
+        camDiv.style.opacity = "0.45";
         camDiv.innerHTML = `
         <div class="camera-img relative w-full h-full flex items-center justify-center min-h-[180px]">
           <div class="bottom-glass"></div>
+          <div class="absolute inset-0 z-10 flex items-center justify-center text-sm font-medium text-white/70">Пустой слот</div>
         </div>
       `;
       } else {
@@ -2447,9 +2456,6 @@
       if (!isDammy) {
         img.onerror = () => {
           loadedCount++;
-          camDiv.style.pointerEvents = "none";
-          camDiv.style.transform = "none";
-          camDiv.style.transition = "none";
           fetch(`http://${cam.ip}`, { mode: "no-cors" }).then(() => {
             camDiv.classList.remove("camera-disconnected");
             camDiv.style.pointerEvents = "auto";
@@ -2516,11 +2522,37 @@
             if (statusDot) {
               updateStatusIndicator(statusDot, "disconnected");
             }
-            camDiv.style.pointerEvents = "none";
-            camDiv.style.transform = "none";
-            camDiv.style.transition = "none";
+            camDiv.style.pointerEvents = "auto";
             camDiv.style.removeProperty("transform");
             camDiv.style.removeProperty("transition");
+            if (expandIcon) {
+              expandIcon.classList.add("btn-disabled");
+              expandIcon.setAttribute("aria-disabled", "true");
+              expandIcon.style.pointerEvents = "none";
+              expandIcon.style.opacity = "0.6";
+            }
+            if (manageIcon) {
+              manageIcon.classList.add("btn-disabled");
+              manageIcon.setAttribute("aria-disabled", "true");
+              manageIcon.style.pointerEvents = "none";
+              manageIcon.style.opacity = "0.6";
+            }
+            const imageArea = camDiv.querySelector(".camera-img");
+            if (imageArea && !imageArea.querySelector(".camera-stub")) {
+              const stub = document.createElement("div");
+              stub.className = "camera-stub flex h-full w-full flex-col items-center justify-center gap-2 rounded-lg text-center font-semibold";
+              stub.setAttribute("role", "status");
+              const icon = document.createElement("i");
+              icon.className = "fas fa-video-slash text-3xl";
+              icon.setAttribute("aria-hidden", "true");
+              const title = document.createElement("p");
+              title.textContent = "Камера недоступна";
+              const details = document.createElement("p");
+              details.className = "text-xs font-normal";
+              details.textContent = "Нет подключённого принтера или видеосигнала.";
+              stub.append(icon, title, details);
+              imageArea.append(stub);
+            }
             enqueueNotification(`Принтер <b>${cam.name || cam.ip}</b> недоступен`, "error");
             if (loadedCount === totalCameras) setTimeout(hideLoader, 500);
           });
@@ -2679,7 +2711,7 @@
       camDiv.addEventListener("dragleave", (e) => {
         e.preventDefault();
         camDiv.classList.remove("drag-over");
-        if (camDiv.dataset.ip === "dammy") camDiv.style.opacity = "0";
+        if (camDiv.dataset.ip === "dammy") camDiv.style.opacity = "0.45";
       });
       camDiv.addEventListener("drop", (e) => {
         e.preventDefault();
@@ -2690,7 +2722,7 @@
           Elements.cameraContainer.insertBefore(camDiv, dragging.nextSibling);
           saveToLocalStorage();
         }
-        if (camDiv.dataset.ip === "dammy") camDiv.style.opacity = "0";
+        if (camDiv.dataset.ip === "dammy") camDiv.style.opacity = "0.45";
       });
       const button = camDiv.querySelector(".button");
       let hideTimeout;

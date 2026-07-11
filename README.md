@@ -97,10 +97,16 @@ public/
 
 src/client/
   api.ts
-  app.ts
+  app.ts                 # строгая модульная поверхность миграции
+  app.legacy-runtime.ts  # проверенный runtime до достижения паритета
+  cameras.ts
+  notifications.ts
+  recovery.ts
+  settings.ts
+  ui.ts
 ```
 
-`public/app.js` и `public/api-client.js` являются результатом сборки. Основные изменения frontend-логики нужно вносить в `src/client/`, затем запускать:
+`public/app.js` и `public/api-client.js` являются результатом сборки. Пока модульный клиент не достиг функционального паритета, `public/app.js` собирается из `src/client/app.legacy-runtime.ts`; `src/client/app.ts` и остальные модули проходят отдельную строгую проверку типов. После изменений запускайте:
 
 ```bash
 npm run build:client
@@ -212,7 +218,7 @@ npm run test:coverage
 - **API**: `/api/settings`, `/api/printers/mac`, `/api/network/scan`, `/api/network/recovery-plan`
 - **Хранение на сервере**: JSON-файл `data/printerCamsV2.json`
 - **Frontend-клиент**: `public/index.html`, `public/styles.css`, `public/api-client.js`, `public/app.js`, `public/redirect.js`
-- **Frontend-исходники**: `src/client/api.ts`, `src/client/app.ts`
+- **Frontend-исходники**: проверенный runtime `src/client/app.legacy-runtime.ts` и строгие модули миграции в `src/client/*.ts`
 
 Клиентская часть по-прежнему использует:
 - **Frontend**: HTML5, CSS3 с использованием Tailwind CSS

@@ -1,72 +1,71 @@
-export interface Settings {
-  color1: string;
-  color2: string;
-  colorIntOver: number;
-  errorNotificationColor: string;
-  systemNotificationColor: string;
-  notificationOpacity: string;
-  loader: {
-    hide: boolean;
-    bgColor: string;
-    opacity: string;
-    offFullCheckbox: boolean;
-  };
-  hideNotifications: boolean;
-  grid: {
-    columns: number;
-  };
-  header: {
-    text: string;
-    hidden: boolean;
-    bgColor: string;
-    bgOpacity: number;
-    textColor: string;
-  };
-  dividerColor: string;
-  dividerThickness: number;
-  dividerAlign: string;
-  dividerWidth: number;
-  enableDividers: boolean;
-  namedDriv: number;
-  interfaceWidth: number;
-  interfaceHeight: number;
-  enableWidthInput: boolean;
+import {
+  APP_SETTINGS_KEY,
+  BrowserAppSettingsSchema,
+  readBrowserAppSettings
+} from './storage.js';
+import type { BrowserAppSettings } from './storage.js';
+
+interface AppApiRequestOptions extends RequestInit {
+  timeout?: number;
 }
 
-export function hasMeaningfulSettings(settings: any): settings is Settings {
-  return settings && typeof settings === 'object' && Object.keys(settings).length > 0;
+interface PrintVisualApiClient {
+  getAppApiUrl(path: string): string;
+  requestAppApiJson<T>(path: string, options?: AppApiRequestOptions): Promise<T>;
+  syncSettingsToAppApi(settings: unknown): void;
+  getSettingsFromAppApi(timeout?: number): Promise<Record<string, unknown> | null>;
+  saveSettingsToAppApi(settings: unknown, timeout?: number): Promise<unknown>;
 }
 
-export function readLocalAppSettings(): Settings | null {
-  const raw = localStorage.getItem('printerCamsV2');
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return null;
+declare global {
+  interface Window {
+    PrintVisualApi?: PrintVisualApiClient;
   }
 }
 
-export function getAppApiUrl(path: string): string {
-  return (window as any).PrintVisualApi?.getAppApiUrl?.(path) || '';
+export type Settings = BrowserAppSettings;
+export type SettingsHydrationResult =
+  | 'server'
+  | 'imported-local'
+  | 'empty'
+  | 'fallback-local'
+  | 'unavailable';
+
+export function hasMeaningfulSettings(settings: unknown): settings is Settings {
+  const parsed = BrowserAppSettingsSchema.safeParse(settings);
+  return parsed.success && Object.keys(parsed.data).length > 0;
 }
 
-export async function fetchAppApiJson<T>(path: string, options: any = {}, timeout = 1500): Promise<T | null> {
-  return (window as any).PrintVisualApi?.requestAppApiJson?.(path, { ...options, timeout }) || null;
+export function readLocalAppSettings(): Settings | null {
+  return readBrowserAppSettings(localStorage);
+}
+
+export function getAppApiUrl(path: string): string {
+  return window.PrintVisualApi?.getAppApiUrl(path) ?? '';
+}
+
+export async function fetchAppApiJson<T>(
+  path: string,
+  options: AppApiRequestOptions = {},
+  timeout = 1500
+): Promise<T | null> {
+  const request = window.PrintVisualApi?.requestAppApiJson;
+  if (!request) return null;
+  return request<T>(path, { ...options, timeout });
 }
 
 export function syncSettingsToAppApi(settings: Settings): void {
-  (window as any).PrintVisualApi?.syncSettingsToAppApi?.(settings);
+  window.PrintVisualApi?.syncSettingsToAppApi(settings);
 }
 
-export async function hydrateSettingsFromAppApi(): Promise<'server' | 'imported-local' | 'empty' | 'fallback-local'> {
-  const api = (window as any).PrintVisualApi;
-  if (!api?.getSettingsFromAppApi || !api?.saveSettingsToAppApi) return 'unavailable' as any;
+export async function hydrateSettingsFromAppApi(): Promise<SettingsHydrationResult> {
+  const api = window.PrintVisualApi;
+  if (!api?.getSettingsFromAppApi || !api.saveSettingsToAppApi) return 'unavailable';
 
   try {
     const serverSettings = await api.getSettingsFromAppApi(2500);
     if (hasMeaningfulSettings(serverSettings)) {
-      localStorage.setItem('printerCamsV2', JSON.stringify(serverSettings));
+      localStorage.setItem(APP_SETTINGS_KEY, JSON.stringify(serverSettings));
       return 'server';
     }
 

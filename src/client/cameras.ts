@@ -12,56 +12,69 @@ export interface Camera {
 }
 
 export let cameras: Camera[] = [];
+let renderCameraGrid: (() => void) | null = null;
 
-export function normalizeCameraData(cam: any = {}): Camera {
+export function setCameraRenderer(renderer: (() => void) | null): void {
+  renderCameraGrid = renderer;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object';
+}
+
+function readString(record: Record<string, unknown>, key: string): string {
+  const value = record[key];
+  return typeof value === 'string' ? value : '';
+}
+
+export function normalizeCameraData(cam: unknown = {}): Camera {
   if (typeof cam === 'string') {
     return { ip: cam, stream: '', name: '', mac: '', lastSeenIp: '', lastMacCheckAt: '' };
   }
+  const record = isRecord(cam) ? cam : {};
   return {
-    ip: typeof (cam as any).ip === 'string' ? (cam as any).ip : '',
-    stream: typeof (cam as any).stream === 'string' ? (cam as any).stream : '',
-    name: typeof (cam as any).name === 'string' ? (cam as any).name : '',
-    mac: normalizeMac((cam as any).mac || ''),
-    lastSeenIp: typeof (cam as any).lastSeenIp === 'string' ? (cam as any).lastSeenIp : '',
-    lastMacCheckAt: typeof (cam as any).lastMacCheckAt === 'string' ? (cam as any).lastMacCheckAt : ''
+    ip: readString(record, 'ip'),
+    stream: readString(record, 'stream'),
+    name: readString(record, 'name'),
+    mac: normalizeMac(readString(record, 'mac')),
+    lastSeenIp: readString(record, 'lastSeenIp'),
+    lastMacCheckAt: readString(record, 'lastMacCheckAt')
   };
 }
 
-export function loadCameras(initialCameras: any[]) {
+export function loadCameras(initialCameras: readonly unknown[]): void {
   cameras = initialCameras.map(normalizeCameraData);
   renderCameraTable();
 }
 
-export function addCamera() {
-  cameras.push(normalizeCameraData({ip: '', name: ''}));
+export function addCamera(): void {
+  cameras.push(normalizeCameraData({ ip: '', name: '' }));
   renderCameraTable();
   renderCameras();
 }
 
-export function addDammy() {
-  cameras.push(normalizeCameraData({ip: 'dammy', name: ''}));
+export function addDammy(): void {
+  cameras.push(normalizeCameraData({ ip: 'dammy', name: '' }));
   renderCameraTable();
   renderCameras();
 }
 
-export function onInputChange(rowIdx: number, field: keyof Camera, value: any) {
-  if (cameras[rowIdx]) {
-    (cameras[rowIdx] as any)[field] = value;
-  }
+export function onInputChange(rowIdx: number, field: keyof Camera, value: string): void {
+  const camera = cameras[rowIdx];
+  if (camera) camera[field] = value;
 }
 
-export function deleteRow(idx: number) {
+export function deleteRow(idx: number): void {
   cameras.splice(idx, 1);
   renderCameraTable();
   renderCameras();
 }
 
-export function reorderRows(newOrderArray: Camera[]) {
+export function reorderRows(newOrderArray: Camera[]): void {
   cameras = newOrderArray;
   renderCameraTable();
   renderCameras();
 }
-
 export function rowHTML(isDammy: boolean, ip = '', stream = '', name = ''){
   if(isDammy) return `
     <td class="p-2 text-center handle cursor-grab"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="grip-vertical" class="lucide lucide-grip-vertical w-4 h-4"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg></td>
@@ -86,7 +99,7 @@ export function renderCameraTable(camArr = cameras) {
     tr.className = 'group animate-row-in3d' + (ip === 'dammy' ? ' dammy-slot' : '');
     tr.innerHTML = rowHTML(ip === 'dammy', ip, stream, name);
 
-    if (typeof (window as any).lucide !== 'undefined') (window as any).lucide.createIcons();
+    window.lucide?.createIcons();
     enableDrag(tr);
     initInputs(tr.querySelectorAll('.dynamic-input'));
     initStreamToggle(tr.querySelector('.stream-toggle') as HTMLElement);
@@ -122,11 +135,9 @@ function initInputs(list: NodeListOf<Element>) {
   list.forEach(i => {
     const input = i as HTMLInputElement;
     updateEmpty(input);
-    input.addEventListener('focus', e => {
-      const target = e.target as HTMLElement;
-      const r = target.getBoundingClientRect();
-      input.style.setProperty('--ix', (( (e as any).clientX - r.left) / r.width * 100).toFixed(0) + '%'); 
-      input.style.setProperty('--iy', (( (e as any).clientY - r.top) / r.height * 100).toFixed(0) + '%');
+    input.addEventListener('focus', () => {
+      input.style.setProperty('--ix', '50%');
+      input.style.setProperty('--iy', '50%');
       input.classList.add('is-focused');
     });
     input.addEventListener('blur', () => {

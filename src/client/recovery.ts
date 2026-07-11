@@ -9,7 +9,7 @@ import {
   fetchPrinterMacFromAppApi,
   scanNetworkWithAppApi
 } from './api.js';
-import { Camera } from './cameras.js';
+import type { Camera } from './cameras.js';
 
 export function normalizeMac(value: any) {
   const raw = String(value || '').trim();
