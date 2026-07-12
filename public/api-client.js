@@ -22,6 +22,7 @@ var PrintVisualApi = (() => {
   var api_exports = {};
   __export(api_exports, {
     fetchPrinterMacFromAppApi: () => fetchPrinterMacFromAppApi,
+    fetchPrinterStatusFromAppApi: () => fetchPrinterStatusFromAppApi,
     getAppApiUrl: () => getAppApiUrl,
     getSettingsFromAppApi: () => getSettingsFromAppApi,
     probePrinterFromAppApi: () => probePrinterFromAppApi,
@@ -89,6 +90,12 @@ var PrintVisualApi = (() => {
       { timeout: timeout + 500 }
     );
     return result?.reachable === true;
+  }
+  async function fetchPrinterStatusFromAppApi(host, timeout = 1500) {
+    return requestAppApiJson(
+      `/api/printers/status?address=${encodeURIComponent(host)}&timeoutMs=${timeout}`,
+      { timeout: timeout + 500 }
+    );
   }
   async function scanNetworkWithAppApi(subnets, options = {}) {
     const data = await requestAppApiJson("/api/network/scan", {

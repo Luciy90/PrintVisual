@@ -1,7 +1,7 @@
 import http from "node:http";
 import type { AddressInfo } from "node:net";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { checkPrinterConnection, fetchPrinterMac, printerServiceInternals } from "../src/services/printerService.ts";
+import { checkPrinterConnection, fetchPrinterMac, fetchPrinterStatus, printerServiceInternals } from "../src/services/printerService.ts";
 
 const originalFetch = globalThis.fetch;
 
@@ -29,6 +29,7 @@ async function stopServer(server: http.Server): Promise<void> {
 }
 
 afterEach(() => {
+  printerServiceInternals.objectCache.clear();
   globalThis.fetch = originalFetch;
   vi.useRealTimers();
   vi.restoreAllMocks();
@@ -188,5 +189,79 @@ describe("printerService", () => {
     } finally {
       await stopServer(server);
     }
+  });
+
+  it("maps Moonraker status and all configured extruder temperatures", async () => {
+    const fetchMock = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        result: {
+          objects: ["print_stats", "display_status", "virtual_sdcard", "heater_bed", "extruder2", "extruder", "extruder1"]
+        }
+      }), { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        result: {
+          status: {
+            print_stats: { state: "printing", filename: "parts/bracket.gcode" },
+            display_status: { progress: 0.425 },
+            virtual_sdcard: { progress: 0.42 },
+            heater_bed: { temperature: 59.6 },
+            extruder: { temperature: 220 },
+            extruder1: { temperature: 214.8 },
+            extruder2: { temperature: 205 }
+          }
+        }
+      }), { status: 200 }));
+    globalThis.fetch = fetchMock;
+
+    await expect(fetchPrinterStatus("192.168.1.20", 500)).resolves.toEqual({
+      ok: true,
+      data: {
+        status: "printing",
+        bedTemperature: 59.6,
+        extruderTemperatures: [220, 214.8, 205],
+        progress: 0.425,
+        filename: "parts/bracket.gcode"
+      }
+    });
+
+    expect(fetchMock.mock.calls[0]?.[0]).toBe("http://192.168.1.20:7125/printer/objects/list");
+    expect(fetchMock.mock.calls[1]?.[0]).toBe(
+      "http://192.168.1.20:7125/printer/objects/query?print_stats&display_status&virtual_sdcard&heater_bed&extruder&extruder1&extruder2"
+    );
+    expect(fetchMock.mock.calls[1]?.[1]).toMatchObject({ redirect: "error" });
+  });
+
+  it("maps completed prints to ready so the client can animate the transition", async () => {
+    globalThis.fetch = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        result: { objects: ["print_stats", "virtual_sdcard", "extruder"] }
+      }), { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        result: {
+          status: {
+            print_stats: { state: "complete", filename: "finished.gcode" },
+            virtual_sdcard: { progress: 1 },
+            extruder: { temperature: 32.1 }
+          }
+        }
+      }), { status: 200 }));
+
+    await expect(fetchPrinterStatus("192.168.1.21")).resolves.toMatchObject({
+      ok: true,
+      data: { status: "ready", progress: 1 }
+    });
+  });
+
+  it("rejects non-IP Moonraker destinations without issuing a request", async () => {
+    const fetchMock = vi.fn<typeof fetch>();
+    globalThis.fetch = fetchMock;
+
+    await expect(fetchPrinterStatus("printer.example.com")).resolves.toEqual({
+      ok: false,
+      reason: "invalid_address"
+    });
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

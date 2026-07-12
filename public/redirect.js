@@ -2,7 +2,7 @@
       if (window.location.protocol !== 'file:') return;
 
       const LOCALHOST_PORT = '8765';
-      const fileName = decodeURIComponent(window.location.pathname.split('/').pop() || 'print 1.8.27.html');
+      const fileName = decodeURIComponent(window.location.pathname.split('/').pop() || 'index.html');
       const encodedFileName = encodeURIComponent(fileName);
       const targetUrl = `http://localhost:${LOCALHOST_PORT}/${encodedFileName}${window.location.search}${window.location.hash}`;
       const controller = new AbortController();
@@ -33,4 +33,3 @@
         })
         .finally(() => clearTimeout(timer));
     })();
-  

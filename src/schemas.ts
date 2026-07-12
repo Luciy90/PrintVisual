@@ -40,6 +40,11 @@ export const PrinterProbeQuerySchema = z.object({
   timeoutMs: z.coerce.number().int().min(100).max(2000).default(450)
 });
 
+export const PrinterStatusQuerySchema = z.object({
+  address: PrinterAddressSchema,
+  timeoutMs: z.coerce.number().int().min(250).max(5000).default(1500)
+});
+
 export const SubnetSchema = z
   .string()
   .trim()

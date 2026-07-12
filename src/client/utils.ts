@@ -1,23 +1,29 @@
-export function debounce(func: Function, delay: number) {
-  let timeout: any;
-  return function(this: any, ...args: any[]) {
-    clearTimeout(timeout);
+export function debounce<TThis, TArgs extends unknown[]>(
+  func: (this: TThis, ...args: TArgs) => void,
+  delay: number
+): (this: TThis, ...args: TArgs) => void {
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+  return function(this: TThis, ...args: TArgs): void {
+    if (timeout !== null) clearTimeout(timeout);
     timeout = setTimeout(() => func.apply(this, args), delay);
   };
 }
 
-export function throttle(func: Function, delay: number) {
+export function throttle<TThis, TArgs extends unknown[]>(
+  func: (this: TThis, ...args: TArgs) => void,
+  delay: number
+): (this: TThis, ...args: TArgs) => void {
   let lastCall = 0;
-  let timeoutId: any;
-  let lastArgs: any[];
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  let lastArgs: TArgs | null = null;
 
-  return function(this: any, ...args: any[]) {
+  return function(this: TThis, ...args: TArgs): void {
     const now = Date.now();
     const remaining = delay - (now - lastCall);
 
     lastArgs = args;
     if (remaining <= 0) {
-      clearTimeout(timeoutId);
+      if (timeoutId !== null) clearTimeout(timeoutId);
       timeoutId = null;
       lastCall = now;
       func.apply(this, args);
@@ -25,7 +31,7 @@ export function throttle(func: Function, delay: number) {
       timeoutId = setTimeout(() => {
         lastCall = Date.now();
         timeoutId = null;
-        func.apply(this, lastArgs);
+        if (lastArgs) func.apply(this, lastArgs);
       }, remaining);
     }
   };

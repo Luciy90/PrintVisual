@@ -1703,6 +1703,31 @@
       return text;
     }
   }
+  const printerStatusPollCleanups = [];
+  function stopPrinterStatusPolling() {
+    while (printerStatusPollCleanups.length > 0) {
+      printerStatusPollCleanups.pop()?.();
+    }
+  }
+  function startPrinterStatusPolling(card, address) {
+    let stopped = false;
+    let timer = null;
+    const poll = async () => {
+      try {
+        const data = await window.PrintVisualApi?.fetchPrinterStatusFromAppApi?.(address, 1500);
+        if (!stopped && data) window.updatePrinterCard?.(card.id, data);
+      } catch {
+      } finally {
+        if (!stopped) timer = setTimeout(poll, 5e3);
+      }
+    };
+    void poll();
+    const cleanup = () => {
+      stopped = true;
+      if (timer !== null) clearTimeout(timer);
+    };
+    printerStatusPollCleanups.push(cleanup);
+  }
   async function probePrinterFromAppApi(address, timeout = 450) {
     try {
       return await window.PrintVisualApi?.probePrinterFromAppApi?.(address, timeout) === true;
@@ -2169,6 +2194,7 @@
     }
   }
   function renderCameras() {
+    stopPrinterStatusPolling();
     Elements.cameraContainer.innerHTML = "";
     const cameras2 = getCameraTableData();
     const savedSettings = JSON.parse(localStorage.getItem("printerCamsV2"));
@@ -2430,13 +2456,14 @@
       }
     });
     orderedCameras.forEach((cam, idx) => {
-      const camDiv = document.createElement("div");
+      const camDiv = document.createElement("article");
       camDiv.className = "camera-box group relative bg-cams rounded-xl shadow-lg flex items-stretch overflow-hidden transition hover:scale-105 cursor-grab camera-disconnected";
       camDiv.setAttribute("draggable", "true");
       camDiv.dataset.ip = cam.ip;
       camDiv.dataset.name = cam.name;
       camDiv.dataset.stream = cam.stream;
       camDiv.dataset.mac = cam.mac || "";
+      camDiv.id = `printer-card-${encodeURIComponent(cam.ip || `camera-${idx}`)}`;
       camDiv._parallaxEnabled = true;
       const isDammy = cam.ip === "dammy";
       const streamUrl = isDammy ? "" : getStreamUrl(cam.ip, cam.stream);
@@ -2468,8 +2495,24 @@
           </div>
           <div class="bottom-glass"></div>
           <div class="status-dot initial" title="Ожидание подключения" data-ip="${cam.ip}"></div>
-        <div class="camera-title">${cam.name || "Без имени"}</div>
+          <div class="printer-temperatures" aria-label="Температуры принтера">
+            <div class="printer-temperature">
+              <svg class="printer-temperature-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 16h16v3H4v-3Zm2-3h12l-1.5-7h-9L6 13Zm3-5h6l.65 3h-7.3L9 8Z"></path></svg>
+              <span data-printer-bed-temperature>—</span>
+            </div>
+            <div class="printer-temperature">
+              <svg class="printer-temperature-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 3h6v7.2a5 5 0 1 1-6 0V3Zm2 2v6.35l-.65.48a3 3 0 1 0 3.3 0L13 11.35V5h-2Z"></path></svg>
+              <span data-printer-extruder-temperatures>—</span>
+            </div>
+          </div>
+          <div class="printer-filename" data-printer-filename aria-hidden="true"></div>
+          <div class="printer-progress" data-printer-progress-bar role="progressbar" aria-label="Прогресс печати" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden>
+            <span class="printer-progress-fill" data-printer-progress-fill></span>
+          </div>
+          <div class="camera-title"><span class="camera-title-text"></span><span class="printer-progress-label" data-printer-progress-label>0%</span></div>
       `;
+        const titleText = camDiv.querySelector(".camera-title-text");
+        if (titleText) titleText.textContent = cam.name || "Без имени";
       }
       const img = camDiv.querySelector("img");
       const statusDot = camDiv.querySelector(".status-dot");
@@ -2514,7 +2557,7 @@
             if (!reachable) throw new Error("Printer is unreachable");
             camDiv.classList.remove("camera-disconnected");
             camDiv.style.pointerEvents = "auto";
-            if (statusDot) {
+            if (statusDot && !camDiv.dataset.printerState) {
               updateStatusIndicator(statusDot, "warning");
             }
             if (expandIcon) {
@@ -2574,7 +2617,7 @@
             enqueueNotification(`С принтера <b>${cam.name || cam.ip}</b> нет видеосигнала`, "error");
             if (loadedCount === totalCameras) setTimeout(hideLoader, 500);
           }).catch(() => {
-            if (statusDot) {
+            if (statusDot && !camDiv.dataset.printerState) {
               updateStatusIndicator(statusDot, "disconnected");
             }
             camDiv.style.pointerEvents = "auto";
@@ -2618,7 +2661,7 @@
           img.classList.remove("hidden");
           img.style.display = "block";
           img.style.pointerEvents = "auto";
-          if (statusDot) {
+          if (statusDot && !camDiv.dataset.printerState) {
             updateStatusIndicator(statusDot, "connect");
           }
           if (expandIcon) {
@@ -2804,6 +2847,7 @@
         }
       });
       Elements.cameraContainer.appendChild(camDiv);
+      if (!isDammy) startPrinterStatusPolling(camDiv, cam.ip);
     });
     updateGrid();
     debouncedUpdateDividers();

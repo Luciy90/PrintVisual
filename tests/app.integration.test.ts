@@ -57,6 +57,19 @@ describe("HTTP API integration", () => {
     expect(body.issues[0]?.message).toBe("Array must contain at least 1 element(s)");
   });
 
+  it("rejects a non-IP Moonraker status destination", async () => {
+    const response = await fetch(
+      `${appBaseUrl}/api/printers/status?address=${encodeURIComponent("printer.example.com")}`
+    );
+    expect(response.status).toBe(400);
+
+    await expect(response.json()).resolves.toMatchObject({
+      error: "request_error",
+      message: "Unable to read printer status",
+      details: { reason: "invalid_address" }
+    });
+  });
+
   it("looks up printer MAC through the HTTP route against a live external service", async () => {
     const printerServer = http.createServer((req, res) => {
       if (req.url === "/machine/system_info") {

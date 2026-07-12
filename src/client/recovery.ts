@@ -9,16 +9,64 @@ import {
   fetchPrinterMacFromAppApi,
   scanNetworkWithAppApi
 } from './api.js';
+import type { AppApiDiscoveredDevice } from './api.js';
 import type { Camera } from './cameras.js';
 
-export function normalizeMac(value: any) {
-  const raw = String(value || '').trim();
+interface DiscoveredDevice {
+  ip: string;
+  reachable: boolean;
+  mac: string;
+  source: string;
+  nameHint: string;
+  conflict?: boolean;
+  devices?: DiscoveredDevice[];
+}
+
+interface MacDiscovery {
+  macMap: Map<string, DiscoveredDevice>;
+  conflicts: Map<string, DiscoveredDevice[]>;
+}
+
+interface IpReplacement {
+  index: number;
+  name: string;
+  oldIp: string;
+  newIp: string;
+  mac: string;
+}
+
+type NotificationSink = (message: string, type?: string) => void;
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+function readString(record: Record<string, unknown>, key: string): string {
+  const value = record[key];
+  return typeof value === 'string' ? value : '';
+}
+
+function normalizeDiscoveredDevice(value: unknown, fallbackSource = ''): DiscoveredDevice | null {
+  if (!isRecord(value)) return null;
+  const ip = readString(value, 'ip').trim();
+  if (!ip) return null;
+  return {
+    ip,
+    reachable: value.reachable === true,
+    mac: normalizeMac(value.mac),
+    source: readString(value, 'source') || fallbackSource,
+    nameHint: readString(value, 'nameHint')
+  };
+}
+
+export function normalizeMac(value: unknown): string {
+  const raw = String(value ?? '').trim();
   const separated = raw.match(/([0-9a-f]{2}[:-]){5}[0-9a-f]{2}/i);
   if (!separated) return '';
   return separated[0].replace(/-/g, ':').toUpperCase();
 }
 
-export function findMacInValue(value: any): string {
+export function findMacInValue(value: unknown): string {
   if (!value) return '';
   if (typeof value === 'string') return normalizeMac(value);
   if (Array.isArray(value)) {
@@ -28,7 +76,7 @@ export function findMacInValue(value: any): string {
     }
     return '';
   }
-  if (typeof value === 'object') {
+  if (isRecord(value)) {
     for (const item of Object.values(value)) {
       const mac = findMacInValue(item);
       if (mac) return mac;
@@ -37,15 +85,15 @@ export function findMacInValue(value: any): string {
   return '';
 }
 
-export function normalizePrinterAddress(value: any) {
-  return String(value || '')
+export function normalizePrinterAddress(value: unknown): string {
+  return String(value ?? '')
     .trim()
     .replace(/^https?:\/\//i, '')
     .replace(/\/+$/, '');
 }
 
-export function extractIPv4(value: any) {
-  const match = String(value || '').match(/\\b(?:25[0-5]|2[0-4]\\d|1?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|1?\\d?\\d)){3}\\b/);
+export function extractIPv4(value: unknown): string {
+  const match = String(value ?? '').match(/\\b(?:25[0-5]|2[0-4]\\d|1?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|1?\\d?\\d)){3}\\b/);
   return match ? match[0] : '';
 }
 
@@ -55,7 +103,7 @@ export function getSubnetPrefix(ip: string) {
   return ipv4.split('.').slice(0, 3).join('.');
 }
 
-export function getScanSubnets(camArr: any[]) {
+export function getScanSubnets(camArr: readonly (string | Pick<Camera, 'ip'>)[]): string[] {
   const subnets = new Set<string>();
   camArr.forEach(cam => {
     const ip = typeof cam === 'string' ? cam : cam.ip;
@@ -73,7 +121,7 @@ export function getStreamUrlForProbe(ip: string, stream = '') {
   return `http://${baseHost}${streamPart}`;
 }
 
-export async function fetchWithTimeout(url: string, options = {}, timeout = 1200) {
+export async function fetchWithTimeout(url: string, options: RequestInit = {}, timeout = 1200): Promise<Response> {
   const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
   const timer = setTimeout(() => controller?.abort(), timeout);
   try {
@@ -118,7 +166,7 @@ export async function checkPrinterConnection(ip: string, stream = '', timeout = 
   }
 }
 
-export async function fetchJsonIfReadable(url: string, timeout = 1200) {
+export async function fetchJsonIfReadable(url: string, timeout = 1200): Promise<unknown> {
   const response = await fetchWithTimeout(url, { cache: 'no-store' }, timeout);
   const text = await response.text();
   try {
@@ -128,11 +176,11 @@ export async function fetchJsonIfReadable(url: string, timeout = 1200) {
   }
 }
 
-export function hasMeaningfulSettings(settings: any) {
-  return settings && typeof settings === 'object' && Object.keys(settings).length > 0;
+export function hasMeaningfulSettings(settings: unknown): boolean {
+  return isRecord(settings) && Object.keys(settings).length > 0;
 }
 
-export function readLocalAppSettings() {
+export function readLocalAppSettings(): unknown | null {
   const raw = localStorage.getItem('printerCamsV2');
   if (!raw) return null;
   try {
@@ -196,7 +244,10 @@ export async function fetchPrinterMac(ip: string, options: { timeout?: number, s
   return null;
 }
 
-export function findCameraIndexByIdentity(cam: any, cameras: any[]) {
+export function findCameraIndexByIdentity(
+  cam: Pick<Camera, 'ip' | 'name'>,
+  cameras: readonly Pick<Camera, 'ip' | 'name'>[]
+): number {
   const ip = normalizePrinterAddress(cam.ip);
   const name = cam.name || '';
   let idx = cameras.findIndex(item => normalizePrinterAddress(item.ip) === ip && (item.name || '') === name);
@@ -266,7 +317,7 @@ export function setIpRecoveryBusy(isBusy: boolean) {
   Elements.recoverPrinterIpsBtn.style.pointerEvents = isBusy ? 'none' : '';
 }
 
-export async function fetchLocalHelperSubnet(subnet: string, timeout = 1800) {
+export async function fetchLocalHelperSubnet(subnet: string, timeout = 1800): Promise<DiscoveredDevice[]> {
   const urls = [
     `http://127.0.0.1:32117/scan?subnet=${encodeURIComponent(subnet)}`,
     `http://localhost:32117/scan?subnet=${encodeURIComponent(subnet)}`
@@ -274,7 +325,11 @@ export async function fetchLocalHelperSubnet(subnet: string, timeout = 1800) {
   for (const url of urls) {
     try {
       const res = await fetchJsonIfReadable(url, timeout);
-      if (res && typeof res === 'object' && Array.isArray(res.devices)) return res.devices;
+      if (isRecord(res) && Array.isArray(res.devices)) {
+        return res.devices
+          .map(device => normalizeDiscoveredDevice(device, 'local-helper'))
+          .filter((device): device is DiscoveredDevice => device !== null);
+      }
     } catch {
       // Next
     }
@@ -282,33 +337,40 @@ export async function fetchLocalHelperSubnet(subnet: string, timeout = 1800) {
   return [];
 }
 
-export async function fetchAppApiNetworkScan(subnets: string[], options: { concurrency?: number, probeTimeout?: number, macTimeout?: number, scanTimeout?: number } = {}) {
+export async function fetchAppApiNetworkScan(
+  subnets: string[],
+  options: { concurrency?: number; probeTimeout?: number; macTimeout?: number; scanTimeout?: number } = {}
+): Promise<DiscoveredDevice[] | null> {
   try {
     const devices = await scanNetworkWithAppApi(subnets, options) || [];
-    return devices.map((device: any) => ({
-      ip: device.ip,
-      reachable: Boolean(device.reachable),
-      mac: normalizeMac(device.mac || ''),
-      source: device.source || 'app-api',
-      nameHint: device.nameHint || ''
-    })).filter((device: any) => device.ip);
+    return devices
+      .map((device: AppApiDiscoveredDevice) => normalizeDiscoveredDevice(device, 'app-api'))
+      .filter((device): device is DiscoveredDevice => device !== null);
   } catch {
     return null;
   }
 }
 
-export async function scanDeviceAtIp(ip: string, options: { probeTimeout?: number, macTimeout?: number } = {}) {
+export async function scanDeviceAtIp(
+  ip: string,
+  options: { probeTimeout?: number; macTimeout?: number } = {}
+): Promise<DiscoveredDevice> {
   const reachable = await checkPrinterConnection(ip, ':8080/?action=stream', options.probeTimeout || 700);
   if (!reachable) return { ip, reachable: false, mac: '', source: '', nameHint: '' };
   const macResult = await fetchPrinterMac(ip, { timeout: options.macTimeout || 900, silent: true });
   return { ip, reachable: true, mac: macResult?.mac || '', source: macResult?.source || 'http-probe', nameHint: '' };
 }
 
-export async function runConcurrent(items: any[], limit: number, worker: Function, onProgress?: Function) {
-  const results: any[] = [];
+export async function runConcurrent<TItem, TResult>(
+  items: readonly TItem[],
+  limit: number,
+  worker: (item: TItem, index: number) => TResult | null | undefined | Promise<TResult | null | undefined>,
+  onProgress?: (completed: number, total: number) => void
+): Promise<TResult[]> {
+  const results: TResult[] = [];
   let cursor = 0;
   let completed = 0;
-  async function next() {
+  async function next(): Promise<void> {
     while (cursor < items.length) {
       const currentIndex = cursor++;
       const result = await worker(items[currentIndex], currentIndex);
@@ -321,13 +383,16 @@ export async function runConcurrent(items: any[], limit: number, worker: Functio
   return results;
 }
 
-export async function scanSubnetsForPrinters(subnets: string[], options: { concurrency?: number, macTimeout?: number, probeTimeout?: number } = {}) {
-  const results: any[] = [];
+export async function scanSubnetsForPrinters(
+  subnets: string[],
+  options: { concurrency?: number; macTimeout?: number; probeTimeout?: number } = {}
+): Promise<DiscoveredDevice[]> {
+  const results: DiscoveredDevice[] = [];
   showIpRecoveryProgress('Запуск серверного сканирования', 8);
   const serverResults = await fetchAppApiNetworkScan(subnets, options);
   if (serverResults) {
     updateIpRecoveryProgress('Серверное сканирование завершено', 80);
-    return serverResults.filter((device: any) => device.reachable);
+    return serverResults.filter(device => device.reachable);
   }
 
   for (let s = 0; s < subnets.length; s++) {
@@ -347,14 +412,14 @@ export async function scanSubnetsForPrinters(subnets: string[], options: { concu
         updateIpRecoveryProgress(`Сканирование ${subnet}.0/24: ${done}/${total}`, totalProgress);
       }
     );
-    results.push(...subnetResults.filter((device: any) => device.reachable));
+    results.push(...subnetResults.filter(device => device.reachable));
   }
   return results;
 }
 
-export function buildMacDiscoveryMap(scanResults: any[]) {
-  const macMap = new Map();
-  const conflicts = new Map();
+export function buildMacDiscoveryMap(scanResults: readonly DiscoveredDevice[]): MacDiscovery {
+  const macMap = new Map<string, DiscoveredDevice>();
+  const conflicts = new Map<string, DiscoveredDevice[]>();
   scanResults.forEach(device => {
     const mac = normalizeMac(device.mac || '');
     if (!mac) return;
@@ -371,8 +436,8 @@ export function buildMacDiscoveryMap(scanResults: any[]) {
   return { macMap, conflicts };
 }
 
-export function matchSavedPrintersByMac(camArr: any[], discovery: any) {
-  const matches: any[] = [];
+export function matchSavedPrintersByMac(camArr: readonly unknown[], discovery: MacDiscovery): IpReplacement[] {
+  const matches: IpReplacement[] = [];
   camArr.forEach((cam, index) => {
     const normalized = normalizeCameraData_Internal(cam);
     const mac = normalizeMac(normalized.mac || '');
@@ -393,17 +458,18 @@ export function matchSavedPrintersByMac(camArr: any[], discovery: any) {
   return matches;
 }
 
-function normalizeCameraData_Internal(cam: any = {}) {
+function normalizeCameraData_Internal(cam: unknown = {}): Camera {
   if (typeof cam === 'string') {
     return { ip: cam, stream: '', name: '', mac: '', lastSeenIp: '', lastMacCheckAt: '' };
   }
+  const record = isRecord(cam) ? cam : {};
   return {
-    ip: typeof cam.ip === 'string' ? cam.ip : '',
-    stream: typeof cam.stream === 'string' ? cam.stream : '',
-    name: typeof cam.name === 'string' ? cam.name : '',
-    mac: normalizeMac(cam.mac || ''),
-    lastSeenIp: typeof cam.lastSeenIp === 'string' ? cam.lastSeenIp : '',
-    lastMacCheckAt: typeof cam.lastMacCheckAt === 'string' ? cam.lastMacCheckAt : ''
+    ip: readString(record, 'ip'),
+    stream: readString(record, 'stream'),
+    name: readString(record, 'name'),
+    mac: normalizeMac(record.mac),
+    lastSeenIp: readString(record, 'lastSeenIp'),
+    lastMacCheckAt: readString(record, 'lastMacCheckAt')
   };
 }
 
@@ -413,8 +479,8 @@ export function replaceAddressHost(oldValue: string, newIp: string) {
   return oldIp ? normalized.replace(oldIp, newIp) : newIp;
 }
 
-export async function confirmIpReplacements(matches: any[]) {
-  return new Promise(resolve => {
+export async function confirmIpReplacements(matches: readonly IpReplacement[]): Promise<boolean> {
+  return new Promise<boolean>(resolve => {
     const overlay = document.createElement('div');
     overlay.className = 'fixed inset-0 z-[1200] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4';
     overlay.innerHTML = `
@@ -439,7 +505,7 @@ export async function confirmIpReplacements(matches: any[]) {
       </div>
     `;
     document.body.appendChild(overlay);
-    if (typeof (window as any).lucide !== 'undefined') (window as any).lucide.createIcons();
+    window.lucide?.createIcons();
 
     function close(value: boolean) {
       overlay.remove();
@@ -458,29 +524,37 @@ export async function confirmIpReplacements(matches: any[]) {
   });
 }
 
-export function applyIpReplacements(matches: any[], cameras: Camera[]) {
+export function applyIpReplacements(matches: readonly IpReplacement[], cameras: Camera[]): void {
   const now = new Date().toISOString();
-  let previousSettings: any = {};
+  let previousSettings: Record<string, unknown> = {};
   try {
-    previousSettings = JSON.parse(localStorage.getItem('printerCamsV2') || '{}');
+    const parsed: unknown = JSON.parse(localStorage.getItem('printerCamsV2') || '{}');
+    previousSettings = isRecord(parsed) ? parsed : {};
   } catch {
     previousSettings = {};
   }
-  previousSettings.streamToggles = previousSettings.streamToggles || {};
+  const streamToggles = isRecord(previousSettings.streamToggles)
+    ? previousSettings.streamToggles
+    : {};
+  previousSettings.streamToggles = streamToggles;
   matches.forEach(item => {
-    if (!cameras[item.index]) return;
-    if (Object.prototype.hasOwnProperty.call(previousSettings.streamToggles, item.oldIp)) {
-      previousSettings.streamToggles[item.newIp] = previousSettings.streamToggles[item.oldIp];
-      delete previousSettings.streamToggles[item.oldIp];
+    const camera = cameras[item.index];
+    if (!camera) return;
+    if (Object.prototype.hasOwnProperty.call(streamToggles, item.oldIp)) {
+      streamToggles[item.newIp] = streamToggles[item.oldIp];
+      delete streamToggles[item.oldIp];
     }
-    cameras[item.index].ip = item.newIp;
-    cameras[item.index].lastSeenIp = extractIPv4(item.newIp) || normalizePrinterAddress(item.newIp);
-    cameras[item.index].lastMacCheckAt = now;
+    camera.ip = item.newIp;
+    camera.lastSeenIp = extractIPv4(item.newIp) || normalizePrinterAddress(item.newIp);
+    camera.lastMacCheckAt = now;
   });
   localStorage.setItem('printerCamsV2', JSON.stringify(previousSettings));
 }
 
-export async function recoverPrinterIpsByMac(cameras: Camera[], enqueueNotification: Function) {
+export async function recoverPrinterIpsByMac(
+  cameras: Camera[],
+  enqueueNotification: NotificationSink
+): Promise<void> {
   if (State.ipRecoveryBusy) return;
   setIpRecoveryBusy(true);
   try {
@@ -532,7 +606,7 @@ export async function recoverPrinterIpsByMac(cameras: Camera[], enqueueNotificat
   }
 }
 
-function getCameraTableData_Internal(cameras: any[]) {
+function getCameraTableData_Internal(cameras: readonly Camera[]) {
   return cameras.map((c, index) => ({
     ip: c.ip,
     stream: c.stream,

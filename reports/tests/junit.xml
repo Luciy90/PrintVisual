@@ -1,119 +1,151 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites name="vitest tests" tests="50" failures="0" errors="0" time="0.6852294">
-    <testsuite name="tests/address.test.ts" timestamp="2026-07-12T12:43:12.780Z" hostname="WIN-UJMNPMQIMG4" tests="4" failures="0" errors="0" skipped="0" time="0.0084822">
-        <testcase classname="tests/address.test.ts" name="address helpers &gt; normalizes MAC addresses from mixed input" time="0.0027344">
+<testsuites name="vitest tests" tests="63" failures="0" errors="0" time="1.4519988">
+    <testsuite name="tests/address.test.ts" timestamp="2026-07-12T20:55:11.776Z" hostname="WIN-UJMNPMQIMG4" tests="4" failures="0" errors="0" skipped="0" time="0.0108732">
+        <testcase classname="tests/address.test.ts" name="address helpers &gt; normalizes MAC addresses from mixed input" time="0.0042227">
         </testcase>
-        <testcase classname="tests/address.test.ts" name="address helpers &gt; finds MAC addresses in nested arrays and objects" time="0.0004529">
+        <testcase classname="tests/address.test.ts" name="address helpers &gt; finds MAC addresses in nested arrays and objects" time="0.0005287">
         </testcase>
-        <testcase classname="tests/address.test.ts" name="address helpers &gt; normalizes printer addresses and extracts IPv4/subnet data" time="0.0011988">
+        <testcase classname="tests/address.test.ts" name="address helpers &gt; normalizes printer addresses and extracts IPv4/subnet data" time="0.0014372">
         </testcase>
-        <testcase classname="tests/address.test.ts" name="address helpers &gt; collects distinct scan subnets and replaces host addresses" time="0.0016388">
-        </testcase>
-    </testsuite>
-    <testsuite name="tests/app.integration.test.ts" timestamp="2026-07-12T12:43:12.788Z" hostname="WIN-UJMNPMQIMG4" tests="3" failures="0" errors="0" skipped="0" time="0.1767306">
-        <testcase classname="tests/app.integration.test.ts" name="HTTP API integration &gt; returns validation details for invalid printer MAC requests" time="0.0713358">
-        </testcase>
-        <testcase classname="tests/app.integration.test.ts" name="HTTP API integration &gt; returns validation details for invalid recovery plan payloads" time="0.0343854">
-        </testcase>
-        <testcase classname="tests/app.integration.test.ts" name="HTTP API integration &gt; looks up printer MAC through the HTTP route against a live external service" time="0.0294951">
+        <testcase classname="tests/address.test.ts" name="address helpers &gt; collects distinct scan subnets and replaces host addresses" time="0.0018602">
         </testcase>
     </testsuite>
-    <testsuite name="tests/cameraOrdering.test.ts" timestamp="2026-07-12T12:43:12.790Z" hostname="WIN-UJMNPMQIMG4" tests="2" failures="0" errors="0" skipped="0" time="0.0063071">
-        <testcase classname="tests/cameraOrdering.test.ts" name="camera ordering &gt; moves one item without mutating the original list" time="0.0034147">
+    <testsuite name="tests/app.integration.test.ts" timestamp="2026-07-12T20:55:11.779Z" hostname="WIN-UJMNPMQIMG4" tests="4" failures="0" errors="0" skipped="0" time="0.3781608">
+        <testcase classname="tests/app.integration.test.ts" name="HTTP API integration &gt; returns validation details for invalid printer MAC requests" time="0.0885567">
         </testcase>
-        <testcase classname="tests/cameraOrdering.test.ts" name="camera ordering &gt; keeps the list intact for invalid or identical positions" time="0.0006178">
+        <testcase classname="tests/app.integration.test.ts" name="HTTP API integration &gt; returns validation details for invalid recovery plan payloads" time="0.1002916">
         </testcase>
-    </testsuite>
-    <testsuite name="tests/cameraStreams.test.ts" timestamp="2026-07-12T12:43:12.791Z" hostname="WIN-UJMNPMQIMG4" tests="2" failures="0" errors="0" skipped="0" time="0.0107527">
-        <testcase classname="tests/cameraStreams.test.ts" name="camera streams &gt; preserves the legacy stream URL convention" time="0.0026597">
+        <testcase classname="tests/app.integration.test.ts" name="HTTP API integration &gt; rejects a non-IP Moonraker status destination" time="0.0498085">
         </testcase>
-        <testcase classname="tests/cameraStreams.test.ts" name="camera streams &gt; persists individual stream toggle states without removing settings" time="0.005924">
+        <testcase classname="tests/app.integration.test.ts" name="HTTP API integration &gt; looks up printer MAC through the HTTP route against a live external service" time="0.0518838">
         </testcase>
     </testsuite>
-    <testsuite name="tests/clientStorage.test.ts" timestamp="2026-07-12T12:43:12.791Z" hostname="WIN-UJMNPMQIMG4" tests="7" failures="0" errors="0" skipped="0" time="0.0242037">
-        <testcase classname="tests/clientStorage.test.ts" name="client settings storage &gt; imports the legacy envelope without touching unrelated storage keys" time="0.0081068">
+    <testsuite name="tests/cameraOrdering.test.ts" timestamp="2026-07-12T20:55:11.785Z" hostname="WIN-UJMNPMQIMG4" tests="2" failures="0" errors="0" skipped="0" time="0.0060626">
+        <testcase classname="tests/cameraOrdering.test.ts" name="camera ordering &gt; moves one item without mutating the original list" time="0.0032255">
         </testcase>
-        <testcase classname="tests/clientStorage.test.ts" name="client settings storage &gt; rejects malformed, oversized, unsafe, and unsupported imports" time="0.0021493">
-        </testcase>
-        <testcase classname="tests/clientStorage.test.ts" name="client settings storage &gt; rolls back all owned keys when applying an import fails" time="0.0022609">
-        </testcase>
-        <testcase classname="tests/clientStorage.test.ts" name="client settings storage &gt; exports only application-owned keys and round-trips the current format" time="0.0040126">
-        </testcase>
-        <testcase classname="tests/clientStorage.test.ts" name="client settings storage &gt; removes only application-owned keys" time="0.0006329">
-        </testcase>
-        <testcase classname="tests/clientStorage.test.ts" name="client settings storage &gt; validates file size before reading and creates a compatible export file" time="0.0040023">
-        </testcase>
-        <testcase classname="tests/clientStorage.test.ts" name="client settings storage &gt; stores consent only under the application consent key" time="0.0004582">
+        <testcase classname="tests/cameraOrdering.test.ts" name="camera ordering &gt; keeps the list intact for invalid or identical positions" time="0.0005158">
         </testcase>
     </testsuite>
-    <testsuite name="tests/networkScanner.test.ts" timestamp="2026-07-12T12:43:12.793Z" hostname="WIN-UJMNPMQIMG4" tests="14" failures="0" errors="0" skipped="0" time="0.059899">
-        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; provides default dependencies for subnet expansion and logging" time="0.0067328">
+    <testsuite name="tests/cameraStreams.test.ts" timestamp="2026-07-12T20:55:11.787Z" hostname="WIN-UJMNPMQIMG4" tests="2" failures="0" errors="0" skipped="0" time="0.0108498">
+        <testcase classname="tests/cameraStreams.test.ts" name="camera streams &gt; preserves the legacy stream URL convention" time="0.0028857">
         </testcase>
-        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; preserves input order in concurrent worker execution" time="0.0326063">
-        </testcase>
-        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; returns an empty result for empty concurrent workloads" time="0.0011621">
-        </testcase>
-        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; builds a normalized MAC map and tracks conflicts" time="0.001982">
-        </testcase>
-        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; matches saved printers by MAC and rewrites only changed IP addresses" time="0.0011699">
-        </testcase>
-        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; does not create a recovery match when the device IP is unchanged" time="0.0003645">
-        </testcase>
-        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; falls back to the raw printer address and IP label when hostname-based entries move" time="0.0004181">
-        </testcase>
-        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; scans a device and returns the discovered MAC" time="0.0013917">
-        </testcase>
-        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; marks a device unreachable when connection probe fails" time="0.0009221">
-        </testcase>
-        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; uses a fallback source when the device is reachable but MAC is not returned" time="0.0009633">
-        </testcase>
-        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; logs and handles unexpected scan errors" time="0.004054">
-        </testcase>
-        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; scans subnets with injected dependencies and returns only reachable devices" time="0.0016732">
-        </testcase>
-        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; builds an end-to-end recovery plan with matches and conflicts" time="0.0026757">
-        </testcase>
-        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; continues recovery planning when a device scan crashes" time="0.0014339">
+        <testcase classname="tests/cameraStreams.test.ts" name="camera streams &gt; persists individual stream toggle states without removing settings" time="0.0057378">
         </testcase>
     </testsuite>
-    <testsuite name="tests/printerService.test.ts" timestamp="2026-07-12T12:43:12.800Z" hostname="WIN-UJMNPMQIMG4" tests="11" failures="0" errors="0" skipped="0" time="0.3652605">
-        <testcase classname="tests/printerService.test.ts" name="printerService &gt; returns null for placeholder printer addresses" time="0.0066769">
+    <testsuite name="tests/clientStorage.test.ts" timestamp="2026-07-12T20:55:11.789Z" hostname="WIN-UJMNPMQIMG4" tests="7" failures="0" errors="0" skipped="0" time="0.0224092">
+        <testcase classname="tests/clientStorage.test.ts" name="client settings storage &gt; imports the legacy envelope without touching unrelated storage keys" time="0.0076603">
         </testcase>
-        <testcase classname="tests/printerService.test.ts" name="printerService &gt; tries known JSON endpoints until MAC is found" time="0.008418">
+        <testcase classname="tests/clientStorage.test.ts" name="client settings storage &gt; rejects malformed, oversized, unsafe, and unsupported imports" time="0.0021499">
         </testcase>
-        <testcase classname="tests/printerService.test.ts" name="printerService &gt; returns null when endpoints do not contain MAC data" time="0.001458">
+        <testcase classname="tests/clientStorage.test.ts" name="client settings storage &gt; rolls back all owned keys when applying an import fails" time="0.0020574">
         </testcase>
-        <testcase classname="tests/printerService.test.ts" name="printerService &gt; checks connectivity through fallback probe URLs" time="0.001097">
+        <testcase classname="tests/clientStorage.test.ts" name="client settings storage &gt; exports only application-owned keys and round-trips the current format" time="0.0037813">
         </testcase>
-        <testcase classname="tests/printerService.test.ts" name="printerService &gt; returns false when all connectivity probes fail" time="0.0008126">
+        <testcase classname="tests/clientStorage.test.ts" name="client settings storage &gt; removes only application-owned keys" time="0.0005507">
         </testcase>
-        <testcase classname="tests/printerService.test.ts" name="printerService &gt; parses JSON responses and falls back to raw text for non-JSON payloads" time="0.001903">
+        <testcase classname="tests/clientStorage.test.ts" name="client settings storage &gt; validates file size before reading and creates a compatible export file" time="0.0032439">
         </testcase>
-        <testcase classname="tests/printerService.test.ts" name="printerService &gt; throws for non-success HTTP responses" time="0.0025764">
-        </testcase>
-        <testcase classname="tests/printerService.test.ts" name="printerService &gt; aborts requests on timeout" time="0.0050422">
-        </testcase>
-        <testcase classname="tests/printerService.test.ts" name="printerService &gt; integrates with a live HTTP service and extracts nested MAC data" time="0.0938379">
-        </testcase>
-        <testcase classname="tests/printerService.test.ts" name="printerService &gt; returns null when the external HTTP service is unavailable" time="0.2303746">
-        </testcase>
-        <testcase classname="tests/printerService.test.ts" name="printerService &gt; detects a reachable TCP endpoint without issuing HTTP retries" time="0.010154">
+        <testcase classname="tests/clientStorage.test.ts" name="client settings storage &gt; stores consent only under the application consent key" time="0.0005251">
         </testcase>
     </testsuite>
-    <testsuite name="tests/schemas.test.ts" timestamp="2026-07-12T12:43:12.803Z" hostname="WIN-UJMNPMQIMG4" tests="7" failures="0" errors="0" skipped="0" time="0.0335936">
-        <testcase classname="tests/schemas.test.ts" name="Zod schemas &gt; validates and normalizes MAC addresses" time="0.0148754">
+    <testsuite name="tests/errorHandler.test.ts" timestamp="2026-07-12T20:55:11.792Z" hostname="WIN-UJMNPMQIMG4" tests="4" failures="0" errors="0" skipped="0" time="0.2123795">
+        <testcase classname="tests/errorHandler.test.ts" name="error middleware &gt; maps Zod errors to a safe validation response" time="0.1306681">
         </testcase>
-        <testcase classname="tests/schemas.test.ts" name="Zod schemas &gt; validates printer addresses with trim and length limits" time="0.000945">
+        <testcase classname="tests/errorHandler.test.ts" name="error middleware &gt; preserves expected HttpError status and details" time="0.0079791">
         </testcase>
-        <testcase classname="tests/schemas.test.ts" name="Zod schemas &gt; applies defaults for camera objects and camera arrays" time="0.0032305">
+        <testcase classname="tests/errorHandler.test.ts" name="error middleware &gt; does not expose unexpected exception messages" time="0.0128063">
         </testcase>
-        <testcase classname="tests/schemas.test.ts" name="Zod schemas &gt; accepts partial settings, passthrough fields and rejects invalid toggle values" time="0.0024078">
+        <testcase classname="tests/errorHandler.test.ts" name="error middleware &gt; maps unmatched routes to a 404 response" time="0.0072822">
         </testcase>
-        <testcase classname="tests/schemas.test.ts" name="Zod schemas &gt; validates MAC lookup input for query and body payloads" time="0.0018468">
+    </testsuite>
+    <testsuite name="tests/health.test.ts" timestamp="2026-07-12T20:55:11.794Z" hostname="WIN-UJMNPMQIMG4" tests="1" failures="0" errors="0" skipped="0" time="0.1549712">
+        <testcase classname="tests/health.test.ts" name="health endpoint &gt; returns service identity, time, and process uptime" time="0.0821371">
         </testcase>
-        <testcase classname="tests/schemas.test.ts" name="Zod schemas &gt; validates subnet format and network scan boundaries" time="0.0023437">
+    </testsuite>
+    <testsuite name="tests/networkScanner.test.ts" timestamp="2026-07-12T20:55:11.795Z" hostname="WIN-UJMNPMQIMG4" tests="14" failures="0" errors="0" skipped="0" time="0.0692335">
+        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; provides default dependencies for subnet expansion and logging" time="0.0071505">
         </testcase>
-        <testcase classname="tests/schemas.test.ts" name="Zod schemas &gt; validates recovery plan payloads and numeric bounds" time="0.0010116">
+        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; preserves input order in concurrent worker execution" time="0.0398418">
+        </testcase>
+        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; returns an empty result for empty concurrent workloads" time="0.0012951">
+        </testcase>
+        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; builds a normalized MAC map and tracks conflicts" time="0.0029681">
+        </testcase>
+        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; matches saved printers by MAC and rewrites only changed IP addresses" time="0.0020903">
+        </testcase>
+        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; does not create a recovery match when the device IP is unchanged" time="0.0003933">
+        </testcase>
+        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; falls back to the raw printer address and IP label when hostname-based entries move" time="0.0003738">
+        </testcase>
+        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; scans a device and returns the discovered MAC" time="0.0012958">
+        </testcase>
+        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; marks a device unreachable when connection probe fails" time="0.0009297">
+        </testcase>
+        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; uses a fallback source when the device is reachable but MAC is not returned" time="0.0010015">
+        </testcase>
+        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; logs and handles unexpected scan errors" time="0.0039819">
+        </testcase>
+        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; scans subnets with injected dependencies and returns only reachable devices" time="0.0016362">
+        </testcase>
+        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; builds an end-to-end recovery plan with matches and conflicts" time="0.0023359">
+        </testcase>
+        <testcase classname="tests/networkScanner.test.ts" name="networkScanner &gt; continues recovery planning when a device scan crashes" time="0.0013643">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/printerCard.test.ts" timestamp="2026-07-12T20:55:11.812Z" hostname="WIN-UJMNPMQIMG4" tests="4" failures="0" errors="0" skipped="0" time="0.0081817">
+        <testcase classname="tests/printerCard.test.ts" name="printer card telemetry &gt; validates the backend view model without unsafe casts" time="0.0039439">
+        </testcase>
+        <testcase classname="tests/printerCard.test.ts" name="printer card telemetry &gt; supports Moonraker fractions and pre-normalized percentages" time="0.0007244">
+        </testcase>
+        <testcase classname="tests/printerCard.test.ts" name="printer card telemetry &gt; formats one or several temperatures compactly" time="0.0004156">
+        </testcase>
+        <testcase classname="tests/printerCard.test.ts" name="printer card telemetry &gt; detects only the required state transitions" time="0.0005628">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/printerService.test.ts" timestamp="2026-07-12T20:55:11.816Z" hostname="WIN-UJMNPMQIMG4" tests="14" failures="0" errors="0" skipped="0" time="0.5579556">
+        <testcase classname="tests/printerService.test.ts" name="printerService &gt; returns null for placeholder printer addresses" time="0.0063528">
+        </testcase>
+        <testcase classname="tests/printerService.test.ts" name="printerService &gt; tries known JSON endpoints until MAC is found" time="0.0082426">
+        </testcase>
+        <testcase classname="tests/printerService.test.ts" name="printerService &gt; returns null when endpoints do not contain MAC data" time="0.0014448">
+        </testcase>
+        <testcase classname="tests/printerService.test.ts" name="printerService &gt; checks connectivity through fallback probe URLs" time="0.0010763">
+        </testcase>
+        <testcase classname="tests/printerService.test.ts" name="printerService &gt; returns false when all connectivity probes fail" time="0.0007844">
+        </testcase>
+        <testcase classname="tests/printerService.test.ts" name="printerService &gt; parses JSON responses and falls back to raw text for non-JSON payloads" time="0.0013855">
+        </testcase>
+        <testcase classname="tests/printerService.test.ts" name="printerService &gt; throws for non-success HTTP responses" time="0.0023694">
+        </testcase>
+        <testcase classname="tests/printerService.test.ts" name="printerService &gt; aborts requests on timeout" time="0.0055093">
+        </testcase>
+        <testcase classname="tests/printerService.test.ts" name="printerService &gt; integrates with a live HTTP service and extracts nested MAC data" time="0.0976291">
+        </testcase>
+        <testcase classname="tests/printerService.test.ts" name="printerService &gt; returns null when the external HTTP service is unavailable" time="0.342171">
+        </testcase>
+        <testcase classname="tests/printerService.test.ts" name="printerService &gt; detects a reachable TCP endpoint without issuing HTTP retries" time="0.0651445">
+        </testcase>
+        <testcase classname="tests/printerService.test.ts" name="printerService &gt; maps Moonraker status and all configured extruder temperatures" time="0.0214127">
+        </testcase>
+        <testcase classname="tests/printerService.test.ts" name="printerService &gt; maps completed prints to ready so the client can animate the transition" time="0.0014872">
+        </testcase>
+        <testcase classname="tests/printerService.test.ts" name="printerService &gt; rejects non-IP Moonraker destinations without issuing a request" time="0.0005991">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/schemas.test.ts" timestamp="2026-07-12T20:55:11.841Z" hostname="WIN-UJMNPMQIMG4" tests="7" failures="0" errors="0" skipped="0" time="0.0209217">
+        <testcase classname="tests/schemas.test.ts" name="Zod schemas &gt; validates and normalizes MAC addresses" time="0.0052829">
+        </testcase>
+        <testcase classname="tests/schemas.test.ts" name="Zod schemas &gt; validates printer addresses with trim and length limits" time="0.0019493">
+        </testcase>
+        <testcase classname="tests/schemas.test.ts" name="Zod schemas &gt; applies defaults for camera objects and camera arrays" time="0.0037072">
+        </testcase>
+        <testcase classname="tests/schemas.test.ts" name="Zod schemas &gt; accepts partial settings, passthrough fields and rejects invalid toggle values" time="0.0025036">
+        </testcase>
+        <testcase classname="tests/schemas.test.ts" name="Zod schemas &gt; validates MAC lookup input for query and body payloads" time="0.0018919">
+        </testcase>
+        <testcase classname="tests/schemas.test.ts" name="Zod schemas &gt; validates subnet format and network scan boundaries" time="0.0023144">
+        </testcase>
+        <testcase classname="tests/schemas.test.ts" name="Zod schemas &gt; validates recovery plan payloads and numeric bounds" time="0.0009167">
         </testcase>
     </testsuite>
 </testsuites>

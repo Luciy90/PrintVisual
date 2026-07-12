@@ -1,12 +1,13 @@
 param(
   [int]$Port = 8765,
-  [string]$AppFile = "print 1.8.28.html",
+  [string]$AppFile = "index.html",
   [switch]$NoBrowser
 )
 
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
-$AppPath = Join-Path $Root $AppFile
+$PublicRoot = Join-Path $Root "public"
+$AppPath = Join-Path $PublicRoot $AppFile
 
 if (-not (Test-Path -LiteralPath $AppPath -PathType Leaf)) {
   Write-Host "Application file not found: $AppPath" -ForegroundColor Red
@@ -112,9 +113,9 @@ try {
       }
 
       $relativePath = $relativePath -replace "/", [IO.Path]::DirectorySeparatorChar
-      $candidatePath = Join-Path $Root $relativePath
+      $candidatePath = Join-Path $PublicRoot $relativePath
       $resolvedPath = [IO.Path]::GetFullPath($candidatePath)
-      $resolvedRoot = [IO.Path]::GetFullPath($Root)
+      $resolvedRoot = [IO.Path]::GetFullPath($PublicRoot)
       $resolvedRootWithSlash = $resolvedRoot.TrimEnd([IO.Path]::DirectorySeparatorChar) + [IO.Path]::DirectorySeparatorChar
 
       if (-not $resolvedPath.StartsWith($resolvedRootWithSlash, [StringComparison]::OrdinalIgnoreCase)) {

@@ -12,6 +12,11 @@ export function createApp(): express.Express {
   const isProduction = process.env.NODE_ENV === "production";
 
   app.disable("x-powered-by");
+  // Local mode loads third-party UI assets and direct cross-origin camera streams.
+  // CSP is therefore disabled until those assets are bundled or explicitly allowlisted;
+  // COEP and CORP stay disabled because cameras commonly omit compatible response headers.
+  // Before exposing the app beyond localhost, add authentication, restrict CORS, serve over
+  // HTTPS, define a strict CSP, and enable COEP/CORP only after camera compatibility testing.
   app.use(helmet({
     contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false,
@@ -35,15 +40,6 @@ export function createApp(): express.Express {
   });
 
   app.get("/index.html", (_req, res, next) => {
-    sendClient(res, next);
-  });
-
-  const legacyFileName = paths.legacyClientFile.split(/[\\/]/).pop() ?? "";
-  app.get(`/${encodeURIComponent(legacyFileName)}`, (_req, res, next) => {
-    sendClient(res, next);
-  });
-
-  app.get(`/${legacyFileName}`, (_req, res, next) => {
     sendClient(res, next);
   });
 

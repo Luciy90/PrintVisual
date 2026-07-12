@@ -18,6 +18,14 @@ export interface AppApiDiscoveredDevice {
   nameHint?: string;
 }
 
+export interface AppApiPrinterStatus {
+  status: "ready" | "printing" | "error";
+  bedTemperature: number | null;
+  extruderTemperatures: number[];
+  progress: number;
+  filename: string;
+}
+
 let settingsSyncTimer: ReturnType<typeof setTimeout> | null = null;
 
 export function getAppApiUrl(path: string): string {
@@ -97,6 +105,16 @@ export async function probePrinterFromAppApi(
     { timeout: timeout + 500 }
   );
   return result?.reachable === true;
+}
+
+export async function fetchPrinterStatusFromAppApi(
+  host: string,
+  timeout = 1500
+): Promise<AppApiPrinterStatus | null> {
+  return requestAppApiJson<AppApiPrinterStatus>(
+    `/api/printers/status?address=${encodeURIComponent(host)}&timeoutMs=${timeout}`,
+    { timeout: timeout + 500 }
+  );
 }
 
 export async function scanNetworkWithAppApi(

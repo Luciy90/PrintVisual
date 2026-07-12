@@ -13,6 +13,17 @@ await esbuild.build({
   legalComments: "none"
 });
 
+await esbuild.build({
+  entryPoints: ["src/client/printerCard.entry.ts"],
+  outfile: "public/printer-card.js",
+  bundle: true,
+  format: "iife",
+  target: ["es2020"],
+  charset: "utf8",
+  sourcemap: true,
+  legalComments: "none"
+});
+
 // Keep the verified legacy runtime active until the strict modular client
 // reaches behavioral parity. The TypeScript modules are checked separately.
 const appSource = await fs.readFile("src/client/app.legacy-runtime.ts", "utf8");
@@ -32,4 +43,5 @@ if (appResult.map) {
 }
 
 console.log("Built frontend: src/client/api.ts -> public/api-client.js");
+console.log("Built frontend: src/client/printerCard.entry.ts -> public/printer-card.js");
 console.log("Built frontend: src/client/app.legacy-runtime.ts -> public/app.js");

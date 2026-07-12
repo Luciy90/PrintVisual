@@ -78,6 +78,16 @@ export { initializeCameraFullscreen } from './cameraFullscreen.js';
 
 export { initializeCameraGrid } from './cameraGrid.js';
 
+export {
+  formatTemperature,
+  getPrinterCardAnimation,
+  normalizeProgress,
+  parsePrinterCardData,
+  resetPrinterCardState,
+  updatePrinterCard
+} from './printerCard.js';
+export type { PrinterCardAnimation, PrinterCardData, PrinterCardStatus } from './printerCard.js';
+
 export { initializeCameraActions } from './cameraActions.js';
 
 export { initializePrintVisualClient } from './bootstrap.js';

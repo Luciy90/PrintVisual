@@ -3,10 +3,9 @@ import { Config } from './config.js';
 import { State } from './state.js';
 import { hexToRgbStr, parseRGB, rgbToHsv, hsvToRgb } from './utils.js';
 
-declare const lucide: any;
-let resizeTimeout: any;
+let resizeTimeout: ReturnType<typeof setTimeout> | null = null;
 
-export function animateHeight(fn: Function, el: HTMLElement) {
+export function animateHeight(fn: () => void, el: HTMLElement) {
   const s = el.offsetHeight;
   fn();
   requestAnimationFrame(() => {
@@ -382,6 +381,14 @@ export function updateAntsVisibility() {
   }
 }
 
+interface AntState {
+    el: HTMLDivElement;
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+}
+
 function initAnts() {
     const ANT_COUNT        = 20;
     const MIN_SPEED        = 0.04;
@@ -395,7 +402,7 @@ function initAnts() {
     const SEPARATION_FACTOR= 0.03;
     const BORDER_MARGIN    = 20;
 
-    const ants: any[] = [];
+    const ants: AntState[] = [];
     const container = document.getElementById('ant-container');
     if (!container) return;
     let W = window.innerWidth;
@@ -526,7 +533,7 @@ function initAnts() {
         W = window.innerWidth;
         H = window.innerHeight;
       });
-      lucide.createIcons();
+      window.lucide?.createIcons();
 }
 
 export function delayedMaxWidthAdjustment() {

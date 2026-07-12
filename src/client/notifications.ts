@@ -6,9 +6,9 @@ let isProcessing = false;
 const NOTIFICATION_DELAY = 300;
 let notificationCounter = 0;
 let activeNotifications = new Set<string>();
-const notificationBuffer = new Set<string>();
-let bufferTimer: any = null;
-let globalCollapseTimeout: any = null;
+const notificationBuffer = new Map<string, string>();
+let bufferTimer: ReturnType<typeof setTimeout> | null = null;
+let globalCollapseTimeout: ReturnType<typeof setTimeout> | null = null;
 let hoveredNotificationsCount = 0;
 
 export function getNotificationStyles(isSystem = false) {
@@ -34,8 +34,7 @@ function checkAndRemoveDuplicateBuffer(message: string) {
 
 function flushBuffer() {
   if (notificationBuffer.size === 0) return;
-  for (const item of notificationBuffer) {
-    const { message, type } = JSON.parse(item);
+  for (const [message, type] of notificationBuffer) {
     if (!checkAndRemoveDuplicate(message)) {
       activeNotifications.add(message);
       notificationQueue.push([message, type]);
@@ -86,13 +85,14 @@ function updateAllNotificationPositions() {
   if (!container) return;
   const gap = 10;
   const notifications = Array.from(container.querySelectorAll(".notification"))
-    .filter((n: any) => !n.dataset.animating && n.dataset.collapsed !== 'true')
-    .sort((a: any, b: any) => parseInt(a.dataset.number) - parseInt(b.dataset.number));
+    .filter((notification): notification is HTMLElement => notification instanceof HTMLElement)
+    .filter(notification => !notification.dataset.animating && notification.dataset.collapsed !== 'true')
+    .sort((a, b) => parseInt(a.dataset.number ?? '-1', 10) - parseInt(b.dataset.number ?? '-1', 10));
 
   if (notifications.length === 0) return;
 
   let cumulativeBottom = 0;
-  notifications.forEach((notification: any, index: number) => {
+  notifications.forEach((notification, index) => {
     notification.dataset.number = index.toString();
     notification.style.zIndex = (40 + index).toString();
     cumulativeBottom = index * (notification.offsetHeight + gap);
@@ -131,7 +131,7 @@ export function enqueueNotification(message: string, type = "info") {
 
 function addToBuffer(message: string, type = "info") {
   if (checkAndRemoveDuplicateBuffer(message)) return;
-  notificationBuffer.add(JSON.stringify({ message, type }));
+  notificationBuffer.set(message, type);
   if (bufferTimer) clearTimeout(bufferTimer);
   bufferTimer = setTimeout(flushBuffer, 900);
 }
@@ -140,18 +140,18 @@ function _createNotification(message: string, type = "info") {
   const container = document.getElementById("notificationContainer");
   if (!container) return;
 
-  const allNotifications = Array.from(container.querySelectorAll(".notification"))
-    .filter((n: any) => n.dataset.animating !== 'true');
+  const allNotifications = Array.from(container.querySelectorAll<HTMLElement>(".notification"))
+    .filter(notification => notification.dataset.animating !== 'true');
 
   let maxNumber = allNotifications.reduce((max, el) => {
-    const num = parseInt((el as any).dataset.number);
+    const num = parseInt(el.dataset.number ?? '-1', 10);
     return isNaN(num) ? max : Math.max(max, num);
   }, -1);
 
-  const hasCollapsed = allNotifications.some((n: any) => n.dataset.collapsed === 'true');
+  const hasCollapsed = allNotifications.some(notification => notification.dataset.collapsed === 'true');
   const visibleCount = hasCollapsed 
     ? Math.min(1, allNotifications.length) 
-    : allNotifications.filter((n: any) => n.dataset.collapsed !== 'true').length;
+    : allNotifications.filter(notification => notification.dataset.collapsed !== 'true').length;
 
   const div = document.createElement("div");
   let iconClass = '';
@@ -217,7 +217,7 @@ function _createNotification(message: string, type = "info") {
     div.style.transform = 'translateX(5%) scale(0.9)';
     div.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
     hoveredNotificationsCount++;
-    clearTimeout(globalCollapseTimeout);
+    if (globalCollapseTimeout !== null) clearTimeout(globalCollapseTimeout);
   });
   div.addEventListener('mouseleave', () => {
     div.style.transform = 'translateX(0) scale(1)';
@@ -260,7 +260,7 @@ function _removeNotificationElement(div: HTMLElement) {
 }
 
 function startGlobalCollapseTimer() {
-  clearTimeout(globalCollapseTimeout);
+  if (globalCollapseTimeout !== null) clearTimeout(globalCollapseTimeout);
   globalCollapseTimeout = setTimeout(() => {
     const allNotifications = document.querySelectorAll(".notification");
     allNotifications.forEach(notification => {
@@ -315,15 +315,16 @@ export function expandNotification(notificationElement: HTMLElement) {
 function getCollapsedNotifications() {
   const container = document.getElementById("notificationContainer");
   if (!container) return [];
-  return Array.from(container.querySelectorAll(".notification")).filter((n: any) => n.dataset.collapsed === 'true');
+  return Array.from(container.querySelectorAll<HTMLElement>(".notification"))
+    .filter(notification => notification.dataset.collapsed === 'true');
 }
 
 function hideNonTopCollapsedNotifications() {
   const collapsed = getCollapsedNotifications();
   if (collapsed.length <= 0) return;
-  const maxNumber = Math.max(...collapsed.map((n: any) => parseInt(n.dataset.number)));
+  const maxNumber = Math.max(...collapsed.map(notification => parseInt(notification.dataset.number ?? '-1', 10)));
   collapsed.forEach(notification => {
-    const number = parseInt((notification as any).dataset.number);
+    const number = parseInt(notification.dataset.number ?? '-1', 10);
     if (number < maxNumber) {
       (notification as HTMLElement).style.filter = "blur(4px)";
       (notification as HTMLElement).style.opacity = "0.2";
