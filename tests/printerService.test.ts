@@ -232,6 +232,184 @@ describe("printerService", () => {
     ).resolves.toBe(false);
   });
 
+  it("validates IPv4 values and selects the most specific LAN interface", () => {
+    expect(printerServiceInternals.ipv4ToNumber("192.168.1")).toBeNull();
+    expect(printerServiceInternals.ipv4ToNumber("192.168.x.1")).toBeNull();
+    expect(printerServiceInternals.ipv4ToNumber("192.168.256.1")).toBeNull();
+
+    const interfaces = {
+      Empty: undefined,
+      InvalidAddress: [{
+        address: "invalid",
+        netmask: "255.255.255.0",
+        family: "IPv4" as const,
+        mac: "00:00:00:00:00:01",
+        internal: false,
+        cidr: null
+      }],
+      InvalidMask: [{
+        address: "192.168.88.11",
+        netmask: "invalid",
+        family: "IPv4" as const,
+        mac: "00:00:00:00:00:02",
+        internal: false,
+        cidr: null
+      }],
+      OtherSubnet: [{
+        address: "192.168.77.10",
+        netmask: "255.255.255.0",
+        family: "IPv4" as const,
+        mac: "00:00:00:00:00:03",
+        internal: false,
+        cidr: "192.168.77.10/24"
+      }],
+      BroadMatch: [{
+        address: "192.168.1.10",
+        netmask: "255.255.0.0",
+        family: "IPv4" as const,
+        mac: "00:00:00:00:00:04",
+        internal: false,
+        cidr: "192.168.1.10/16"
+      }],
+      SpecificMatch: [{
+        address: "192.168.88.10",
+        netmask: "255.255.255.0",
+        family: "IPv4" as const,
+        mac: "00:00:00:00:00:05",
+        internal: false,
+        cidr: "192.168.88.10/24"
+      }]
+    };
+
+    expect(printerServiceInternals.findDirectLanAddress("invalid", interfaces)).toBeNull();
+    expect(printerServiceInternals.findDirectLanAddress("192.168.88.33", interfaces)).toBe("192.168.88.10");
+  });
+
+  it("distinguishes a reachable host with a refused port from local bind errors", async () => {
+    const { server, baseUrl } = await startServer((_request, response) => response.end("ok"));
+    const port = Number(new URL(baseUrl).port);
+    await stopServer(server);
+
+    await expect(
+      printerServiceInternals.probeTcpPort("127.0.0.1", port, 250, "127.0.0.1")
+    ).resolves.toBe(true);
+    await expect(
+      printerServiceInternals.probeTcpPort("127.0.0.1", port, 250, "203.0.113.1")
+    ).resolves.toBe(false);
+  });
+
+  it("validates Moonraker IPv4 destinations and rejects credentials or malformed URLs", () => {
+    expect(printerServiceInternals.getPrinterIPv4("https://192.168.1.20/path")).toBe("192.168.1.20");
+    expect(printerServiceInternals.getPrinterIPv4("http://user:secret@192.168.1.20")).toBeNull();
+    expect(printerServiceInternals.getPrinterIPv4("http://[broken")).toBeNull();
+  });
+
+  it("rejects Moonraker object lists without print_stats", async () => {
+    globalThis.fetch = vi.fn<typeof fetch>().mockResolvedValueOnce(
+      new Response(JSON.stringify({ result: { objects: ["heater_bed", "extruder"] } }), { status: 200 })
+    );
+
+    await expect(fetchPrinterStatus("192.168.1.30")).resolves.toEqual({
+      ok: false,
+      reason: "invalid_response"
+    });
+  });
+
+  it("rejects malformed Moonraker object lists", async () => {
+    globalThis.fetch = vi.fn<typeof fetch>().mockResolvedValueOnce(
+      new Response(JSON.stringify({ result: { objects: ["print_stats", 42] } }), { status: 200 })
+    );
+
+    await expect(fetchPrinterStatus("192.168.1.31")).resolves.toEqual({
+      ok: false,
+      reason: "unavailable"
+    });
+  });
+
+  it("rejects Moonraker status payloads without a printer state", async () => {
+    globalThis.fetch = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        result: { objects: ["print_stats"] }
+      }), { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        result: { status: { print_stats: {} } }
+      }), { status: 200 }));
+
+    await expect(fetchPrinterStatus("192.168.1.32")).resolves.toEqual({
+      ok: false,
+      reason: "invalid_response"
+    });
+  });
+
+  it("maps error state with virtual SD progress and missing temperatures", async () => {
+    globalThis.fetch = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        result: { objects: ["print_stats", "virtual_sdcard", "heater_bed", "extruder"] }
+      }), { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        result: {
+          status: {
+            print_stats: { state: "error" },
+            virtual_sdcard: { progress: 0.25 },
+            heater_bed: {},
+            extruder: {}
+          }
+        }
+      }), { status: 200 }));
+
+    await expect(fetchPrinterStatus("192.168.1.33")).resolves.toEqual({
+      ok: true,
+      data: {
+        status: "error",
+        bedTemperature: null,
+        extruderTemperatures: [],
+        progress: 0.25,
+        filename: ""
+      }
+    });
+  });
+
+  it("reuses the cached Moonraker object list", async () => {
+    const readyPayload = new Response(JSON.stringify({
+      result: { status: { print_stats: { state: "standby" } } }
+    }), { status: 200 });
+    globalThis.fetch = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        result: { objects: ["print_stats"] }
+      }), { status: 200 }))
+      .mockResolvedValueOnce(readyPayload)
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        result: { status: { print_stats: { state: "standby" } } }
+      }), { status: 200 }));
+
+    await expect(fetchPrinterStatus("192.168.1.34")).resolves.toMatchObject({ ok: true });
+    await expect(fetchPrinterStatus("192.168.1.34")).resolves.toMatchObject({ ok: true });
+    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
+  });
+
+  it("classifies Moonraker aborts as timeouts", async () => {
+    globalThis.fetch = vi.fn<typeof fetch>().mockRejectedValue(
+      new DOMException("Request timed out", "AbortError")
+    );
+
+    await expect(fetchPrinterStatus("192.168.1.35")).resolves.toEqual({
+      ok: false,
+      reason: "timeout"
+    });
+  });
+
+  it("handles empty and oversized Moonraker response bodies", async () => {
+    await expect(
+      printerServiceInternals.readResponseBody(new Response(null), 10)
+    ).resolves.toBe("");
+    await expect(
+      printerServiceInternals.readResponseBody(new Response("oversized"), 3)
+    ).rejects.toThrow("Moonraker response is too large");
+  });
+
   it("maps Moonraker status and all configured extruder temperatures", async () => {
     const fetchMock = vi
       .fn<typeof fetch>()
