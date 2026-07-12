@@ -47,7 +47,6 @@ export function collectSettingsFromInputs(
     enableDividersCheckbox,
     dividerColorInput,
     dividerThicknessInput,
-    dividerAlignInput,
     dividerWidthInput,
     gridColumnsInput,
     headerTextInput,
@@ -75,7 +74,6 @@ export function collectSettingsFromInputs(
     !enableDividersCheckbox ||
     !dividerColorInput ||
     !dividerThicknessInput ||
-    !dividerAlignInput ||
     !dividerWidthInput ||
     !gridColumnsInput ||
     !headerTextInput ||
@@ -121,7 +119,7 @@ export function collectSettingsFromInputs(
     },
     dividerColor: dividerColorInput.value,
     dividerThickness: dividerThicknessInput.value,
-    dividerAlign: dividerAlignInput.value,
+    dividerAlign: previous?.dividerAlign ?? Config.defaultSettings.dividerAlign,
     dividerWidth: dividerWidthInput.value,
     enableDividers: enableDividersCheckbox.checked,
     namedDriv: namedDrivInput.value,

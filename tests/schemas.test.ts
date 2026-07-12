@@ -8,6 +8,7 @@ import {
   MacSchema,
   NetworkScanSchema,
   PrinterAddressSchema,
+  PrinterProbeQuerySchema,
   RecoverPlanSchema,
   SubnetSchema
 } from "../src/schemas.ts";
@@ -80,6 +81,13 @@ describe("Zod schemas", () => {
 
   it("validates MAC lookup input for query and body payloads", () => {
     expect(MacLookupQuerySchema.parse({ address: " printer.local " })).toEqual({ address: "printer.local" });
+    expect(PrinterProbeQuerySchema.parse({ address: "192.168.0.193" })).toEqual({
+      address: "192.168.0.193",
+      timeoutMs: 450
+    });
+    expect(
+      PrinterProbeQuerySchema.safeParse({ address: "192.168.0.193", timeoutMs: 5000 }).success
+    ).toBe(false);
     expect(MacLookupBodySchema.parse({ address: "192.168.1.20", timeoutMs: 250 })).toEqual({
       address: "192.168.1.20",
       timeoutMs: 250

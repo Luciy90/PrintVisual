@@ -88,6 +88,17 @@ export async function fetchPrinterMacFromAppApi(
   );
 }
 
+export async function probePrinterFromAppApi(
+  host: string,
+  timeout = 450
+): Promise<boolean> {
+  const result = await requestAppApiJson<{ reachable?: boolean }>(
+    `/api/printers/probe?address=${encodeURIComponent(host)}&timeoutMs=${timeout}`,
+    { timeout: timeout + 500 }
+  );
+  return result?.reachable === true;
+}
+
 export async function scanNetworkWithAppApi(
   subnets: string[],
   options: {

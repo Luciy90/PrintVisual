@@ -1,9 +1,9 @@
 (() => {
   const Config = {
     defaultCameras: [
-      { ip: "193", stream: "", name: "ТкачМатерии" },
-      { ip: "194", stream: "", name: "КузницаСлоев" },
-      { ip: "195", stream: "", name: "Пластикоформовщик" }
+      { ip: "192.168.0.193", stream: "", name: "ТкачМатерии" },
+      { ip: "192.168.0.194", stream: "", name: "КузницаСлоев" },
+      { ip: "192.168.0.195", stream: "", name: "Пластикоформовщик" }
     ],
     defaultSettings: {
       // Цветовая схема
@@ -181,28 +181,6 @@
   });
   Elements.interfaceWidthInput.addEventListener("input", debouncedUpdateInterfaceWidth);
   Elements.notificationOpacityInput.addEventListener("input", debouncedUpdateNotificationOpacity);
-  function throttle(func, delay) {
-    let lastCall = 0;
-    let timeoutId;
-    let lastArgs;
-    return function throttled(...args) {
-      const now = Date.now();
-      const remaining = delay - (now - lastCall);
-      lastArgs = args;
-      if (remaining <= 0) {
-        clearTimeout(timeoutId);
-        timeoutId = null;
-        lastCall = now;
-        func.apply(this, args);
-      } else if (!timeoutId) {
-        timeoutId = setTimeout(() => {
-          lastCall = Date.now();
-          timeoutId = null;
-          func.apply(this, lastArgs);
-        }, remaining);
-      }
-    };
-  }
   function init() {
     setupEventListeners();
     updateHeader();
@@ -855,11 +833,9 @@
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") closeModal();
     });
-    Elements.confirmResetBtn.addEventListener("click", () => {
+    Elements.confirmResetBtn.addEventListener("click", async () => {
       if (State.allowLocalStorage) {
-        localStorage.clear();
         localStorage.removeItem("printerCamsV2");
-        localStorage.removeItem("printerCamsV2Consent");
       }
       closeModal();
       const s = Config.defaultSettings;
@@ -888,7 +864,6 @@
       Elements.interfaceHeightInput.value = s.interfaceHeight;
       Elements.dividerColorInput.value = s.dividerColor;
       Elements.dividerThicknessInput.value = s.dividerThickness;
-      Elements.dividerAlignInput.value = s.dividerAlign;
       Elements.dividerWidthInput.value = s.dividerWidth;
       Elements.dividerWidthValue.textContent = s.dividerWidth + "%";
       Elements.enableDividersCheckbox.checked = s.enableDividers;
@@ -897,6 +872,7 @@
       Elements.namedDrivValue.textContent = s.namedDriv + "rem";
       loadCameras(Config.defaultCameras);
       renderCameraTable(Config.defaultCameras);
+      renderCameras();
       updateHeader();
       updateToolbarColors();
       updateGrid();
@@ -906,8 +882,14 @@
       updateLoader();
       debouncedUpdateDividers();
       updateCameraTitleFontSize();
-      saveToLocalStorage();
-      location.reload();
+      const defaultSettings = saveToLocalStorage();
+      if (defaultSettings) {
+        try {
+          await window.PrintVisualApi?.saveSettingsToAppApi?.(defaultSettings, 2500);
+        } catch {
+          enqueueNotification("Настройки сброшены локально, но сохранить их на сервере не удалось", "info");
+        }
+      }
     });
     Elements.helpBtn.addEventListener("click", () => Elements.helpModal.classList.remove("hidden"));
     Elements.closeHelpBtn.addEventListener("click", () => Elements.helpModal.classList.add("hidden"));
@@ -942,11 +924,6 @@
     });
     Elements.dividerWidthInput.addEventListener("input", (e) => {
       Elements.dividerWidthValue.textContent = e.target.value + "%";
-      debouncedUpdateDividers();
-      clearToolbarInlineStyles2();
-      saveToLocalStorage();
-    });
-    Elements.dividerAlignInput.addEventListener("change", () => {
       debouncedUpdateDividers();
       clearToolbarInlineStyles2();
       saveToLocalStorage();
@@ -1003,7 +980,14 @@
     Elements.applyChangesBtn.onclick = () => {
       saveToLocalStorage();
       renderCameras();
-      location.reload();
+      updateNotificationOpacity();
+      updateHeader();
+      updateGrid();
+      updateInterfaceWidth();
+      updateInterfaceHeight();
+      updateToolbarVisibility();
+      updateToolbarColors();
+      updateLoader();
     };
     const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     async function disableAllStreamsSequentially() {
@@ -1221,12 +1205,18 @@
     }
   });
   let cameras = [];
+  function normalizeCameraIp(ip) {
+    const value = typeof ip === "string" ? ip.trim() : "";
+    if (!/^\d{1,3}$/.test(value)) return value;
+    const lastOctet = Number.parseInt(value, 10);
+    return lastOctet >= 1 && lastOctet <= 254 ? `192.168.0.${lastOctet}` : value;
+  }
   function normalizeCameraData(cam = {}) {
     if (typeof cam === "string") {
-      return { ip: cam, stream: "", name: "", mac: "", lastSeenIp: "", lastMacCheckAt: "" };
+      return { ip: normalizeCameraIp(cam), stream: "", name: "", mac: "", lastSeenIp: "", lastMacCheckAt: "" };
     }
     return {
-      ip: typeof cam.ip === "string" ? cam.ip : "",
+      ip: normalizeCameraIp(cam.ip),
       stream: typeof cam.stream === "string" ? cam.stream : "",
       name: typeof cam.name === "string" ? cam.name : "",
       mac: normalizeMac(cam.mac || ""),
@@ -1576,7 +1566,13 @@
       });
       i.addEventListener("blur", () => {
         i.classList.remove("is-focused");
-        if (i.closest(".ip-cell")) capturePrinterMacForInput(i);
+        if (i.closest(".ip-cell")) {
+          i.value = normalizeCameraIp(i.value);
+          const row = i.closest("tr");
+          const idx = [...Elements.tbody.children].indexOf(row);
+          if (idx !== -1 && cameras[idx]) cameras[idx].ip = i.value;
+          capturePrinterMacForInput(i);
+        }
       });
       i.addEventListener("input", () => {
         updateEmpty(i);
@@ -1707,6 +1703,13 @@
       return text;
     }
   }
+  async function probePrinterFromAppApi(address, timeout = 450) {
+    try {
+      return await window.PrintVisualApi?.probePrinterFromAppApi?.(address, timeout) === true;
+    } catch {
+      return false;
+    }
+  }
   function syncSettingsToAppApi(settings) {
     window.PrintVisualApi?.syncSettingsToAppApi?.(settings);
   }
@@ -1793,7 +1796,12 @@
     const current = cameras[idx];
     if (!current.ip || current.ip.toLowerCase() === "dammy") return null;
     const connected = options.skipConnectionCheck || await checkPrinterConnection(current.ip, current.stream, options.timeout || 1500);
-    if (!connected) return null;
+    if (!connected) {
+      if (!options.silent || options.notifyFailure) {
+        enqueueNotification(`Не удалось подключиться к <b>${current.name || current.ip}</b>: MAC не получен`, "info");
+      }
+      return null;
+    }
     current.lastSeenIp = extractIPv4(current.ip) || normalizePrinterAddress(current.ip);
     current.lastMacCheckAt = (/* @__PURE__ */ new Date()).toISOString();
     const result = await fetchPrinterMac(current.ip, { timeout: options.timeout || 1500, silent: options.silent });
@@ -1803,7 +1811,7 @@
       return result.mac;
     }
     saveToLocalStorage();
-    if (!options.silent) {
+    if (!options.silent || options.notifyFailure) {
       enqueueNotification(`Подключение к <b>${current.name || current.ip}</b> есть, но MAC получить не удалось`, "info");
     }
     return null;
@@ -1814,10 +1822,29 @@
     if (!row || !cameras[idx]) return;
     await capturePrinterMacForCamera(cameras[idx], { timeout: 1800 });
   }
+  function updateCameraSettingsContainerHeight() {
+    const mainWrap2 = Elements.mainWrap;
+    const content = Elements.tableWrapper;
+    if (!mainWrap2 || !content || !mainWrap2.classList.contains("accordion-open")) return;
+    if (content.style.maxHeight === "none") return;
+    requestAnimationFrame(() => {
+      content.style.maxHeight = `${content.scrollHeight + 30}px`;
+    });
+  }
+  if (Elements.ipRecoveryStatus) {
+    const recoveryStatusObserver = new MutationObserver(updateCameraSettingsContainerHeight);
+    recoveryStatusObserver.observe(Elements.ipRecoveryStatus, {
+      attributes: true,
+      attributeFilter: ["class"]
+    });
+    const recoveryStatusResizeObserver = new ResizeObserver(updateCameraSettingsContainerHeight);
+    recoveryStatusResizeObserver.observe(Elements.ipRecoveryStatus);
+  }
   function showIpRecoveryProgress(label, percent = 0) {
     if (!Elements.ipRecoveryStatus) return;
     Elements.ipRecoveryStatus.classList.remove("hidden");
     updateIpRecoveryProgress(label, percent);
+    updateCameraSettingsContainerHeight();
   }
   function updateIpRecoveryProgress(label, percent = 0) {
     const safePercent = Math.max(0, Math.min(100, Math.round(percent)));
@@ -1829,6 +1856,7 @@
     if (!Elements.ipRecoveryStatus) return;
     Elements.ipRecoveryStatus.classList.add("hidden");
     updateIpRecoveryProgress("Подготовка...", 0);
+    updateCameraSettingsContainerHeight();
   }
   function setIpRecoveryBusy(isBusy) {
     State.ipRecoveryBusy = isBusy;
@@ -2180,7 +2208,7 @@
       const y = e.clientY - rect.top;
       const xc = x / rect.width - 0.5;
       const yc = y / rect.height - 0.5;
-      camDiv.style.transition = "transform .15s cubic-bezier(.42,1.8,.2,1)";
+      camDiv.style.transition = "transform 50ms ease-out";
       camDiv.style.transform = `
       perspective(600px) 
       rotateY(${xc * 20}deg) 
@@ -2189,6 +2217,7 @@
     `;
       const img = camDiv.querySelector(".camera-img img");
       if (img) {
+        img.style.transition = "transform 50ms ease-out";
         img.style.transform = `
         scale(1.15) 
         translate(${xc * 22}px, ${yc * 18}px) 
@@ -2410,17 +2439,17 @@
       camDiv.dataset.mac = cam.mac || "";
       camDiv._parallaxEnabled = true;
       const isDammy = cam.ip === "dammy";
+      const streamUrl = isDammy ? "" : getStreamUrl(cam.ip, cam.stream);
       if (isDammy) {
         camDiv.classList.add("dammy");
-        camDiv.style.opacity = "0.45";
+        camDiv.style.opacity = "0";
+        camDiv.style.transition = "opacity .2s ease, transform .2s ease";
         camDiv.innerHTML = `
         <div class="camera-img relative w-full h-full flex items-center justify-center min-h-[180px]">
           <div class="bottom-glass"></div>
-          <div class="absolute inset-0 z-10 flex items-center justify-center text-sm font-medium text-white/70">Пустой слот</div>
         </div>
       `;
       } else {
-        const streamUrl = getStreamUrl(cam.ip, cam.stream);
         camDiv.innerHTML = `
         <div class="camera-img relative w-full h-full flex items-center justify-center min-h-[180px]">
           <img src="${streamUrl}" 
@@ -2447,16 +2476,42 @@
       const expandIcon = camDiv.querySelector(".expand-icon");
       const manageIcon = camDiv.querySelector(".manage-icon");
       const streamToggle = camDiv.querySelector(".stream-toggle-input");
-      const throttledParallax = throttle((e) => handleMouseEnter(camDiv, cam, e), 5);
-      camDiv.addEventListener("mousemove", throttledParallax);
-      camDiv.addEventListener("mouseleave", () => handleMouseLeave(camDiv, cam));
+      let parallaxFrame = null;
+      let latestPointerEvent = null;
+      const scheduleParallax = (event) => {
+        latestPointerEvent = event;
+        if (parallaxFrame !== null) return;
+        parallaxFrame = requestAnimationFrame(() => {
+          parallaxFrame = null;
+          if (latestPointerEvent) handleMouseEnter(camDiv, cam, latestPointerEvent);
+        });
+      };
+      camDiv.addEventListener("mousemove", scheduleParallax);
+      camDiv.addEventListener("mouseleave", () => {
+        if (parallaxFrame !== null) cancelAnimationFrame(parallaxFrame);
+        parallaxFrame = null;
+        latestPointerEvent = null;
+        handleMouseLeave(camDiv, cam);
+      });
       camDiv.addEventListener("fullscreenchange", () => {
         camDiv._parallaxEnabled = !document.fullscreenElement;
       });
       if (!isDammy) {
-        img.onerror = () => {
+        let streamRetryAttempted = false;
+        let printerReachable = false;
+        img.onerror = async () => {
+          if (!streamRetryAttempted) {
+            streamRetryAttempted = true;
+            printerReachable = await probePrinterFromAppApi(cam.ip, 450);
+            if (printerReachable) {
+              const separator = streamUrl.includes("?") ? "&" : "?";
+              img.src = `${streamUrl}${separator}_retry=${Date.now()}`;
+              return;
+            }
+          }
           loadedCount++;
-          fetch(`http://${cam.ip}`, { mode: "no-cors" }).then(() => {
+          Promise.resolve(printerReachable).then((reachable) => {
+            if (!reachable) throw new Error("Printer is unreachable");
             camDiv.classList.remove("camera-disconnected");
             camDiv.style.pointerEvents = "auto";
             if (statusDot) {
@@ -2474,7 +2529,7 @@
               manageIcon.style.pointerEvents = "";
               manageIcon.style.opacity = "";
             }
-            capturePrinterMacForCamera(cam, { skipConnectionCheck: true, silent: true, timeout: 1200 });
+            capturePrinterMacForCamera(cam, { skipConnectionCheck: true, silent: true, notifyFailure: true, timeout: 1200 });
             let stub = camDiv.querySelector(".camera-stub");
             if (!stub) {
               stub = document.createElement("div");
@@ -2543,13 +2598,13 @@
               stub.className = "camera-stub flex h-full w-full flex-col items-center justify-center gap-2 rounded-lg text-center font-semibold";
               stub.setAttribute("role", "status");
               const icon = document.createElement("i");
-              icon.className = "fas fa-video-slash text-3xl";
+              icon.className = "fas fa-link-slash text-3xl";
               icon.setAttribute("aria-hidden", "true");
               const title = document.createElement("p");
-              title.textContent = "Камера недоступна";
+              title.textContent = "Принтер недоступен";
               const details = document.createElement("p");
               details.className = "text-xs font-normal";
-              details.textContent = "Нет подключённого принтера или видеосигнала.";
+              details.textContent = "Принтер выключен или потеряно сетевое соединение.";
               stub.append(icon, title, details);
               imageArea.append(stub);
             }
@@ -2578,7 +2633,7 @@
             manageIcon.style.pointerEvents = "";
             manageIcon.style.opacity = "";
           }
-          capturePrinterMacForCamera(cam, { skipConnectionCheck: true, silent: true, timeout: 1200 });
+          capturePrinterMacForCamera(cam, { skipConnectionCheck: true, silent: true, notifyFailure: true, timeout: 1200 });
           enqueueNotification(`Принтер <b>${cam.name || cam.ip}</b> инициализирован`, "system");
           if (loadedCount === totalCameras) setTimeout(hideLoader, 500);
         };
@@ -2711,7 +2766,7 @@
       camDiv.addEventListener("dragleave", (e) => {
         e.preventDefault();
         camDiv.classList.remove("drag-over");
-        if (camDiv.dataset.ip === "dammy") camDiv.style.opacity = "0.45";
+        if (camDiv.dataset.ip === "dammy") camDiv.style.opacity = "0";
       });
       camDiv.addEventListener("drop", (e) => {
         e.preventDefault();
@@ -2722,7 +2777,7 @@
           Elements.cameraContainer.insertBefore(camDiv, dragging.nextSibling);
           saveToLocalStorage();
         }
-        if (camDiv.dataset.ip === "dammy") camDiv.style.opacity = "0.45";
+        if (camDiv.dataset.ip === "dammy") camDiv.style.opacity = "0";
       });
       const button = camDiv.querySelector(".button");
       let hideTimeout;
@@ -2787,7 +2842,7 @@
       rowsMap.push(items.slice(i * cols, (i + 1) * cols));
     }
     const dividerStates = JSON.parse(localStorage.getItem("dividerVisibility") || "{}");
-    const align = Elements.dividerAlignInput.value;
+    const align = Config.defaultSettings.dividerAlign;
     const widthPercent = parseFloat(Elements.dividerWidthInput.value);
     for (let i = 1; i < rows; i++) {
       const previousRowLastItem = rowsMap[i - 1][cols - 1];
@@ -3284,7 +3339,7 @@
       hideNotifications: Elements.hideNotificationCheckbox ? Elements.hideNotificationCheckbox.checked : false,
       dividerColor: Elements.dividerColorInput.value,
       dividerThickness: Elements.dividerThicknessInput.value,
-      dividerAlign: Elements.dividerAlignInput.value,
+      dividerAlign: previousSettings.dividerAlign ?? Config.defaultSettings.dividerAlign,
       dividerWidth: Elements.dividerWidthInput.value,
       namedDriv: Elements.namedDrivInput.value,
       grid: {
@@ -3304,6 +3359,7 @@
     };
     localStorage.setItem("printerCamsV2", JSON.stringify(settings));
     syncSettingsToAppApi(settings);
+    return settings;
   }
   function saveStreamToggleState(ip, isEnabled) {
     if (!State.allowLocalStorage) return;
@@ -3363,7 +3419,6 @@
       Elements.enableWidthInputCheckbox.checked = settings.enableWidthInput ?? false;
       Elements.dividerColorInput.value = settings.dividerColor ?? defaults.dividerColor;
       Elements.dividerThicknessInput.value = settings.dividerThickness ?? defaults.dividerThickness;
-      Elements.dividerAlignInput.value = settings.dividerAlign ?? defaults.dividerAlign;
       Elements.dividerWidthInput.value = settings.dividerWidth ?? defaults.dividerWidth;
       Elements.dividerWidthValue.textContent = (settings.dividerWidth ?? defaults.dividerWidth) + "%";
       Elements.enableDividersCheckbox.checked = settings.enableDividers ?? defaults.enableDividers;

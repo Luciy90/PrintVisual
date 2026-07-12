@@ -11,7 +11,8 @@ import { initializeSettingsEvents } from './settingsEvents.js';
 import { initializeSettingsPanel } from './settingsPanel.js';
 import {
   applyDefaultSettings,
-  loadSettingsFromStorage
+  loadSettingsFromStorage,
+  saveSettingsFromInputs
 } from './settingsForm.js';
 import { hydrateSettingsFromAppApi } from './settings.js';
 import { State } from './state.js';
@@ -67,7 +68,11 @@ export async function initializePrintVisualClient(): Promise<Cleanup> {
         confirmButton: Elements.confirmResetBtn,
         storage: localStorage,
         beforeOpen: () => panel?.close(),
-        afterReset: () => window.location.reload()
+        afterReset: () => {
+          applyDefaultSettings();
+          saveSettingsFromInputs();
+          renderGrid();
+        }
       })
     );
   }

@@ -177,4 +177,16 @@ describe("printerService", () => {
       await stopServer(server);
     }
   });
+
+  it("detects a reachable TCP endpoint without issuing HTTP retries", async () => {
+    const { server, baseUrl } = await startServer((_request, response) => response.end("ok"));
+    try {
+      const port = Number(new URL(baseUrl).port);
+      await expect(
+        printerServiceInternals.probeTcpPort("127.0.0.1", port, 250)
+      ).resolves.toBe(true);
+    } finally {
+      await stopServer(server);
+    }
+  });
 });

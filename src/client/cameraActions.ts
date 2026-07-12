@@ -2,6 +2,7 @@ import {
   addCamera,
   addDammy,
   cameras,
+  deleteRow,
   renderCameras
 } from './cameras.js';
 import { Elements } from './elements.js';
@@ -47,6 +48,24 @@ export function initializeCameraActions(storage: StorageAdapter = localStorage):
       saveSettingsFromInputs(Elements, storage);
     });
   });
+
+  const cameraTableClickHandler = (event: MouseEvent): void => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const removeButton = target.closest<HTMLButtonElement>('.remove-camera-btn');
+    if (!removeButton) return;
+
+    const row = removeButton.closest<HTMLTableRowElement>('tr');
+    if (!row || !Elements.tbody) return;
+
+    const rowIndex = Array.from(Elements.tbody.children).indexOf(row);
+    if (rowIndex < 0) return;
+
+    deleteRow(rowIndex);
+  };
+  Elements.tbody?.addEventListener('click', cameraTableClickHandler);
+  cleanups.push(() => Elements.tbody?.removeEventListener('click', cameraTableClickHandler));
 
   return () => cleanups.forEach(cleanup => cleanup());
 }

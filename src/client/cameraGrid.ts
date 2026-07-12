@@ -65,6 +65,7 @@ function createCameraCard(
   if (camera.ip === 'dammy') {
     card.classList.add('dammy');
     card.style.opacity = '0';
+    card.style.transition = 'opacity .2s ease, transform .2s ease';
     const glass = document.createElement('div');
     glass.className = 'bottom-glass';
     imageArea.append(glass);

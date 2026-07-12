@@ -27,13 +27,20 @@ function readString(record: Record<string, unknown>, key: string): string {
   return typeof value === 'string' ? value : '';
 }
 
+function normalizeCameraIp(ip: string): string {
+  const value = ip.trim();
+  if (!/^\d{1,3}$/.test(value)) return value;
+  const lastOctet = Number.parseInt(value, 10);
+  return lastOctet >= 1 && lastOctet <= 254 ? `192.168.0.${lastOctet}` : value;
+}
+
 export function normalizeCameraData(cam: unknown = {}): Camera {
   if (typeof cam === 'string') {
-    return { ip: cam, stream: '', name: '', mac: '', lastSeenIp: '', lastMacCheckAt: '' };
+    return { ip: normalizeCameraIp(cam), stream: '', name: '', mac: '', lastSeenIp: '', lastMacCheckAt: '' };
   }
   const record = isRecord(cam) ? cam : {};
   return {
-    ip: readString(record, 'ip'),
+    ip: normalizeCameraIp(readString(record, 'ip')),
     stream: readString(record, 'stream'),
     name: readString(record, 'name'),
     mac: normalizeMac(readString(record, 'mac')),

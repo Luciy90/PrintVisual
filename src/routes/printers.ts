@@ -1,9 +1,21 @@
 import { Router } from "express";
 import { validate } from "../middleware/validate.js";
-import { MacLookupBodySchema, MacLookupQuerySchema } from "../schemas.js";
-import { fetchPrinterMac } from "../services/printerService.js";
+import { MacLookupBodySchema, MacLookupQuerySchema, PrinterProbeQuerySchema } from "../schemas.js";
+import { fetchPrinterMac, probePrinterReachability } from "../services/printerService.js";
 
 export const printersRouter = Router();
+
+printersRouter.get("/probe", validate("query", PrinterProbeQuerySchema), async (req, res, next) => {
+  try {
+    const reachable = await probePrinterReachability(
+      String(req.query.address),
+      Number(req.query.timeoutMs)
+    );
+    res.json({ reachable });
+  } catch (error) {
+    next(error);
+  }
+});
 
 printersRouter.get("/mac", validate("query", MacLookupQuerySchema), async (req, res, next) => {
   try {

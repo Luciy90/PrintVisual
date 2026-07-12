@@ -35,6 +35,11 @@ export const MacLookupBodySchema = z.object({
   timeoutMs: z.number().int().min(250).max(10000).optional()
 });
 
+export const PrinterProbeQuerySchema = z.object({
+  address: PrinterAddressSchema,
+  timeoutMs: z.coerce.number().int().min(100).max(2000).default(450)
+});
+
 export const SubnetSchema = z
   .string()
   .trim()

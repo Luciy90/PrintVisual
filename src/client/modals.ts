@@ -230,7 +230,9 @@ export function initializeResetModal(options: ResetModalOptions): Cleanup {
   };
 
   const confirm = (): void => {
+    const consent = options.storage.getItem(APP_CONSENT_KEY);
     removeOwnedStorage(options.storage);
+    if (consent !== null) options.storage.setItem(APP_CONSENT_KEY, consent);
     hide();
     options.afterReset?.();
   };

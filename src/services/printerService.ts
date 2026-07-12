@@ -1,4 +1,5 @@
-import { findMacInValue, normalizePrinterAddress } from "./address.js";
+import { extractIPv4, findMacInValue, normalizePrinterAddress } from "./address.js";
+import { createConnection, isIP } from "node:net";
 
 export interface PrinterMacResult {
   address: string;
@@ -56,6 +57,38 @@ export async function checkPrinterConnection(address: string, timeoutMs = 900): 
   return false;
 }
 
+export async function probePrinterReachability(address: string, timeoutMs = 450): Promise<boolean> {
+  const normalizedHost = normalizePrinterAddress(address).split("/")[0] ?? "";
+  const host = extractIPv4(address) || normalizedHost.split(":")[0] || "";
+  if (!host || host.toLowerCase() === "dammy" || isIP(host) === 0) return false;
+
+  const results = await Promise.all([
+    probeTcpPort(host, 80, timeoutMs),
+    probeTcpPort(host, 8080, timeoutMs)
+  ]);
+  return results.some(Boolean);
+}
+
+function probeTcpPort(host: string, port: number, timeoutMs: number): Promise<boolean> {
+  return new Promise(resolve => {
+    const socket = createConnection({ host, port });
+    let settled = false;
+    const finish = (reachable: boolean): void => {
+      if (settled) return;
+      settled = true;
+      socket.destroy();
+      resolve(reachable);
+    };
+
+    socket.setTimeout(timeoutMs, () => finish(false));
+    socket.once("connect", () => finish(true));
+    socket.once("error", error => {
+      const code = (error as NodeJS.ErrnoException).code;
+      finish(code === "ECONNREFUSED" || code === "ECONNRESET");
+    });
+  });
+}
+
 async function fetchJsonWithTimeout(url: string, timeoutMs: number): Promise<unknown> {
   const response = await fetchWithTimeout(url, timeoutMs);
   const text = await response.text();
@@ -87,5 +120,6 @@ async function fetchWithTimeout(url: string, timeoutMs: number): Promise<Respons
 export const printerServiceInternals = {
   jsonEndpoints,
   fetchJsonWithTimeout,
-  fetchWithTimeout
+  fetchWithTimeout,
+  probeTcpPort
 };

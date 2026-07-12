@@ -1,8 +1,8 @@
 export const Config = {
   defaultCameras: [
-    { ip: '193', stream: '', name: 'ТкачМатерии' },
-    { ip: '194', stream: '', name: 'КузницаСлоев' },
-    { ip: '195', stream: '', name: 'Пластикоформовщик' }
+    { ip: '192.168.0.193', stream: '', name: 'ТкачМатерии' },
+    { ip: '192.168.0.194', stream: '', name: 'КузницаСлоев' },
+    { ip: '192.168.0.195', stream: '', name: 'Пластикоформовщик' }
   ],
 
   defaultSettings: {
