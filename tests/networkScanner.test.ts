@@ -10,7 +10,7 @@ import type { Camera } from "../src/schemas.ts";
 
 function createDeps(overrides: Partial<NetworkScannerDeps> = {}): NetworkScannerDeps {
   return {
-    checkPrinterConnection: vi.fn(async () => false),
+    probePrinterReachability: vi.fn(async () => false),
     fetchPrinterMac: vi.fn(async () => null),
     expandSubnet: vi.fn((subnet: string) => [`${subnet}.10`, `${subnet}.11`]),
     logger: { warn: vi.fn() },
@@ -114,7 +114,7 @@ describe("networkScanner", () => {
 
   it("scans a device and returns the discovered MAC", async () => {
     const deps = createDeps({
-      checkPrinterConnection: vi.fn(async () => true),
+      probePrinterReachability: vi.fn(async () => true),
       fetchPrinterMac: vi.fn(async () => ({
         address: "192.168.1.10",
         host: "192.168.1.10",
@@ -133,7 +133,7 @@ describe("networkScanner", () => {
 
   it("marks a device unreachable when connection probe fails", async () => {
     const deps = createDeps({
-      checkPrinterConnection: vi.fn(async () => false)
+      probePrinterReachability: vi.fn(async () => false)
     });
 
     await expect(networkScannerInternals.scanDevice("192.168.1.10", 500, 700, deps)).resolves.toEqual({
@@ -146,7 +146,7 @@ describe("networkScanner", () => {
 
   it("uses a fallback source when the device is reachable but MAC is not returned", async () => {
     const deps = createDeps({
-      checkPrinterConnection: vi.fn(async () => true),
+      probePrinterReachability: vi.fn(async () => true),
       fetchPrinterMac: vi.fn(async () => null)
     });
 
@@ -160,7 +160,7 @@ describe("networkScanner", () => {
 
   it("logs and handles unexpected scan errors", async () => {
     const deps = createDeps({
-      checkPrinterConnection: vi.fn(async () => {
+      probePrinterReachability: vi.fn(async () => {
         throw new Error("timeout");
       })
     });
@@ -179,7 +179,7 @@ describe("networkScanner", () => {
 
   it("scans subnets with injected dependencies and returns only reachable devices", async () => {
     const deps = createDeps({
-      checkPrinterConnection: vi.fn(async (ip: string) => ip.endsWith(".10")),
+      probePrinterReachability: vi.fn(async (ip: string) => ip.endsWith(".10")),
       fetchPrinterMac: vi.fn(async (ip: string) => ({
         address: ip,
         host: ip,
@@ -200,7 +200,7 @@ describe("networkScanner", () => {
       source: "http://192.168.1.10/server/info"
     }]);
 
-    expect(deps.checkPrinterConnection).toHaveBeenCalledWith("192.168.1.10", 300);
+    expect(deps.probePrinterReachability).toHaveBeenCalledWith("192.168.1.10", 300);
     expect(deps.fetchPrinterMac).toHaveBeenCalledWith("192.168.1.10", 400);
   });
 
@@ -211,7 +211,7 @@ describe("networkScanner", () => {
     ];
     const deps = createDeps({
       expandSubnet: vi.fn(() => ["192.168.1.50", "192.168.1.60", "192.168.1.61"]),
-      checkPrinterConnection: vi.fn(async () => true),
+      probePrinterReachability: vi.fn(async () => true),
       fetchPrinterMac: vi.fn(async (ip: string) => {
         if (ip === "192.168.1.50") {
           return {
@@ -286,7 +286,7 @@ describe("networkScanner", () => {
   it("continues recovery planning when a device scan crashes", async () => {
     const deps = createDeps({
       expandSubnet: vi.fn(() => ["192.168.1.50", "192.168.1.51"]),
-      checkPrinterConnection: vi.fn(async (ip: string) => {
+      probePrinterReachability: vi.fn(async (ip: string) => {
         if (ip.endsWith(".50")) {
           throw new Error("probe timeout");
         }

@@ -1,5 +1,6 @@
 import { extractIPv4, findMacInValue, normalizePrinterAddress } from "./address.js";
 import { createConnection, isIP } from "node:net";
+import { networkInterfaces, type NetworkInterfaceInfo } from "node:os";
 
 export interface PrinterMacResult {
   address: string;
@@ -76,13 +77,24 @@ export async function checkPrinterConnection(address: string, timeoutMs = 900): 
 }
 
 export async function probePrinterReachability(address: string, timeoutMs = 450): Promise<boolean> {
+  return probePrinterReachabilityWithInterfaces(address, timeoutMs, networkInterfaces());
+}
+
+async function probePrinterReachabilityWithInterfaces(
+  address: string,
+  timeoutMs: number,
+  interfaces: NodeJS.Dict<NetworkInterfaceInfo[]>
+): Promise<boolean> {
   const normalizedHost = normalizePrinterAddress(address).split("/")[0] ?? "";
   const host = extractIPv4(address) || normalizedHost.split(":")[0] || "";
   if (!host || host.toLowerCase() === "dammy" || isIP(host) === 0) return false;
 
+  const localAddress = findDirectLanAddress(host, interfaces);
+  if (!localAddress) return false;
+
   const results = await Promise.all([
-    probeTcpPort(host, 80, timeoutMs),
-    probeTcpPort(host, 8080, timeoutMs)
+    probeTcpPort(host, 80, timeoutMs, localAddress),
+    probeTcpPort(host, 8080, timeoutMs, localAddress)
   ]);
   return results.some(Boolean);
 }
@@ -239,9 +251,56 @@ function compareExtruderNames(left: string, right: string): number {
   return index(left) - index(right);
 }
 
-function probeTcpPort(host: string, port: number, timeoutMs: number): Promise<boolean> {
+function findDirectLanAddress(
+  host: string,
+  interfaces: NodeJS.Dict<NetworkInterfaceInfo[]> = networkInterfaces()
+): string | null {
+  const hostValue = ipv4ToNumber(host);
+  if (hostValue === null) return null;
+
+  const loopbackTarget = (hostValue & 0xff00_0000) === 0x7f00_0000;
+  const candidates = Object.values(interfaces)
+    .flatMap(entries => entries ?? [])
+    .filter(entry => entry.family === "IPv4" && entry.internal === loopbackTarget)
+    .flatMap(entry => {
+      const addressValue = ipv4ToNumber(entry.address);
+      const maskValue = ipv4ToNumber(entry.netmask);
+      if (addressValue === null || maskValue === null) return [];
+      if ((hostValue & maskValue) !== (addressValue & maskValue)) return [];
+      return [{ address: entry.address, prefixLength: countMaskBits(maskValue) }];
+    })
+    .sort((left, right) => right.prefixLength - left.prefixLength);
+
+  return candidates[0]?.address ?? null;
+}
+
+function ipv4ToNumber(value: string): number | null {
+  const parts = value.split(".");
+  if (parts.length !== 4) return null;
+
+  let result = 0;
+  for (const part of parts) {
+    if (!/^\d{1,3}$/.test(part)) return null;
+    const octet = Number(part);
+    if (octet > 255) return null;
+    result = ((result << 8) | octet) >>> 0;
+  }
+  return result;
+}
+
+function countMaskBits(mask: number): number {
+  let value = mask >>> 0;
+  let count = 0;
+  while (value !== 0) {
+    count += value & 1;
+    value >>>= 1;
+  }
+  return count;
+}
+
+function probeTcpPort(host: string, port: number, timeoutMs: number, localAddress: string): Promise<boolean> {
   return new Promise(resolve => {
-    const socket = createConnection({ host, port });
+    const socket = createConnection({ host, port, localAddress });
     let settled = false;
     const finish = (reachable: boolean): void => {
       if (settled) return;
@@ -292,6 +351,9 @@ export const printerServiceInternals = {
   fetchJsonWithTimeout,
   fetchWithTimeout,
   probeTcpPort,
+  probePrinterReachabilityWithInterfaces,
+  findDirectLanAddress,
+  ipv4ToNumber,
   fetchMoonrakerJson,
   getPrinterIPv4,
   readResponseBody,

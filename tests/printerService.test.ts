@@ -184,11 +184,52 @@ describe("printerService", () => {
     try {
       const port = Number(new URL(baseUrl).port);
       await expect(
-        printerServiceInternals.probeTcpPort("127.0.0.1", port, 250)
+        printerServiceInternals.probeTcpPort("127.0.0.1", port, 250, "127.0.0.1")
       ).resolves.toBe(true);
     } finally {
       await stopServer(server);
     }
+  });
+
+  it("selects a matching physical LAN address instead of an Xray TUN address", () => {
+    const interfaces = {
+      Ethernet: [{
+        address: "192.168.88.10",
+        netmask: "255.255.255.0",
+        family: "IPv4" as const,
+        mac: "AA:BB:CC:DD:EE:FF",
+        internal: false,
+        cidr: "192.168.88.10/24"
+      }],
+      "Xray Tunnel": [{
+        address: "198.18.0.1",
+        netmask: "255.254.0.0",
+        family: "IPv4" as const,
+        mac: "00:00:00:00:00:00",
+        internal: false,
+        cidr: "198.18.0.1/15"
+      }]
+    };
+
+    expect(printerServiceInternals.findDirectLanAddress("192.168.88.33", interfaces)).toBe("192.168.88.10");
+    expect(printerServiceInternals.findDirectLanAddress("192.168.99.33", interfaces)).toBeNull();
+  });
+
+  it("does not probe an address that has no directly connected LAN interface", async () => {
+    const interfaces = {
+      Ethernet: [{
+        address: "192.168.88.10",
+        netmask: "255.255.255.0",
+        family: "IPv4" as const,
+        mac: "AA:BB:CC:DD:EE:FF",
+        internal: false,
+        cidr: "192.168.88.10/24"
+      }]
+    };
+
+    await expect(
+      printerServiceInternals.probePrinterReachabilityWithInterfaces("192.168.99.33", 100, interfaces)
+    ).resolves.toBe(false);
   });
 
   it("maps Moonraker status and all configured extruder temperatures", async () => {

@@ -1,6 +1,6 @@
 import type { Camera, NetworkScanInput, RecoverPlanInput } from "../schemas.js";
 import { extractIPv4, getScanSubnets, normalizeMac, normalizePrinterAddress, replaceAddressHost } from "./address.js";
-import { checkPrinterConnection, fetchPrinterMac } from "./printerService.js";
+import { fetchPrinterMac, probePrinterReachability } from "./printerService.js";
 
 export interface DiscoveredDevice {
   ip: string;
@@ -22,14 +22,14 @@ export interface NetworkScannerLogger {
 }
 
 export interface NetworkScannerDeps {
-  checkPrinterConnection: typeof checkPrinterConnection;
+  probePrinterReachability: typeof probePrinterReachability;
   fetchPrinterMac: typeof fetchPrinterMac;
   expandSubnet(subnet: string): string[];
   logger: NetworkScannerLogger;
 }
 
 const defaultNetworkScannerDeps: NetworkScannerDeps = {
-  checkPrinterConnection,
+  probePrinterReachability,
   fetchPrinterMac,
   expandSubnet(subnet: string): string[] {
     return Array.from({ length: 254 }, (_, index) => `${subnet}.${index + 1}`);
@@ -107,7 +107,7 @@ async function scanDevice(
   deps: NetworkScannerDeps
 ): Promise<DiscoveredDevice> {
   try {
-    const reachable = await deps.checkPrinterConnection(ip, probeTimeoutMs);
+    const reachable = await deps.probePrinterReachability(ip, probeTimeoutMs);
     if (!reachable) return { ip, reachable: false, mac: "", source: "" };
 
     const macResult = await deps.fetchPrinterMac(ip, macTimeoutMs);
